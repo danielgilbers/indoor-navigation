@@ -1,3 +1,8 @@
+html,
+body {
+    height: 100%;
+}
+
 #demo-div {
     color: lightgrey;
     border-radius: 0.3rem;

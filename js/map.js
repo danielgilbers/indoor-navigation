@@ -1,8 +1,17 @@
+var map = L.map('map', {
+  crs: L.CRS.Simple
+});
+var bounds = [[0,0], [864,1537]];
+var image = L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map);
+map.fitBounds(bounds);
+
+/*
 const map = L.map('map').setView([50.9058, 6.9348], 17)
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 25,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map)
+*/
 
 /**
  * Button definieren
@@ -32,6 +41,7 @@ L.control.button({ position: 'bottomright' }).addTo(map)
 /**
  * GeoJSON Map Layer
  */
+/*
 let toomLayer = L.geoJSON()
 
 const myStyle = {
@@ -54,6 +64,7 @@ fetch('./map/map.geojson')
     toomLayer.addTo(map)
   })
 
+
 function onZoomLevelChange (e) {
   console.log(map.getZoom())
 
@@ -62,7 +73,7 @@ function onZoomLevelChange (e) {
 
 map.on('zoom', onZoomLevelChange)
 
-
+*/
 /**
  * Image Overlay
  */

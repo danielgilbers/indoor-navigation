@@ -3,10 +3,8 @@ var map = L.map('map', {
   minZoom: -1
 });
 
-var boundy = 864;
-var boundx = 1536.8;
-var boundleft = L.latLng(400, 0);
-var boundright = L.latLng(400, 1000);
+var boundy = 280;
+var boundx = 1366.6;
 var bounds = [[0,0], [boundy,boundx]];
 var image = L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map);
 map.fitBounds(bounds);

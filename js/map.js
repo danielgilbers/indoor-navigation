@@ -2,9 +2,23 @@ var map = L.map('map', {
   crs: L.CRS.Simple,
   minZoom: -1
 });
-var bounds = [[0,0], [864,1536.8]];
+
+var boundy = 864;
+var boundx = 1536.8;
+var boundleft = L.latLng(400, 0);
+var boundright = L.latLng(400, 1000);
+var bounds = [[0,0], [boundy,boundx]];
 var image = L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map);
 map.fitBounds(bounds);
+
+//var line = L.polyline([boundleft, boundright]).addTo(map);
+
+for (let x = 0; x < boundx/10; x++) {
+  L.polyline([L.latLng(0, x*10), L.latLng(boundy,  x*10)]).addTo(map);
+}
+for (let y = 0; y < boundy/10; y++) {
+  L.polyline([L.latLng(y*10, 0), L.latLng(y*10, boundx)]).addTo(map);
+}
 
 /*
 const map = L.map('map').setView([50.9058, 6.9348], 17)

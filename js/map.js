@@ -14,12 +14,12 @@ function onclickmap(e) {
   //console.log(e.latlng);
   L.marker(e.latlng).addTo(map)
 }
-
+/*
 function onHoverM(e) {
   console.log(e)
   e.target.remove()
-}
-
+}*/
+/*
 //var line = L.polyline([boundleft, boundright]).addTo(map);
 let gridSize = 10
 for (let x = 0; x < boundx/gridSize; x++) {
@@ -30,12 +30,11 @@ for (let x = 0; x < boundx/gridSize; x++) {
     m.on('click', onHoverM)
     m.addTo(map);
   }
-  
 }
 for (let y = 0; y < boundy/gridSize; y++) {
   //L.polyline([L.latLng(y*gridSize, 0), L.latLng(y*gridSize, boundx)]).addTo(map);
 }
-
+*/
 /*
 const map = L.map('map').setView([50.9058, 6.9348], 17)
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {

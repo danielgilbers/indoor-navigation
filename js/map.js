@@ -21,13 +21,13 @@ function onHoverM(e) {
 }
 
 //var line = L.polyline([boundleft, boundright]).addTo(map);
-let gridSize = 40
+let gridSize = 10
 for (let x = 0; x < boundx/gridSize; x++) {
   //L.polyline([L.latLng(0, x*gridSize), L.latLng(boundy,  x*gridSize)]).addTo(map);
   for (let y = 0; y < boundy/gridSize; y++) {
     //L.polyline([L.latLng(y*gridSize, 0), L.latLng(y*gridSize, boundx)]).addTo(map);
     let m = L.marker(L.latLng(y*gridSize,x*gridSize));
-    m.on('mouseover', onHoverM)
+    m.on('click', onHoverM)
     m.addTo(map);
   }
   

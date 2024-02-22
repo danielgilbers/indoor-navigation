@@ -12,7 +12,7 @@ L.Control.Button = L.Control.extend({
     this.container = L.DomUtil.create('div')
     this.container.innerHTML =
             '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button">' +
-            '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">directions</span>' +
+            '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">qr_code_scanner</span>' +
             '</button>'
 
     return this.container
@@ -61,3 +61,13 @@ function onZoomLevelChange (e) {
 }
 
 map.on('zoom', onZoomLevelChange)
+
+
+/**
+ * Image Overlay
+ */
+/*
+var imageUrl = 'https://maps.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
+    imageBounds = [[50.905161614551105, 6.933763722837313], [50.90664496069397, 6.935829109662222]];
+L.imageOverlay(imageUrl, imageBounds).addTo(map);
+*/

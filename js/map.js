@@ -1,7 +1,8 @@
 var map = L.map('map', {
-  crs: L.CRS.Simple
+  crs: L.CRS.Simple,
+  minZoom: -1
 });
-var bounds = [[0,0], [864,1537]];
+var bounds = [[0,0], [864,1536.8]];
 var image = L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map);
 map.fitBounds(bounds);
 

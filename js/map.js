@@ -8,6 +8,12 @@ var boundx = 1366.6;
 var bounds = [[0,0], [boundy,boundx]];
 var image = L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map);
 map.fitBounds(bounds);
+map.on('click', onclickmap);
+
+function onclickmap(e) {
+  //console.log(e.latlng);
+  L.marker(e.latlng).addTo(map)
+}
 
 //var line = L.polyline([boundleft, boundright]).addTo(map);
 

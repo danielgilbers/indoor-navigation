@@ -15,13 +15,25 @@ function onclickmap(e) {
   L.marker(e.latlng).addTo(map)
 }
 
-//var line = L.polyline([boundleft, boundright]).addTo(map);
-
-for (let x = 0; x < boundx/10; x++) {
-  L.polyline([L.latLng(0, x*10), L.latLng(boundy,  x*10)]).addTo(map);
+function onHoverM(e) {
+  console.log(e)
+  e.target.remove()
 }
-for (let y = 0; y < boundy/10; y++) {
-  L.polyline([L.latLng(y*10, 0), L.latLng(y*10, boundx)]).addTo(map);
+
+//var line = L.polyline([boundleft, boundright]).addTo(map);
+let gridSize = 40
+for (let x = 0; x < boundx/gridSize; x++) {
+  //L.polyline([L.latLng(0, x*gridSize), L.latLng(boundy,  x*gridSize)]).addTo(map);
+  for (let y = 0; y < boundy/gridSize; y++) {
+    //L.polyline([L.latLng(y*gridSize, 0), L.latLng(y*gridSize, boundx)]).addTo(map);
+    let m = L.marker(L.latLng(y*gridSize,x*gridSize));
+    m.on('mouseover', onHoverM)
+    m.addTo(map);
+  }
+  
+}
+for (let y = 0; y < boundy/gridSize; y++) {
+  //L.polyline([L.latLng(y*gridSize, 0), L.latLng(y*gridSize, boundx)]).addTo(map);
 }
 
 /*

@@ -7,11 +7,11 @@ const map = L.map('map', {
 const boundy = 280
 const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]
-const image = L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map)
+L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map)
 map.fitBounds(bounds)
 
 map.on('click', clickOnMap)
-let node_A = null; let node_B = null
+let nodeA = null; let nodeB = null
 const nodes = []
 let edge
 
@@ -26,15 +26,15 @@ function clickOnMap (e) {
  * @param {node} node
  */
 function checkAB (node, edge) {
-  if (!node_A) {
-    node_A = node
+  if (!nodeA) {
+    nodeA = node
   } else {
-    node_B = node
-    node_A = addEdge(node_A, node_B)
+    nodeB = node
+    nodeA = addEdge(nodeA, nodeB)
   }
   if (edge) {
-    addEdge(node, edge.node_A)
-    addEdge(node, edge.node_B)
+    addEdge(node, edge.nodeA)
+    addEdge(node, edge.nodeB)
   }
 
   return null
@@ -61,18 +61,18 @@ function addNode (latlng) {
 /**
  * Erzeugt eine neue Kante im Graphen und erstellt eine Linie
  *
- * @param {node} node_A Knoten eins
- * @param {node} node_B Knoten zwei
+ * @param {node} nodeA Knoten eins
+ * @param {node} nodeB Knoten zwei
  * @returns Null um Variable a wieder zu löschen
  */
-function addEdge (node_A, node_B) {
+function addEdge (nodeA, nodeB) {
   // Nachbarn in jeweilige Knoten schreiben
-  node_A.links.push(node_B.index)
-  node_B.links.push(node_A.index)
+  nodeA.links.push(nodeB.index)
+  nodeB.links.push(nodeA.index)
 
-  const k = L.polyline([node_A.yx, node_B.yx])
-  k.node_A = node_A
-  k.node_B = node_B
+  const k = L.polyline([nodeA.yx, nodeB.yx])
+  k.nodeA = nodeA
+  k.nodeB = nodeB
   k.on('click', clickOnEdge)
   k.addTo(map)
 
@@ -104,25 +104,24 @@ function createJSON () {
 
 function loadJSON () {
   fetch('./map/graph.json')
-  .then((response) => response.json())
-  .then((jsonFeature) => {
-    jsonFeature.forEach((element) => nodes.push(element))
-    drawGraph()
-  })
+    .then((response) => response.json())
+    .then((jsonFeature) => {
+      jsonFeature.forEach((element) => nodes.push(element))
+      drawGraph()
+    })
 }
 
-function drawGraph() {
+function drawGraph () {
   nodes.forEach((node) => {
-    const n = L.marker(node.yx).addTo(map)
-    node.links.forEach((node_B) => {
-      const k = L.polyline([node.yx, nodes[node_B].yx]).addTo(map)
+    L.marker(node.yx).addTo(map)
+    node.links.forEach((nodeB) => {
+      L.polyline([node.yx, nodes[nodeB].yx]).addTo(map)
     })
   })
-  
 }
 
 let textFile = null
-var makeTextFile = function (text) {
+function makeTextFile (text) {
   const data = new Blob([text], { type: 'text/plain' })
 
   // If we are replacing a previously generated file we need to

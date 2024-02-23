@@ -17,7 +17,7 @@ let edge;
 
 function clickOnMap (e) {
   // Neuen Knoten erstellen und übergeben
-  checkAB(addNode(e.latlng), edge)
+  edge = checkAB(addNode(e.latlng), edge)
   console.log(edge);
 }
 
@@ -36,6 +36,7 @@ function checkAB (node, edge) {
   if (edge) {
     addEdge(node, edge.node_A)
     addEdge(node, edge.node_B)
+    console.log(node)
   }
 
   return null

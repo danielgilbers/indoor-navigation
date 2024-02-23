@@ -20,11 +20,34 @@
             <div class="tab-pane fade d-flex flex-column flex-grow-1 show active" id="nav-leaflet" role="tabpanel"
                 aria-labelledby="nav-leaflet-tab" tabindex="0">
                 <h2 class="px-2">Leaflet-Map
-                    <button class="btn btn-primary text-dark lh-1" type="button" id="download">
+                    <button class="btn btn-primary text-dark lh-1" type="button" id="download" data-bs-toggle="modal"
+                        data-bs-target="#downloadModal">
                         <span class="material-symbols-outlined">download</span>
                     </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="downloadModalLabel">Download JSON</h1>
 
-                    <a download="info.txt" id="downloadlink" class="d-none">Download</a>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Download des erstellten Graphen als JSON.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <a download="info.txt" id="downloadlink" role="button"
+                                        class="btn btn-primary">Download</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <button class="btn btn-primary text-dark lh-1" type="button" id="upload">
                         <span class="material-symbols-outlined">upload</span>
@@ -74,8 +97,8 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade position-absolute" id="nav-ui" role="tabpanel"
-                aria-labelledby="nav-sensor-tab" tabindex="0">
+            <div class="tab-pane fade position-absolute" id="nav-ui" role="tabpanel" aria-labelledby="nav-sensor-tab"
+                tabindex="0">
                 <h2 class="px-2">UI-Mockup</h2>
                 <!-- Insert UI Mockup here -->
             </div>

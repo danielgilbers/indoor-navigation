@@ -13,7 +13,7 @@ map.fitBounds(bounds)
 map.on('click', clickOnMap)
 let node_A = null; let node_B = null
 const nodes = []
-let edge;
+let edge
 
 function clickOnMap (e) {
   // Neuen Knoten erstellen und übergeben
@@ -91,29 +91,27 @@ function clickOnEdge (e) {
 const download = document.getElementById('download')
 download.addEventListener('click', createJSON)
 
-function createJSON() {
+function createJSON () {
   const json = JSON.stringify(nodes)
-  console.log(json)
-  var link = document.getElementById('downloadlink');
-    link.href = makeTextFile(json);
-    link.classList.remove('d-none');
+  const link = document.getElementById('downloadlink')
+  link.href = makeTextFile(json)
 }
 
-var textFile = null,
-  makeTextFile = function (text) {
-    var data = new Blob([text], {type: 'text/plain'});
+let textFile = null
+var makeTextFile = function (text) {
+  const data = new Blob([text], { type: 'text/plain' })
 
-    // If we are replacing a previously generated file we need to
-    // manually revoke the object URL to avoid memory leaks.
-    if (textFile !== null) {
-      window.URL.revokeObjectURL(textFile);
-    }
+  // If we are replacing a previously generated file we need to
+  // manually revoke the object URL to avoid memory leaks.
+  if (textFile !== null) {
+    window.URL.revokeObjectURL(textFile)
+  }
 
-    textFile = window.URL.createObjectURL(data);
+  textFile = window.URL.createObjectURL(data)
 
-    // returns a URL you can use as a href
-    return textFile;
-  };
+  // returns a URL you can use as a href
+  return textFile
+}
 
 /*
 //var line = L.polyline([boundleft, boundright]).addTo(map);

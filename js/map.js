@@ -105,11 +105,12 @@ function createJSON () {
 function loadJSON () {
   fetch('./map/graph.json')
   .then((response) => response.json())
-  .then((geojsonFeature) => {
-    toomLayer = L.geoJSON(geojsonFeature, {
-      style: myStyle
-    })
-    toomLayer.addTo(map)
+  .then((jsonFeature) => {
+    console.log(nodes)
+    console.log(jsonFeature)
+    jsonFeature.forEach((element) => nodes.push(element))
+    
+    console.log(nodes)
   })
 }
 

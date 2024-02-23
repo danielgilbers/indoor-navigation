@@ -88,8 +88,8 @@ function clickOnEdge (e) {
   edge = e.target
 }
 // Save Graph as JSON
-const code = document.getElementById('code')
-code.addEventListener('click', createJSON)
+const download = document.getElementById('download')
+download.addEventListener('click', createJSON)
 
 function createJSON() {
   const json = JSON.stringify(nodes)

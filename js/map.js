@@ -12,6 +12,8 @@ map.on('click', onClickMap)
 
 let a; let b = L.latLng()
 
+let nodes = []
+
 function onClickMap (e) {
   // set node and add neighbor
   if (!a || b) {
@@ -28,6 +30,9 @@ function addNode (point) {
   n.on('click', onClickMarker)
   n.addTo(map)
 
+  n.id = nodes.push({xy: point}) - 1
+  console.log(n)
+  console.log(nodes)
   return point
 }
 
@@ -38,7 +43,6 @@ function addEdge (a, b) {
   a = L.latLng()
 
   return a
-//  console.log("Edge")
 }
 
 function onClickMarker (e) {

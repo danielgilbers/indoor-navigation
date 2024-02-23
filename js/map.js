@@ -10,15 +10,51 @@ const image = L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map)
 map.fitBounds(bounds)
 map.on('click', onClickMap)
 
+let a; let b = L.latLng()
+
 function onClickMap (e) {
-  const m = L.marker(e.latlng)
-  m.on('click', onClickMarker)
-  m.addTo(map)
+  // set node and add neighbor
+  if (!a || b) {
+    a = addNode(e.latlng)
+    b = L.latLng()
+  } else {
+    b = addNode(e.latlng)
+    a = addEdge(a, b)
+  }
+}
+
+function addNode (point) {
+  const n = L.marker(point)
+  n.on('click', onClickMarker)
+  n.addTo(map)
+
+  return point
+}
+
+function addEdge (a, b) {
+  const k = L.polyline([a, b])
+  k.on('click', onClickEdge)
+  k.addTo(map)
+  a = L.latLng()
+
+  return a
+//  console.log("Edge")
 }
 
 function onClickMarker (e) {
-  e.target.remove()
+  if (!a) {
+    a = e.latlng
+    b = L.latLng()
+  } else {
+    b = e.latlng
+    a = addEdge(a, b)
+  }
 }
+
+function onClickEdge (e) {
+  console.log(e)
+}
+
 /*
 //var line = L.polyline([boundleft, boundright]).addTo(map);
 let gridSize = 10

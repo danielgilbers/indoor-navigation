@@ -13,11 +13,12 @@ map.fitBounds(bounds)
 map.on('click', clickOnMap)
 let node_A = null; let node_B = null
 const nodes = []
+let edge;
 
 function clickOnMap (e) {
-  console.log('map')
   // Neuen Knoten erstellen und übergeben
-  checkAB(addNode(e.latlng))
+  checkAB(addNode(e.latlng), edge)
+  console.log(edge);
 }
 
 /**
@@ -25,13 +26,19 @@ function clickOnMap (e) {
  *
  * @param {node} node
  */
-function checkAB (node) {
+function checkAB (node, edge) {
   if (!node_A) {
     node_A = node
   } else {
     node_B = node
     node_A = addEdge(node_A, node_B)
   }
+  if (edge) {
+    addEdge(node, edge.node_A)
+    addEdge(node, edge.node_B)
+  }
+
+  return null
 }
 
 /**
@@ -79,8 +86,7 @@ function clickOnNode (e) {
 }
 
 function clickOnEdge (e) {
-  console.log('edge')
-  console.log(e.target)
+  edge = e.target
 }
 
 /*

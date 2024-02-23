@@ -14,14 +14,24 @@ let a = null; let b = null
 const nodes = []
 
 function onClickMap (e) {
-  // set node and add neighbor
+  console.log('map')
+  // Neuen Knoten erstellen und an "checkAB" übergeben
+  checkAB(addNode(e.latlng))
+}
+/**
+ * Funktion prüft ob der Knoten Anfang oder Ende der Kante ist und verbindet diese
+ *
+ * @param {node} node
+ */
+function checkAB (node) {
   if (!a) {
-    a = addNode(e.latlng)
+    a = node
   } else {
-    b = addNode(e.latlng)
+    b = node
     a = addEdge(a, b)
   }
 }
+
 /**
  * Erzeugt einen neuen Knoten im Graphen und erstellt einen Marker
  *
@@ -52,6 +62,8 @@ function addEdge (a, b) {
   b.links.add(a.index)
 
   const k = L.polyline([a.yx, b.yx])
+  k.a = a
+  k.b = b
   k.on('click', onClickEdge)
   k.addTo(map)
 
@@ -62,16 +74,13 @@ function addEdge (a, b) {
  * @param {*} e
  */
 function onClickMarker (e) {
-  if (!a) {
-    a = nodes[e.target.index]
-  } else {
-    b = nodes[e.target.index]
-    a = addEdge(a, b)
-  }
+  // Bestehenden Knoten an "ab" übergeben
+  checkAB(nodes[e.target.index])
 }
 
 function onClickEdge (e) {
-  console.log(e)
+  console.log('edge')
+  console.log(e.target)
 }
 
 /*

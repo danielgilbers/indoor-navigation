@@ -18,7 +18,6 @@ let edge;
 function clickOnMap (e) {
   // Neuen Knoten erstellen und übergeben
   edge = checkAB(addNode(e.latlng), edge)
-  console.log(edge);
 }
 
 /**
@@ -36,7 +35,6 @@ function checkAB (node, edge) {
   if (edge) {
     addEdge(node, edge.node_A)
     addEdge(node, edge.node_B)
-    console.log(node)
   }
 
   return null
@@ -89,7 +87,28 @@ function clickOnNode (e) {
 function clickOnEdge (e) {
   edge = e.target
 }
+function createJSON() {
+  const json = JSON.stringify(nodes)
+  console.log(json)
+}
 
+/*
+var textFile = null,
+  makeTextFile = function (text) {
+    var data = new Blob([text], {type: 'text/plain'});
+
+    // If we are replacing a previously generated file we need to
+    // manually revoke the object URL to avoid memory leaks.
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+
+    textFile = window.URL.createObjectURL(data);
+
+    // returns a URL you can use as a href
+    return textFile;
+  };
+*/
 /*
 //var line = L.polyline([boundleft, boundright]).addTo(map);
 let gridSize = 10
@@ -121,7 +140,7 @@ L.Control.Button = L.Control.extend({
   onAdd: function (map) {
     this.container = L.DomUtil.create('div')
     this.container.innerHTML =
-            '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button">' +
+            '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button" id="butt">' +
             '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">qr_code_scanner</span>' +
             '</button>'
 
@@ -138,6 +157,9 @@ L.control.button = function (opts) {
 }
 
 L.control.button({ position: 'bottomright' }).addTo(map)
+
+const butt = document.getElementById('butt')
+butt.addEventListener('click', createJSON)
 
 /**
  * GeoJSON Map Layer

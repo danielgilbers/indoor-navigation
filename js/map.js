@@ -10,47 +10,62 @@ const image = L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map)
 map.fitBounds(bounds)
 map.on('click', onClickMap)
 
-let a; let b = L.latLng()
-
-let nodes = []
+let a = null; let b = null
+const nodes = []
 
 function onClickMap (e) {
   // set node and add neighbor
-  if (!a || b) {
+  if (!a) {
     a = addNode(e.latlng)
-    b = L.latLng()
   } else {
     b = addNode(e.latlng)
     a = addEdge(a, b)
   }
 }
+/**
+ * Erzeugt einen neuen Knoten im Graphen und erstellt einen Marker
+ *
+ * @param {LatLng} latlng yx-Koordinaten
+ * @returns Knoten
+ */
+function addNode (latlng) {
+  const node = { yx: latlng, links: new Set() }
 
-function addNode (point) {
-  const n = L.marker(point)
+  const n = L.marker(node.yx)
+  node.index = nodes.push(node) - 1 // Knoten dem Knoten-Array hinzufügen
+  n.index = node.index
   n.on('click', onClickMarker)
   n.addTo(map)
 
-  n.id = nodes.push({xy: point}) - 1
-  console.log(n)
-  console.log(nodes)
-  return point
+  return node
 }
-
+/**
+ * Erzeugt eine neue Kante im Graphen und erstellt eine Linie
+ *
+ * @param {node} a Knoten eins
+ * @param {node} b Knoten zwei
+ * @returns Null um Variable a wieder zu löschen
+ */
 function addEdge (a, b) {
-  const k = L.polyline([a, b])
+  // Nachbarn in jeweilige Knoten schreiben
+  a.links.add(b.index)
+  b.links.add(a.index)
+
+  const k = L.polyline([a.yx, b.yx])
   k.on('click', onClickEdge)
   k.addTo(map)
-  a = L.latLng()
 
-  return a
+  return null
 }
-
+/**
+ *
+ * @param {*} e
+ */
 function onClickMarker (e) {
   if (!a) {
-    a = e.latlng
-    b = L.latLng()
+    a = nodes[e.target.index]
   } else {
-    b = e.latlng
+    b = nodes[e.target.index]
     a = addEdge(a, b)
   }
 }

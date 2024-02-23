@@ -86,15 +86,31 @@ function clickOnNode (e) {
 
 function clickOnEdge (e) {
   edge = e.target
+  e.target.remove()
 }
 // Save Graph as JSON
 const download = document.getElementById('download')
 download.addEventListener('click', createJSON)
 
+// Load Graph from JSON
+const upload = document.getElementById('upload')
+upload.addEventListener('click', loadJSON)
+
 function createJSON () {
   const json = JSON.stringify(nodes)
   const link = document.getElementById('downloadlink')
   link.href = makeTextFile(json)
+}
+
+function loadJSON () {
+  fetch('./map/graph.json')
+  .then((response) => response.json())
+  .then((geojsonFeature) => {
+    toomLayer = L.geoJSON(geojsonFeature, {
+      style: myStyle
+    })
+    toomLayer.addTo(map)
+  })
 }
 
 let textFile = null

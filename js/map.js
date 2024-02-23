@@ -33,11 +33,19 @@ function checkAB (node, edge) {
     nodeA = addEdge(nodeA, nodeB)
   }
   if (edge) {
+    removeLink(edge)
     addEdge(node, edge.nodeA)
     addEdge(node, edge.nodeB)
   }
 
   return null
+}
+
+function removeLink(edge) {
+  let i = edge.nodeA.links.indexOf(edge.nodeB.index)
+  edge.nodeA.links.splice(i,1)
+  i = edge.nodeB.links.indexOf(edge.nodeA.index)
+  edge.nodeB.links.splice(i,1)
 }
 
 /**

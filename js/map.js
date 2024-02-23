@@ -106,12 +106,19 @@ function loadJSON () {
   fetch('./map/graph.json')
   .then((response) => response.json())
   .then((jsonFeature) => {
-    console.log(nodes)
-    console.log(jsonFeature)
     jsonFeature.forEach((element) => nodes.push(element))
-    
-    console.log(nodes)
+    drawGraph()
   })
+}
+
+function drawGraph() {
+  nodes.forEach((node) => {
+    const n = L.marker(node.yx).addTo(map)
+    node.links.forEach((node_B) => {
+      const k = L.polyline([node.yx, nodes[node_B].yx]).addTo(map)
+    })
+  })
+  
 }
 
 let textFile = null

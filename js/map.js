@@ -47,7 +47,7 @@ function checkAB (node, edge) {
  * @returns Knoten
  */
 function addNode (latlng) {
-  const node = { yx: latlng, links: new Set() }
+  const node = { yx: latlng, links: [] }
 
   const n = L.marker(node.yx)
   node.index = nodes.push(node) - 1 // Knoten dem Knoten-Array hinzufügen
@@ -67,8 +67,8 @@ function addNode (latlng) {
  */
 function addEdge (node_A, node_B) {
   // Nachbarn in jeweilige Knoten schreiben
-  node_A.links.add(node_B.index)
-  node_B.links.add(node_A.index)
+  node_A.links.push(node_B.index)
+  node_B.links.push(node_A.index)
 
   const k = L.polyline([node_A.yx, node_B.yx])
   k.node_A = node_A
@@ -87,8 +87,13 @@ function clickOnNode (e) {
 function clickOnEdge (e) {
   edge = e.target
 }
+// Save Graph as JSON
+const code = document.getElementById('code')
+code.addEventListener('click', createJSON)
+
 function createJSON() {
   const json = JSON.stringify(nodes)
+  console.log(nodes)
   console.log(json)
 }
 
@@ -157,9 +162,6 @@ L.control.button = function (opts) {
 }
 
 L.control.button({ position: 'bottomright' }).addTo(map)
-
-const butt = document.getElementById('butt')
-butt.addEventListener('click', createJSON)
 
 /**
  * GeoJSON Map Layer

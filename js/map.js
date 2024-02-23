@@ -1,24 +1,24 @@
-var map = L.map('map', {
+const map = L.map('map', {
   crs: L.CRS.Simple,
   minZoom: -1
-});
+})
 
-var boundy = 280;
-var boundx = 1366.6;
-var bounds = [[0,0], [boundy,boundx]];
-var image = L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map);
-map.fitBounds(bounds);
-map.on('click', onclickmap);
+const boundy = 280
+const boundx = 1366.6
+const bounds = [[0, 0], [boundy, boundx]]
+const image = L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map)
+map.fitBounds(bounds)
+map.on('click', onClickMap)
 
-function onclickmap(e) {
-  //console.log(e.latlng);
-  L.marker(e.latlng).addTo(map)
+function onClickMap (e) {
+  const m = L.marker(e.latlng)
+  m.on('click', onClickMarker)
+  m.addTo(map)
 }
-/*
-function onHoverM(e) {
-  console.log(e)
+
+function onClickMarker (e) {
   e.target.remove()
-}*/
+}
 /*
 //var line = L.polyline([boundleft, boundright]).addTo(map);
 let gridSize = 10
@@ -93,7 +93,6 @@ fetch('./map/map.geojson')
     })
     toomLayer.addTo(map)
   })
-
 
 function onZoomLevelChange (e) {
   console.log(map.getZoom())

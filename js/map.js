@@ -1,34 +1,36 @@
+// Map erstellen
 const map = L.map('map', {
   crs: L.CRS.Simple,
   minZoom: -1
 })
-
+// Bild der Karte einbinden und anzeigen
 const boundy = 280
 const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]
 const image = L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map)
 map.fitBounds(bounds)
-map.on('click', onClickMap)
 
-let a = null; let b = null
+map.on('click', clickOnMap)
+let node_A = null; let node_B = null
 const nodes = []
 
-function onClickMap (e) {
+function clickOnMap (e) {
   console.log('map')
-  // Neuen Knoten erstellen und an "checkAB" übergeben
+  // Neuen Knoten erstellen und übergeben
   checkAB(addNode(e.latlng))
 }
+
 /**
  * Funktion prüft ob der Knoten Anfang oder Ende der Kante ist und verbindet diese
  *
  * @param {node} node
  */
 function checkAB (node) {
-  if (!a) {
-    a = node
+  if (!node_A) {
+    node_A = node
   } else {
-    b = node
-    a = addEdge(a, b)
+    node_B = node
+    node_A = addEdge(node_A, node_B)
   }
 }
 
@@ -44,41 +46,39 @@ function addNode (latlng) {
   const n = L.marker(node.yx)
   node.index = nodes.push(node) - 1 // Knoten dem Knoten-Array hinzufügen
   n.index = node.index
-  n.on('click', onClickMarker)
+  n.on('click', clickOnNode)
   n.addTo(map)
 
   return node
 }
+
 /**
  * Erzeugt eine neue Kante im Graphen und erstellt eine Linie
  *
- * @param {node} a Knoten eins
- * @param {node} b Knoten zwei
+ * @param {node} node_A Knoten eins
+ * @param {node} node_B Knoten zwei
  * @returns Null um Variable a wieder zu löschen
  */
-function addEdge (a, b) {
+function addEdge (node_A, node_B) {
   // Nachbarn in jeweilige Knoten schreiben
-  a.links.add(b.index)
-  b.links.add(a.index)
+  node_A.links.add(node_B.index)
+  node_B.links.add(node_A.index)
 
-  const k = L.polyline([a.yx, b.yx])
-  k.a = a
-  k.b = b
-  k.on('click', onClickEdge)
+  const k = L.polyline([node_A.yx, node_B.yx])
+  k.node_A = node_A
+  k.node_B = node_B
+  k.on('click', clickOnEdge)
   k.addTo(map)
 
   return null
 }
-/**
- *
- * @param {*} e
- */
-function onClickMarker (e) {
-  // Bestehenden Knoten an "ab" übergeben
+
+function clickOnNode (e) {
+  // Bestehenden Knoten übergeben
   checkAB(nodes[e.target.index])
 }
 
-function onClickEdge (e) {
+function clickOnEdge (e) {
   console.log('edge')
   console.log(e.target)
 }

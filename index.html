@@ -17,6 +17,7 @@
 <body>
     <div class="d-flex flex-column h-100">
         <div class="tab-content d-flex flex-grow-1" id="nav-tabContent">
+            <!-- Leaflet Tab-->
             <div class="tab-pane fade d-flex flex-column flex-grow-1 show active" id="nav-leaflet" role="tabpanel"
                 aria-labelledby="nav-leaflet-tab" tabindex="0">
                 <h2 class="px-2">Leaflet-Map
@@ -46,14 +47,13 @@
                         </div>
                     </div>
 
-
                     <button class="btn btn-primary text-dark lh-1" type="button" id="upload">
                         <span class="material-symbols-outlined">upload</span>
                     </button>
                 </h2>
                 <div class="flex-grow-1" id="map"></div>
             </div>
-
+            <!-- Sensor Tab-->
             <div class="tab-pane fade position-absolute container" id="nav-sensor" role="tabpanel"
                 aria-labelledby="nav-sensor-tab" tabindex="0">
                 <h2>Sensor-Test</h2>
@@ -94,14 +94,14 @@
                     </ul>
                 </div>
             </div>
-
+            <!-- UI-Mockup Tab-->
             <div class="tab-pane fade position-absolute" id="nav-ui" role="tabpanel" aria-labelledby="nav-sensor-tab"
                 tabindex="0">
                 <h2 class="px-2">UI-Mockup</h2>
                 <!-- Insert UI Mockup here -->
             </div>
         </div>
-
+        <!-- Navbar -->
         <nav class="p-2 navbar bg-dark" data-bs-theme="dark">
             <div class="nav nav-underline" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="nav-leaflet-tab" data-bs-toggle="tab" data-bs-target="#nav-leaflet"

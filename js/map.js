@@ -93,11 +93,12 @@ download.addEventListener('click', createJSON)
 
 function createJSON() {
   const json = JSON.stringify(nodes)
-  console.log(nodes)
   console.log(json)
+  var link = document.getElementById('downloadlink');
+    link.href = makeTextFile(json);
+    link.classList.remove('d-none');
 }
 
-/*
 var textFile = null,
   makeTextFile = function (text) {
     var data = new Blob([text], {type: 'text/plain'});
@@ -113,7 +114,7 @@ var textFile = null,
     // returns a URL you can use as a href
     return textFile;
   };
-*/
+
 /*
 //var line = L.polyline([boundleft, boundright]).addTo(map);
 let gridSize = 10

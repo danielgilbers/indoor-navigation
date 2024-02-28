@@ -1,3 +1,8 @@
+const toggleGraphUI = document.getElementById('toggleGraphUI')
+const download = document.getElementById('download')
+const upload = document.getElementById('upload')
+const graphUI = document.getElementsByClassName('graphUI')
+
 // Map erstellen
 const map = L.map('map', {
   zoomControl: false,
@@ -7,8 +12,9 @@ const map = L.map('map', {
 // Bild der Karte einbinden und anzeigen
 const boundy = 280
 const boundx = 1366.6
+const image = '../map/Zollstock-Modellv1.png'
 const bounds = [[0, 0], [boundy, boundx]]
-L.imageOverlay('../map/Zollstock-Modellv1.png', bounds).addTo(map)
+L.imageOverlay(image, bounds).addTo(map)
 map.fitBounds(bounds)
 
 map.on('click', clickOnMap)
@@ -17,8 +23,19 @@ const nodes = []
 let edge
 
 function clickOnMap (e) {
-  // Neuen Knoten erstellen und übergeben
-  edge = checkAB(addNode(e.latlng), edge)
+  if (checkGraphToggle()) {
+    // Neuen Knoten erstellen und übergeben
+    edge = checkAB(addNode(e.latlng), edge)
+  }
+}
+
+/**
+ * Helper Function to check Graph Toggle and Menu
+ * @returns
+ */
+function checkGraphToggle () {
+  const bsOffcanvas = document.getElementById('offcanvasMenu')
+  return (!bsOffcanvas.classList.contains('showing') && toggleGraphUI.checked)
 }
 
 /**
@@ -42,11 +59,11 @@ function checkAB (node, edge) {
   return null
 }
 
-function removeLink(edge) {
+function removeLink (edge) {
   let i = edge.nodeA.links.indexOf(edge.nodeB.index)
-  edge.nodeA.links.splice(i,1)
+  edge.nodeA.links.splice(i, 1)
   i = edge.nodeB.links.indexOf(edge.nodeA.index)
-  edge.nodeB.links.splice(i,1)
+  edge.nodeB.links.splice(i, 1)
 }
 
 /**
@@ -89,21 +106,18 @@ function addEdge (nodeA, nodeB) {
 }
 
 function clickOnNode (e) {
+  if (checkGraphToggle()) {
   // Bestehenden Knoten übergeben
-  checkAB(nodes[e.target.index])
+    checkAB(nodes[e.target.index])
+  }
 }
 
 function clickOnEdge (e) {
-  edge = e.target
-  e.target.remove()
+  if (checkGraphToggle()) {
+    edge = e.target
+    e.target.remove()
+  }
 }
-// Save Graph as JSON
-const download = document.getElementById('download')
-download.addEventListener('click', createJSON)
-
-// Load Graph from JSON
-const upload = document.getElementById('upload')
-upload.addEventListener('click', loadJSON)
 
 function createJSON () {
   const json = JSON.stringify(nodes)
@@ -172,29 +186,25 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 /**
  * Position Circle
  */
-var circle = L.circle([50.9058, 6.9348], {
-    color: 'white',
-    fillColor: 'blue',
-    fillOpacity: 1,
-    radius: 2
-}).addTo(map);
+const circle = L.circle([50.9058, 6.9348], {
+  color: 'white',
+  fillColor: 'blue',
+  fillOpacity: 1,
+  radius: 2
+}).addTo(map)
 
 /**
  * QR Code Button
  */
 L.Control.Button = L.Control.extend({
-  onAdd: function (map) {
+  onAdd: function () {
     this.container = L.DomUtil.create('div')
     this.container.innerHTML =
-            '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button" id="butt">' +
+            '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1 graphUI" type="button" id="qrCode">' +
             '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">qr_code_scanner</span>' +
             '</button>'
 
     return this.container
-  },
-
-  onRemove: function (map) {
-
   }
 })
 
@@ -205,10 +215,33 @@ L.control.button = function (opts) {
 L.control.button({ position: 'bottomright' }).addTo(map)
 
 /**
+ * Graph UI - Buttons
+ */
+L.Control.Graph = L.Control.extend({
+  onAdd: function () {
+    this.container = L.DomUtil.create('div')
+    this.container.innerHTML =
+            '<button class="graphUI btn btn-primary text-dark rounded-start-5 rounded-end-0 lh-1 d-none" type="button" id="download" data-bs-toggle="modal" data-bs-target="#downloadModal" onclick="createJSON()">' +
+            '<span class="material-symbols-outlined">download</span>' +
+            '</button>' +
+            '<button class="graphUI btn btn-primary text-dark rounded-start-0 rounded-end-5 lh-1 d-none" type="button" id="upload" onclick="loadJSON()">' +
+            '<span class="material-symbols-outlined">upload</span>' +
+            '</button>'
+
+    return this.container
+  }
+})
+
+L.control.graph = function (opts) {
+  return new L.Control.Graph(opts)
+}
+
+L.control.graph({ position: 'bottomright' }).addTo(map)
+
+/**
  * GeoJSON Map Layer
  */
 /*
-let toomLayer = L.geoJSON()
 
 const myStyle = {
   color: '#ff0000',
@@ -221,15 +254,6 @@ const nvsbl = {
   fillOpacity: 0
 }
 
-fetch('./map/map.geojson')
-  .then((response) => response.json())
-  .then((geojsonFeature) => {
-    toomLayer = L.geoJSON(geojsonFeature, {
-      style: myStyle
-    })
-    toomLayer.addTo(map)
-  })
-
 function onZoomLevelChange (e) {
   console.log(map.getZoom())
 
@@ -239,40 +263,37 @@ function onZoomLevelChange (e) {
 map.on('zoom', onZoomLevelChange)
 
 */
-/**
- * Image Overlay
- */
-/*
-var imageUrl = 'https://maps.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
-    imageBounds = [[50.905161614551105, 6.933763722837313], [50.90664496069397, 6.935829109662222]];
-L.imageOverlay(imageUrl, imageBounds).addTo(map);
-*/
-
 
 /**
  * Search Bar with Menu Button
  */
 L.Control.Search = L.Control.extend({
-onAdd: function(map) {
-    this.container = L.DomUtil.create('div', 'input-group vw-100 pe-3');
+  onAdd: function () {
+    this.container = L.DomUtil.create('div', 'input-group vw-100 pe-3')
     this.container.innerHTML =
-    '<button class="btn btn-light rounded-start-5 lh-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
-    '<span class="material-symbols-outlined" id="addon-wrapping">Menu</span>'+
-    '</button>'+
-    '<input type="text" class="form-control rounded-end-5" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">';
+            '<button class="btn btn-light rounded-start-5 rounded-start-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
+            '<span class="material-symbols-outlined" id="addon-wrapping">Menu</span>' +
+            '</button>' +
+            '<input type="text" class="graphUI form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'
 
-    return this.container;
+    return this.container
+  }
+
+})
+
+L.control.search = function (opts) {
+  return new L.Control.Search(opts)
 }
 
-});
+L.control.search({ position: 'topleft' }).addTo(map)
 
-L.control.search = function(opts) {
-    return new L.Control.Search(opts);
+function closeMenu () {
+  const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')
+  bsOffcanvas.hide()
 }
 
-L.control.search({position: 'topleft'}).addTo(map);
-
-function closeMenu() {
-    var bsOffcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasMenu'));
-    bsOffcanvas.hide();
+function activateGraphUI () {
+  for (let i = 0; i < graphUI.length; i++) {
+    graphUI[i].classList.toggle('d-none')
+  }
 }

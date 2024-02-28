@@ -1,5 +1,6 @@
 // Map erstellen
 const map = L.map('map', {
+  zoomControl: false,
   crs: L.CRS.Simple,
   minZoom: -1
 })
@@ -169,7 +170,17 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 */
 
 /**
- * Button definieren
+ * Position Circle
+ */
+var circle = L.circle([50.9058, 6.9348], {
+    color: 'white',
+    fillColor: 'blue',
+    fillOpacity: 1,
+    radius: 2
+}).addTo(map);
+
+/**
+ * QR Code Button
  */
 L.Control.Button = L.Control.extend({
   onAdd: function (map) {
@@ -236,3 +247,32 @@ var imageUrl = 'https://maps.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
     imageBounds = [[50.905161614551105, 6.933763722837313], [50.90664496069397, 6.935829109662222]];
 L.imageOverlay(imageUrl, imageBounds).addTo(map);
 */
+
+
+/**
+ * Search Bar with Menu Button
+ */
+L.Control.Search = L.Control.extend({
+onAdd: function(map) {
+    this.container = L.DomUtil.create('div', 'input-group vw-100 pe-3');
+    this.container.innerHTML =
+    '<button class="btn btn-light rounded-start-5 lh-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
+    '<span class="material-symbols-outlined" id="addon-wrapping">Menu</span>'+
+    '</button>'+
+    '<input type="text" class="form-control rounded-end-5" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">';
+
+    return this.container;
+}
+
+});
+
+L.control.search = function(opts) {
+    return new L.Control.Search(opts);
+}
+
+L.control.search({position: 'topleft'}).addTo(map);
+
+function closeMenu() {
+    var bsOffcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasMenu'));
+    bsOffcanvas.hide();
+}

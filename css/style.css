@@ -20,3 +20,7 @@ body {
 #demo-div ul {
     margin-bottom: 0.66rem;
 }
+
+#offcanvasMenu {
+    width: 180px;
+}

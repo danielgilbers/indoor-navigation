@@ -19,25 +19,24 @@
         <!-- Offcanvas Menu -->
         <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
             <div class="offcanvas-header">
-              <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menu</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
-              <div>
-                Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
-              </div>
-              <div class="dropdown mt-3">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                  Dropdown button
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <button class="nav-link active" id="nav-leaflet-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-leaflet" type="button" role="tab" aria-controls="nav-leaflet"
+                            aria-selected="true">Leaflet-Map</button>
+                    </li>
+                    <li>
+                        <button class="nav-link" id="nav-sensor-tab" data-bs-toggle="tab" data-bs-target="#nav-sensor"
+                            type="button" role="tab" aria-controls="nav-sensor"
+                            aria-selected="false">Sensor-Test</button>
+                    </li>
                 </ul>
-              </div>
             </div>
-          </div>
+        </div>
 
         <div class="tab-content d-flex flex-grow-1" id="nav-tabContent">
             <div class="tab-pane fade d-flex flex-column flex-grow-1 show active" id="nav-leaflet" role="tabpanel"
@@ -86,15 +85,6 @@
                 </div>
             </div>
         </div>
-
-        <nav class="p-2 navbar bg-dark" data-bs-theme="dark">
-            <div class="nav nav-underline" id="nav-tab" role="tablist">
-                <button class="nav-link active" id="nav-leaflet-tab" data-bs-toggle="tab" data-bs-target="#nav-leaflet"
-                    type="button" role="tab" aria-controls="nav-leaflet" aria-selected="true">Leaflet-Map</button>
-                <button class="nav-link" id="nav-sensor-tab" data-bs-toggle="tab" data-bs-target="#nav-sensor"
-                    type="button" role="tab" aria-controls="nav-sensor" aria-selected="false">Sensor-Test</button>
-            </div>
-        </nav>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./js/map.js"></script>

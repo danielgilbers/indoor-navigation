@@ -30,13 +30,13 @@ L.control.button = function(opts) {
 L.control.button({ position: 'bottomright'}).addTo(map);
 
 /**
- * Search Bar
+ * Search Bar with Menu Button
  */
 L.Control.Search = L.Control.extend({
 onAdd: function(map) {
     this.container = L.DomUtil.create('div', 'input-group vw-100 pe-3');
     this.container.innerHTML =
-    '<button class="btn btn-light rounded-start-5 lh-1" type="button">' +
+    '<button class="btn btn-light rounded-start-5 lh-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
     '<span class="material-symbols-outlined" id="addon-wrapping">Menu</span>'+
     '</button>'+
     '<input type="text" class="form-control rounded-end-5" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">';

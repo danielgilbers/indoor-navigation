@@ -1,4 +1,4 @@
-var map = L.map('map').setView([50.9058, 6.9348], 17);
+var map = L.map('map', {zoomControl: false}).setView([50.9058, 6.9348], 17);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 20,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -31,12 +31,12 @@ L.control.button({ position: 'bottomright'}).addTo(map);
 
 L.Control.Search = L.Control.extend({
 onAdd: function(map) {
-    this.container = L.DomUtil.create('div', 'input-group');
+    this.container = L.DomUtil.create('div', 'input-group vw-100 pe-3');
     this.container.innerHTML =
-    '<input type="text" class="form-control rounded-start-5" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'+
-    '<button class="btn btn-light rounded-end-5 lh-1" type="button">' +
+    '<button class="btn btn-light rounded-start-5 lh-1" type="button">' +
     '<span class="material-symbols-outlined" id="addon-wrapping">Menu</span>'+
-    '</button>';
+    '</button>'+
+    '<input type="text" class="form-control rounded-end-5" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">';
 
     return this.container;
 }
@@ -47,4 +47,4 @@ L.control.search = function(opts) {
     return new L.Control.Search(opts);
 }
 
-L.control.search({position: 'topright'}).addTo(map);
+L.control.search({position: 'topleft'}).addTo(map);

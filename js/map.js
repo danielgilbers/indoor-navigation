@@ -163,12 +163,10 @@ function loadJSON () {
 
 function drawGraph () {
   nodes.forEach((node) => {
-    console.log(node)
     const n = L.marker(node.yx)
     n.index = node.index
     n.addTo(map)
     node.links.forEach((nodeB) => {
-        //console.log(node.index + ' nach ' + nodeB)
         const k = L.polyline([node.yx, nodes[nodeB].yx])
         k.nodeA = node.index
         k.nodeB = nodeB
@@ -291,7 +289,7 @@ function activateGraphUI () {
    if(layer.index != undefined){
     layer.setOpacity((toggleGraphUI.checked ? 1 : 0))
    }
-   if(layer.nodeA){
+   if(layer.nodeA != undefined){
    layer.setStyle({opacity: (toggleGraphUI.checked ? 1 : 0)})
   }
 })

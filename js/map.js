@@ -295,3 +295,5 @@ function activateGraphUI () {
     graphUI[i].classList.toggle('d-none')
   }
 }
+// Entferne Leaflet Link
+document.getElementsByClassName('leaflet-control-attribution')[0].remove()

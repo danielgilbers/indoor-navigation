@@ -1,7 +1,20 @@
+// Graph UI Elements
 const toggleGraphUI = document.getElementById('toggleGraphUI')
 const download = document.getElementById('download')
 const upload = document.getElementById('upload')
 const graphUI = document.getElementsByClassName('graphUI')
+// Graph Variables
+let nodeA = null
+let nodeB = null
+const nodes = []
+let edge
+// JSON File für Download
+let textFile = null
+// Map Image
+const image = '../map/Zollstock-Modellv1.png'
+const boundy = 280
+const boundx = 1366.6
+const bounds = [[0, 0], [boundy, boundx]]
 
 // Map erstellen
 const map = L.map('map', {
@@ -9,18 +22,12 @@ const map = L.map('map', {
   crs: L.CRS.Simple,
   minZoom: -1
 })
-// Bild der Karte einbinden und anzeigen
-const boundy = 280
-const boundx = 1366.6
-const image = '../map/Zollstock-Modellv1.png'
-const bounds = [[0, 0], [boundy, boundx]]
-L.imageOverlay(image, bounds).addTo(map)
-map.fitBounds(bounds)
 
 map.on('click', clickOnMap)
-let nodeA = null; let nodeB = null
-const nodes = []
-let edge
+
+// Bild der Karte einbinden und anzeigen
+L.imageOverlay(image, bounds).addTo(map)
+map.fitBounds(bounds)
 
 function clickOnMap (e) {
   if (checkGraphToggle()) {
@@ -31,7 +38,8 @@ function clickOnMap (e) {
 
 /**
  * Helper Function to check Graph Toggle and Menu
- * @returns
+ *
+ * @returns true if Graph Toggle is checked and Menu is hidden
  */
 function checkGraphToggle () {
   const bsOffcanvas = document.getElementById('offcanvasMenu')
@@ -59,6 +67,11 @@ function checkAB (node, edge) {
   return null
 }
 
+/**
+ * Entfernt Verbindung aus beiden Knoten
+ *
+ * @param {*} edge
+ */
 function removeLink (edge) {
   let i = edge.nodeA.links.indexOf(edge.nodeB.index)
   edge.nodeA.links.splice(i, 1)
@@ -125,6 +138,21 @@ function createJSON () {
   link.href = makeTextFile(json)
 }
 
+function makeTextFile (text) {
+  const data = new Blob([text], { type: 'text/plain' })
+
+  // If we are replacing a previously generated file we need to
+  // manually revoke the object URL to avoid memory leaks.
+  if (textFile !== null) {
+    window.URL.revokeObjectURL(textFile)
+  }
+
+  textFile = window.URL.createObjectURL(data)
+
+  // returns a URL you can use as a href
+  return textFile
+}
+
 function loadJSON () {
   fetch('./map/graph.json')
     .then((response) => response.json())
@@ -143,46 +171,6 @@ function drawGraph () {
   })
 }
 
-let textFile = null
-function makeTextFile (text) {
-  const data = new Blob([text], { type: 'text/plain' })
-
-  // If we are replacing a previously generated file we need to
-  // manually revoke the object URL to avoid memory leaks.
-  if (textFile !== null) {
-    window.URL.revokeObjectURL(textFile)
-  }
-
-  textFile = window.URL.createObjectURL(data)
-
-  // returns a URL you can use as a href
-  return textFile
-}
-
-/*
-//var line = L.polyline([boundleft, boundright]).addTo(map);
-let gridSize = 10
-for (let x = 0; x < boundx/gridSize; x++) {
-  //L.polyline([L.latLng(0, x*gridSize), L.latLng(boundy,  x*gridSize)]).addTo(map);
-  for (let y = 0; y < boundy/gridSize; y++) {
-    //L.polyline([L.latLng(y*gridSize, 0), L.latLng(y*gridSize, boundx)]).addTo(map);
-    let m = L.marker(L.latLng(y*gridSize,x*gridSize));
-    m.on('click', onHoverM)
-    m.addTo(map);
-  }
-}
-for (let y = 0; y < boundy/gridSize; y++) {
-  //L.polyline([L.latLng(y*gridSize, 0), L.latLng(y*gridSize, boundx)]).addTo(map);
-}
-*/
-/*
-const map = L.map('map').setView([50.9058, 6.9348], 17)
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 25,
-  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map)
-*/
-
 /**
  * Position Circle
  */
@@ -194,9 +182,28 @@ const circle = L.circle([50.9058, 6.9348], {
 }).addTo(map)
 
 /**
+ * Search Bar with Menu Button
+ */
+L.Control.Search = L.Control.extend({
+  onAdd: function () {
+    this.container = L.DomUtil.create('div', 'input-group vw-100 pe-3')
+    this.container.innerHTML =
+              '<button class="btn btn-light rounded-start-5 rounded-start-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
+              '<span class="material-symbols-outlined" id="addon-wrapping">Menu</span>' +
+              '</button>' +
+              '<input type="text" class="graphUI form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'
+
+    return this.container
+  }
+
+})
+
+new L.Control.Search({ position: 'topleft' }).addTo(map)
+
+/**
  * QR Code Button
  */
-L.Control.Button = L.Control.extend({
+L.Control.QRButton = L.Control.extend({
   onAdd: function () {
     this.container = L.DomUtil.create('div')
     this.container.innerHTML =
@@ -208,16 +215,12 @@ L.Control.Button = L.Control.extend({
   }
 })
 
-L.control.button = function (opts) {
-  return new L.Control.Button(opts)
-}
-
-L.control.button({ position: 'bottomright' }).addTo(map)
+new L.Control.QRButton({ position: 'bottomright' }).addTo(map)
 
 /**
- * Graph UI - Buttons
+ * Graph UI - Download- und Upload-Button
  */
-L.Control.Graph = L.Control.extend({
+L.Control.GraphButtons = L.Control.extend({
   onAdd: function () {
     this.container = L.DomUtil.create('div')
     this.container.innerHTML =
@@ -232,17 +235,12 @@ L.Control.Graph = L.Control.extend({
   }
 })
 
-L.control.graph = function (opts) {
-  return new L.Control.Graph(opts)
-}
-
-L.control.graph({ position: 'bottomright' }).addTo(map)
+new L.Control.GraphButtons({ position: 'bottomright' }).addTo(map)
 
 /**
  * GeoJSON Map Layer
  */
 /*
-
 const myStyle = {
   color: '#ff0000',
   weight: 1,
@@ -261,31 +259,7 @@ function onZoomLevelChange (e) {
 }
 
 map.on('zoom', onZoomLevelChange)
-
 */
-
-/**
- * Search Bar with Menu Button
- */
-L.Control.Search = L.Control.extend({
-  onAdd: function () {
-    this.container = L.DomUtil.create('div', 'input-group vw-100 pe-3')
-    this.container.innerHTML =
-            '<button class="btn btn-light rounded-start-5 rounded-start-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
-            '<span class="material-symbols-outlined" id="addon-wrapping">Menu</span>' +
-            '</button>' +
-            '<input type="text" class="graphUI form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'
-
-    return this.container
-  }
-
-})
-
-L.control.search = function (opts) {
-  return new L.Control.Search(opts)
-}
-
-L.control.search({ position: 'topleft' }).addTo(map)
 
 function closeMenu () {
   const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')

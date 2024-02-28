@@ -5,6 +5,16 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 /**
+ * Position Circle
+ */
+var circle = L.circle([50.9058, 6.9348], {
+    color: 'white',
+    fillColor: 'blue',
+    fillOpacity: 1,
+    radius: 2
+}).addTo(map);
+
+/**
  * QR Code Button
  */
 L.Control.Button = L.Control.extend({

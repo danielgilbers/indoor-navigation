@@ -22,11 +22,8 @@ map.on('click', clickOnMap)
 
 // Bild der Karte einbinden und anzeigen
 const imageOverlay = L.imageOverlay(image, bounds)
-
 imageOverlay.addTo(map)
 map.fitBounds(bounds)
-
-imageOverlay.on('click', () => { console.log('bam') })
 
 function clickOnMap (e) {
   if (checkGraphToggle()) {
@@ -175,17 +172,20 @@ function drawGraph () {
   })
 }
 
+let iconSize = 24
+let iconAnchor = iconSize / 2
+const positionDot = L.icon({
+    iconUrl: '../img/position-dot.png',
+    iconSize: [iconSize, iconSize],
+    iconAnchor: [iconAnchor, iconAnchor]
+})
+
 /**
  * Position Circle
  */
-/*
-const circle = L.circle([50.9058, 6.9348], {
-  color: 'white',
-  fillColor: 'blue',
-  fillOpacity: 1,
-  radius: 2
+const circle = L.marker([100, 645], {
+  icon: positionDot
 }).addTo(map)
-*/
 
 /**
  * Search Bar with Menu Button
@@ -254,30 +254,6 @@ const graphUI = document.getElementsByClassName('graphUI')
 // Click Event der Map deaktivieren, damit keine Marker gesetzt werden wenn man auf den Button drückt
 download.addEventListener('click', function (e) { e.stopPropagation() })
 upload.addEventListener('click', function (e) { e.stopPropagation() })
-
-/**
- * GeoJSON Map Layer
- */
-/*
-const myStyle = {
-  color: '#ff0000',
-  weight: 1,
-  opacity: 1,
-  fillOpacity: 0.4
-}
-const nvsbl = {
-  opacity: 0,
-  fillOpacity: 0
-}
-
-function onZoomLevelChange (e) {
-  console.log(map.getZoom())
-
-  toomLayer.setStyle(map.getZoom() < 17 ? nvsbl : myStyle)
-}
-
-map.on('zoom', onZoomLevelChange)
-*/
 
 function closeMenu () {
   const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')

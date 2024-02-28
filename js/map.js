@@ -244,6 +244,7 @@ const toggleGraphUI = document.getElementById('toggleGraphUI')
 const download = document.getElementById('download')
 const upload = document.getElementById('upload')
 const graphUI = document.getElementsByClassName('graphUI')
+// Click Event der Map deaktivieren, damit keine Marker gesetzt werden wenn man auf den Button drückt
 download.addEventListener('click', function (e) { e.stopPropagation() })
 upload.addEventListener('click', function (e) { e.stopPropagation() })
 

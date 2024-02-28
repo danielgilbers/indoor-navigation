@@ -5,14 +5,14 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 /**
- * Button definieren
+ * QR Code Button
  */
 L.Control.Button = L.Control.extend({
     onAdd: function(map) {
         this.container = L.DomUtil.create('div');
         this.container.innerHTML =
         '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button">'+
-        '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">directions</span>'+
+        '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">qr_code_scanner</span>'+
         '</button>';
 
         return this.container;
@@ -29,6 +29,9 @@ L.control.button = function(opts) {
 
 L.control.button({ position: 'bottomright'}).addTo(map);
 
+/**
+ * Search Bar
+ */
 L.Control.Search = L.Control.extend({
 onAdd: function(map) {
     this.container = L.DomUtil.create('div', 'input-group vw-100 pe-3');

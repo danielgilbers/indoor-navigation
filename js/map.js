@@ -89,7 +89,6 @@ function addNode (latlng) {
 
   const n = L.marker(node.yx)
   node.index = nodes.push(node) - 1 // Knoten dem Knoten-Array hinzufügen
-  n.graph = true
   n.index = node.index
   n.on('click', clickOnNode)
   n.addTo(map)
@@ -112,7 +111,6 @@ function addEdge (nodeA, nodeB) {
   const k = L.polyline([nodeA.yx, nodeB.yx])
   k.nodeA = nodeA
   k.nodeB = nodeB
-  k.graph = true
   k.on('click', clickOnEdge)
   k.addTo(map)
 
@@ -165,9 +163,16 @@ function loadJSON () {
 
 function drawGraph () {
   nodes.forEach((node) => {
-    L.marker(node.yx).addTo(map)
+    console.log(node)
+    const n = L.marker(node.yx)
+    n.index = node.index
+    n.addTo(map)
     node.links.forEach((nodeB) => {
-      L.polyline([node.yx, nodes[nodeB].yx]).addTo(map)
+        //console.log(node.index + ' nach ' + nodeB)
+        const k = L.polyline([node.yx, nodes[nodeB].yx])
+        k.nodeA = node.index
+        k.nodeB = nodeB
+        k.addTo(map)
     })
   })
 }
@@ -284,7 +289,6 @@ function closeMenu () {
 function activateGraphUI () {
   map.eachLayer(function(layer){
    if(layer.index != undefined){
-    
     layer.setOpacity((toggleGraphUI.checked ? 1 : 0))
    }
    if(layer.nodeA){

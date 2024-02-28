@@ -1,8 +1,3 @@
-// Graph UI Elements
-const toggleGraphUI = document.getElementById('toggleGraphUI')
-const download = document.getElementById('download')
-const upload = document.getElementById('upload')
-const graphUI = document.getElementsByClassName('graphUI')
 // Graph Variables
 let nodeA = null
 let nodeB = null
@@ -26,8 +21,12 @@ const map = L.map('map', {
 map.on('click', clickOnMap)
 
 // Bild der Karte einbinden und anzeigen
-L.imageOverlay(image, bounds).addTo(map)
+const imageOverlay = L.imageOverlay(image, bounds)
+
+imageOverlay.addTo(map)
 map.fitBounds(bounds)
+
+imageOverlay.on('click', () => { console.log('bam') })
 
 function clickOnMap (e) {
   if (checkGraphToggle()) {
@@ -201,6 +200,29 @@ L.Control.Search = L.Control.extend({
 new L.Control.Search({ position: 'topleft' }).addTo(map)
 
 /**
+ * Graph UI - Download- und Upload-Button
+ */
+L.Control.GraphButtons = L.Control.extend({
+  onAdd: function () {
+    this.container = L.DomUtil.create('div', 'graphUI d-none')
+    this.container.innerHTML =
+              '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
+              '<span class="material-symbols-outlined">Menu</span>' +
+              '</button>' +
+              '<button class="btn btn-light text-dark rounded-0 lh-1 border-0" type="button" id="download" data-bs-toggle="modal" data-bs-target="#downloadModal" onclick="createJSON()">' +
+              '<span class="material-symbols-outlined">download</span>' +
+              '</button>' +
+              '<button class="btn btn-light text-dark rounded-start-0 rounded-end-5 lh-1 border-0" type="button" id="upload" onclick="loadJSON()">' +
+              '<span class="material-symbols-outlined">upload</span>' +
+              '</button>'
+
+    return this.container
+  }
+})
+
+new L.Control.GraphButtons({ position: 'topleft' }).addTo(map)
+
+/**
  * QR Code Button
  */
 L.Control.QRButton = L.Control.extend({
@@ -217,28 +239,13 @@ L.Control.QRButton = L.Control.extend({
 
 new L.Control.QRButton({ position: 'bottomright' }).addTo(map)
 
-/**
- * Graph UI - Download- und Upload-Button
- */
-L.Control.GraphButtons = L.Control.extend({
-  onAdd: function () {
-    this.container = L.DomUtil.create('div', 'graphUI d-none')
-    this.container.innerHTML =
-            '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
-            '<span class="material-symbols-outlined">Menu</span>' +
-            '</button>' +
-            '<button class="btn btn-light text-dark rounded-0 lh-1 border-0" type="button" id="download" data-bs-toggle="modal" data-bs-target="#downloadModal" onclick="createJSON()">' +
-            '<span class="material-symbols-outlined">download</span>' +
-            '</button>' +
-            '<button class="btn btn-light text-dark rounded-start-0 rounded-end-5 lh-1 border-0" type="button" id="upload" onclick="loadJSON()">' +
-            '<span class="material-symbols-outlined">upload</span>' +
-            '</button>'
-
-    return this.container
-  }
-})
-
-new L.Control.GraphButtons({ position: 'topleft' }).addTo(map)
+// Graph UI Elements
+const toggleGraphUI = document.getElementById('toggleGraphUI')
+const download = document.getElementById('download')
+const upload = document.getElementById('upload')
+const graphUI = document.getElementsByClassName('graphUI')
+download.addEventListener('click', function (e) { e.stopPropagation() })
+upload.addEventListener('click', function (e) { e.stopPropagation() })
 
 /**
  * GeoJSON Map Layer

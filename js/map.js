@@ -6,7 +6,7 @@ let edge
 // JSON File für Download
 let textFile = null
 // Map Image
-const image = './map/Zollstock-Modellv1.png'
+const image = '/map/Zollstock-Modellv1.png'
 const boundy = 280
 const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]
@@ -175,7 +175,7 @@ function drawGraph () {
 let iconSize = 24
 let iconAnchor = iconSize / 2
 const positionDot = L.icon({
-    iconUrl: './img/position-dot.png',
+    iconUrl: '/img/position-dot.png',
     iconSize: [iconSize, iconSize],
     iconAnchor: [iconAnchor, iconAnchor]
 })

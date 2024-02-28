@@ -28,3 +28,23 @@ L.control.button = function(opts) {
 }
 
 L.control.button({ position: 'bottomright'}).addTo(map);
+
+L.Control.Search = L.Control.extend({
+onAdd: function(map) {
+    this.container = L.DomUtil.create('div', 'input-group');
+    this.container.innerHTML =
+    '<input type="text" class="form-control rounded-start-5" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'+
+    '<button class="btn btn-light rounded-end-5 lh-1" type="button">' +
+    '<span class="material-symbols-outlined" id="addon-wrapping">Menu</span>'+
+    '</button>';
+
+    return this.container;
+}
+
+});
+
+L.control.search = function(opts) {
+    return new L.Control.Search(opts);
+}
+
+L.control.search({position: 'topright'}).addTo(map);

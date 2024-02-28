@@ -31,8 +31,8 @@
                     </li>
                     <li>
                         <button class="nav-link" id="nav-sensor-tab" data-bs-toggle="tab" data-bs-target="#nav-sensor"
-                            type="button" role="tab" aria-controls="nav-sensor"
-                            aria-selected="false" onclick="closeMenu()">Sensor-Test</button>
+                            type="button" role="tab" aria-controls="nav-sensor" aria-selected="false"
+                            onclick="closeMenu()">Sensor-Test</button>
                     </li>
                 </ul>
             </div>
@@ -46,7 +46,11 @@
 
             <div class="tab-pane fade position-absolute container" id="nav-sensor" role="tabpanel"
                 aria-labelledby="nav-sensor-tab" tabindex="0">
-                <h2>Sensor-Test</h2>
+                <button class="btn btn-secondary rounded-5 lh-1 d-inline my-3" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+                    <span class="material-symbols-outlined" id="addon-wrapping">Menu</span>
+                </button>
+                <h2 class="d-inline">Sensor-Test</h2>
                 <div class="p-3 bg-secondary" id="demo-div">
                     <a id="start_demo" class="btn btn-lg btn-success py-1" href="#" role="button">Start the demo</a>
                     <p style="margin-top:1rem;">Num. of datapoints: <span class="badge text-bg-warning"

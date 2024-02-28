@@ -54,17 +54,5 @@ L.control.search({position: 'topleft'}).addTo(map);
 
 function closeMenu() {
     var bsOffcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasMenu'));
-    console.log(bsOffcanvas)
     bsOffcanvas.hide();
 }
-/*
-document.querySelectorAll('.menuitem').forEach(item => {
-    item.addEventListener('click', () => {
-        // Check if the viewport width is less than 450px
-        if (window.innerWidth < 450) {
-            // Close the offcanvas menu
-            var bsOffcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasMenu'));
-            bsOffcanvas.hide();
-        }
-    })})
-    */

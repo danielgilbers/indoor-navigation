@@ -89,6 +89,7 @@ function addNode (latlng) {
 
   const n = L.marker(node.yx)
   node.index = nodes.push(node) - 1 // Knoten dem Knoten-Array hinzufügen
+  n.graph = true
   n.index = node.index
   n.on('click', clickOnNode)
   n.addTo(map)
@@ -111,6 +112,7 @@ function addEdge (nodeA, nodeB) {
   const k = L.polyline([nodeA.yx, nodeB.yx])
   k.nodeA = nodeA
   k.nodeB = nodeB
+  k.graph = true
   k.on('click', clickOnEdge)
   k.addTo(map)
 
@@ -173,12 +175,14 @@ function drawGraph () {
 /**
  * Position Circle
  */
+/*
 const circle = L.circle([50.9058, 6.9348], {
   color: 'white',
   fillColor: 'blue',
   fillOpacity: 1,
   radius: 2
 }).addTo(map)
+*/
 
 /**
  * Search Bar with Menu Button
@@ -278,6 +282,15 @@ function closeMenu () {
 }
 
 function activateGraphUI () {
+  map.eachLayer(function(layer){
+   if(layer.index != undefined){
+    
+    layer.setOpacity((toggleGraphUI.checked ? 1 : 0))
+   }
+   if(layer.nodeA){
+   layer.setStyle({opacity: (toggleGraphUI.checked ? 1 : 0)})
+  }
+})
   for (let i = 0; i < graphUI.length; i++) {
     graphUI[i].classList.toggle('d-none')
   }

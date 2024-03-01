@@ -6,7 +6,7 @@ let edge
 // JSON File für Download
 let textFile = null
 // Map Image
-const image = '/indoor-navigation/map/Zollstock-Modellv1.png'
+const image = '/indoor-navigation/map/Zollstock-Modellv2.png'
 const boundy = 280
 const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]

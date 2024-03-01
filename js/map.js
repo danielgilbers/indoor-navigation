@@ -1,6 +1,6 @@
 // Github Pages filepath switch
-//const githubpath = '/indoor-navigation' // Github
-const githubpath = ''                     // Local
+const githubpath = '/indoor-navigation' // Github
+//const githubpath = ''                     // Local
 
 // Graph Variables
 let nodeA = null

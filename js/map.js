@@ -244,7 +244,7 @@ L.Control.QRButton = L.Control.extend({
   onAdd: function () {
     this.container = L.DomUtil.create('div', 'graphUI')
     this.container.innerHTML =
-            '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button" id="qrCode">' +
+            '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button" id="qrCode" data-bs-toggle="modal" data-bs-target="#qrScannerModal">' +
             '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">qr_code_scanner</span>' +
             '</button>'
 

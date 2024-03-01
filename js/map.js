@@ -1,3 +1,6 @@
+// Github Pages filepath switch
+//const githubpath = '/indoor-navigation' // Github
+const githubpath = ''                     // Local
 // Graph Variables
 let nodeA = null
 let nodeB = null
@@ -6,7 +9,7 @@ let edge
 // JSON File für Download
 let textFile = null
 // Map Image
-const image = '/indoor-navigation/map/Zollstock-Modellv2.png'
+const image = '.'+ githubpath +'/map/Zollstock-Modellv2.png'
 const boundy = 280
 const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]
@@ -175,7 +178,7 @@ function drawGraph () {
 let iconSize = 24
 let iconAnchor = iconSize / 2
 const positionDot = L.icon({
-    iconUrl: '/indoor-navigation/img/position-dot.png',
+    iconUrl: '.'+ githubpath +'/img/position-dot.png',
     iconSize: [iconSize, iconSize],
     iconAnchor: [iconAnchor, iconAnchor]
 })

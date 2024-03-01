@@ -13,7 +13,7 @@ const boundy = 280
 const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]
 
-let userPosition = L.latLng(100, 645)
+const userPosition = L.latLng(100, 645)
 
 // Map erstellen
 const map = L.map('map', {
@@ -168,20 +168,20 @@ function drawGraph () {
     n.index = node.index
     n.addTo(map)
     node.links.forEach((nodeB) => {
-        const k = L.polyline([node.yx, nodes[nodeB].yx])
-        k.nodeA = node.index
-        k.nodeB = nodeB
-        k.addTo(map)
+      const k = L.polyline([node.yx, nodes[nodeB].yx])
+      k.nodeA = node.index
+      k.nodeB = nodeB
+      k.addTo(map)
     })
   })
 }
 
-let iconSize = 24
-let iconAnchor = iconSize / 2
+const iconSize = 24
+const iconAnchor = iconSize / 2
 const positionDot = L.icon({
-    iconUrl: './img/position-dot.png',
-    iconSize: [iconSize, iconSize],
-    iconAnchor: [iconAnchor, iconAnchor]
+  iconUrl: './img/position-dot.png',
+  iconSize: [iconSize, iconSize],
+  iconAnchor: [iconAnchor, iconAnchor]
 })
 
 /**
@@ -265,17 +265,35 @@ function closeMenu () {
 }
 
 function activateGraphUI () {
-  map.eachLayer(function(layer){
-   if(layer.index != undefined){
-    layer.setOpacity((toggleGraphUI.checked ? 1 : 0))
-   }
-   if(layer.nodeA != undefined){
-   layer.setStyle({opacity: (toggleGraphUI.checked ? 1 : 0)})
-  }
-})
+  map.eachLayer(function (layer) {
+    if (layer.index != undefined) {
+      layer.setOpacity((toggleGraphUI.checked ? 1 : 0))
+    }
+    if (layer.nodeA != undefined) {
+      layer.setStyle({ opacity: (toggleGraphUI.checked ? 1 : 0) })
+    }
+  })
   for (let i = 0; i < graphUI.length; i++) {
     graphUI[i].classList.toggle('d-none')
   }
 }
 // Entferne Leaflet Link
 document.getElementsByClassName('leaflet-control-attribution')[0].remove()
+
+// QR Code Scanner
+function onScanSuccess (decodedText, decodedResult) {
+  // handle the scanned code as you like, for example:
+  console.log(`Code matched = ${decodedText}`, decodedResult)
+}
+
+function onScanFailure (error) {
+  // handle scan failure, usually better to ignore and keep scanning.
+  // for example:
+  console.warn(`Code scan error = ${error}`)
+}
+
+const html5QrcodeScanner = new Html5QrcodeScanner(
+  'reader',
+  { fps: 10, qrbox: { width: 250, height: 250 } },
+  /* verbose= */ false)
+html5QrcodeScanner.render(onScanSuccess, onScanFailure)

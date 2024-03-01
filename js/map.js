@@ -1,24 +1,29 @@
 // Github Pages filepath switch
 //const githubpath = '/indoor-navigation' // Github
 const githubpath = ''                     // Local
+
 // Graph Variables
 let nodeA = null
 let nodeB = null
 const nodes = []
 let edge
+
 // JSON File für Download
 let textFile = null
+
 // Map Image
 const image = '.'+ githubpath +'/map/Zollstock-Modellv2.png'
 const boundy = 280
 const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]
 
+let userPosition = L.latLng(100, 645)
+
 // Map erstellen
 const map = L.map('map', {
   zoomControl: false,
   crs: L.CRS.Simple,
-  minZoom: -1
+  minZoom: -2
 })
 
 map.on('click', clickOnMap)
@@ -26,7 +31,7 @@ map.on('click', clickOnMap)
 // Bild der Karte einbinden und anzeigen
 const imageOverlay = L.imageOverlay(image, bounds)
 imageOverlay.addTo(map)
-map.fitBounds(bounds)
+map.setView(userPosition, 1)
 
 function clickOnMap (e) {
   if (checkGraphToggle()) {
@@ -186,7 +191,7 @@ const positionDot = L.icon({
 /**
  * Position Circle
  */
-const circle = L.marker([100, 645], {
+const circle = L.marker(userPosition, {
   icon: positionDot
 }).addTo(map)
 

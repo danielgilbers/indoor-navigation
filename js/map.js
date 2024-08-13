@@ -292,7 +292,7 @@ function onScanSuccess (decodedText, decodedResult) {
   userPosition = L.latLng(scannedPosition.lat, scannedPosition.lng)
   circle.setLatLng(userPosition)
   map.panTo(userPosition)
-  scannerModal.toggle()
+  scannerModal.hide()
 }
 
 function onScanFailure (error) {

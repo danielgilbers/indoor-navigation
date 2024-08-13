@@ -13,7 +13,7 @@ const boundy = 280
 const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]
 
-const userPosition = L.latLng(100, 645)
+let userPosition = L.latLng(100, 645) // Start: 100, 645
 
 // Map erstellen
 const map = L.map('map', {
@@ -283,15 +283,22 @@ function activateGraphUI () {
 document.getElementsByClassName('leaflet-control-attribution')[0].remove()
 
 // QR Code Scanner
+const scannerModal = new bootstrap.Modal('#qrScannerModal')
+
 function onScanSuccess (decodedText, decodedResult) {
-  // handle the scanned code as you like, for example:
+  // handle the scanned code
   console.log(`Code matched = ${decodedText}`, decodedResult)
+  const scannedPosition = JSON.parse(decodedText)   // QR Code text example: {"lat":55,"lng":500}
+  userPosition = L.latLng(scannedPosition.lat, scannedPosition.lng)
+  circle.setLatLng(userPosition)
+  map.panTo(userPosition)
+  scannerModal.toggle()
 }
 
 function onScanFailure (error) {
   // handle scan failure, usually better to ignore and keep scanning.
   // for example:
-  console.warn(`Code scan error = ${error}`)
+  // console.warn(`Code scan error = ${error}`)
 }
 
 const html5QrcodeScanner = new Html5QrcodeScanner(

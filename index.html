@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./css/style.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 
 <body>
@@ -69,6 +70,27 @@
                             <div class="modal-footer">
                                 <a download="graph.json" id="downloadlink" role="button"
                                     class="btn btn-primary">Download</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QR Code Scanner Modal -->
+                <div class="modal fade" id="qrScannerModal" tabindex="-1" aria-labelledby="qrScannerModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="qrScannerModalLabel">QR Code Scanner</h1>
+
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body h5">
+                                <div id="reader" width="600px"></div>
+                            </div>
+                            <div class="modal-footer">
+                                
                             </div>
                         </div>
                     </div>

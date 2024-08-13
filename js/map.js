@@ -13,7 +13,7 @@ const boundy = 280
 const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]
 
-let userPosition = L.latLng(100, 645)
+let userPosition = L.latLng(100, 645) // Start: 100, 645
 
 // Map erstellen
 const map = L.map('map', {
@@ -166,22 +166,24 @@ function drawGraph () {
   nodes.forEach((node) => {
     const n = L.marker(node.yx)
     n.index = node.index
+    n.on('click', clickOnNode)
     n.addTo(map)
     node.links.forEach((nodeB) => {
-        const k = L.polyline([node.yx, nodes[nodeB].yx])
-        k.nodeA = node.index
-        k.nodeB = nodeB
-        k.addTo(map)
+      const k = L.polyline([node.yx, nodes[nodeB].yx])
+      k.nodeA = node.index
+      k.nodeB = nodeB
+      k.on('click', clickOnEdge)
+      k.addTo(map)
     })
   })
 }
 
-let iconSize = 24
-let iconAnchor = iconSize / 2
+const iconSize = 24
+const iconAnchor = iconSize / 2
 const positionDot = L.icon({
-    iconUrl: './img/position-dot.png',
-    iconSize: [iconSize, iconSize],
-    iconAnchor: [iconAnchor, iconAnchor]
+  iconUrl: './img/position-dot.png',
+  iconSize: [iconSize, iconSize],
+  iconAnchor: [iconAnchor, iconAnchor]
 })
 
 /**
@@ -240,7 +242,7 @@ L.Control.QRButton = L.Control.extend({
   onAdd: function () {
     this.container = L.DomUtil.create('div', 'graphUI')
     this.container.innerHTML =
-            '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button" id="qrCode">' +
+            '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button" id="qrCode" data-bs-toggle="modal" data-bs-target="#qrScannerModal">' +
             '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">qr_code_scanner</span>' +
             '</button>'
 
@@ -265,17 +267,42 @@ function closeMenu () {
 }
 
 function activateGraphUI () {
-  map.eachLayer(function(layer){
-   if(layer.index != undefined){
-    layer.setOpacity((toggleGraphUI.checked ? 1 : 0))
-   }
-   if(layer.nodeA != undefined){
-   layer.setStyle({opacity: (toggleGraphUI.checked ? 1 : 0)})
-  }
-})
+  map.eachLayer(function (layer) {
+    if (layer.index != undefined) {
+      layer.setOpacity((toggleGraphUI.checked ? 1 : 0))
+    }
+    if (layer.nodeA != undefined) {
+      layer.setStyle({ opacity: (toggleGraphUI.checked ? 1 : 0) })
+    }
+  })
   for (let i = 0; i < graphUI.length; i++) {
     graphUI[i].classList.toggle('d-none')
   }
 }
 // Entferne Leaflet Link
 document.getElementsByClassName('leaflet-control-attribution')[0].remove()
+
+// QR Code Scanner
+const scannerModal = new bootstrap.Modal('#qrScannerModal')
+
+function onScanSuccess (decodedText, decodedResult) {
+  // handle the scanned code
+  console.log(`Code matched = ${decodedText}`, decodedResult)
+  const scannedPosition = JSON.parse(decodedText)   // QR Code text example: {"lat":55,"lng":500}
+  userPosition = L.latLng(scannedPosition.lat, scannedPosition.lng)
+  circle.setLatLng(userPosition)
+  map.panTo(userPosition)
+  scannerModal.toggle()
+}
+
+function onScanFailure (error) {
+  // handle scan failure, usually better to ignore and keep scanning.
+  // for example:
+  // console.warn(`Code scan error = ${error}`)
+}
+
+const html5QrcodeScanner = new Html5QrcodeScanner(
+  'reader',
+  { fps: 10, qrbox: { width: 250, height: 250 } },
+  /* verbose= */ false)
+html5QrcodeScanner.render(onScanSuccess, onScanFailure)

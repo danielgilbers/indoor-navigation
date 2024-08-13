@@ -166,11 +166,13 @@ function drawGraph () {
   nodes.forEach((node) => {
     const n = L.marker(node.yx)
     n.index = node.index
+    n.on('click', clickOnNode)
     n.addTo(map)
     node.links.forEach((nodeB) => {
       const k = L.polyline([node.yx, nodes[nodeB].yx])
       k.nodeA = node.index
       k.nodeB = nodeB
+      k.on('click', clickOnEdge)
       k.addTo(map)
     })
   })

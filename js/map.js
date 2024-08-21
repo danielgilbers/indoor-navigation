@@ -1,3 +1,5 @@
+"use strict"
+
 // Graph Variables
 let nodeA = null
 let nodeB = null
@@ -32,7 +34,7 @@ map.setView(userPosition, 1)
 function clickOnMap (e) {
   if (checkGraphToggle()) {
     // Neuen Knoten erstellen und übergeben
-    edge = checkAB(addNode(e.latlng), edge)
+    checkAB(addNode(e.latlng))
   }
 }
 
@@ -50,6 +52,7 @@ function checkGraphToggle () {
  * Funktion prüft ob der Knoten Anfang oder Ende der Kante ist und verbindet diese
  *
  * @param {node} node
+ * @param {edge} edge
  */
 function checkAB (node, edge) {
   if (!nodeA) {
@@ -109,7 +112,7 @@ function addEdge (nodeA, nodeB) {
   nodeA.links.push(nodeB.index)
   nodeB.links.push(nodeA.index)
 
-  const k = L.polyline([nodeA.yx, nodeB.yx])
+  const k = L.polyline([nodeA.yx, nodeB.yx], {bubblingMouseEvents: false})
   k.nodeA = nodeA
   k.nodeB = nodeB
   k.on('click', clickOnEdge)
@@ -127,7 +130,7 @@ function clickOnNode (e) {
 
 function clickOnEdge (e) {
   if (checkGraphToggle()) {
-    edge = e.target
+    checkAB(addNode(e.latlng), e.target)
     e.target.remove()
   }
 }

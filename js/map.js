@@ -1,4 +1,4 @@
-"use strict"
+'use strict'
 
 // Graph Variables
 let nodeA = null
@@ -31,11 +31,12 @@ const imageOverlay = L.imageOverlay(image, bounds)
 imageOverlay.addTo(map)
 map.setView(userPosition, 1)
 
+/**
+ * Neuen Knoten erstellen und übergeben
+ * @param {*} e
+ */
 function clickOnMap (e) {
-  if (checkGraphToggle()) {
-    // Neuen Knoten erstellen und übergeben
-    checkAB(addNode(e.latlng))
-  }
+  checkGraphToggle() && checkAB(addNode(e.latlng))
 }
 
 /**
@@ -112,7 +113,7 @@ function addEdge (nodeA, nodeB) {
   nodeA.links.push(nodeB.index)
   nodeB.links.push(nodeA.index)
 
-  const k = L.polyline([nodeA.yx, nodeB.yx], {bubblingMouseEvents: false})
+  const k = L.polyline([nodeA.yx, nodeB.yx], { bubblingMouseEvents: false })
   k.nodeA = nodeA
   k.nodeB = nodeB
   k.on('click', clickOnEdge)
@@ -121,11 +122,12 @@ function addEdge (nodeA, nodeB) {
   return null
 }
 
+/**
+ * Bestehenden Knoten übergeben
+ * @param {*} e
+ */
 function clickOnNode (e) {
-  if (checkGraphToggle()) {
-  // Bestehenden Knoten übergeben
-    checkAB(nodes[e.target.index])
-  }
+  checkGraphToggle() && checkAB(nodes[e.target.index])
 }
 
 function clickOnEdge (e) {
@@ -225,11 +227,8 @@ L.Control.GraphButtons = L.Control.extend({
               '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
               '<span class="material-symbols-outlined">Menu</span>' +
               '</button>' +
-              '<button class="btn btn-light text-dark rounded-0 lh-1 border-0" type="button" id="download" data-bs-toggle="modal" data-bs-target="#downloadModal" onclick="createJSON()">' +
+              '<button class="btn btn-light text-dark rounded-start-0 rounded-end-5 lh-1 border-0" type="button" id="download" data-bs-toggle="modal" data-bs-target="#downloadModal" onclick="createJSON()">' +
               '<span class="material-symbols-outlined">download</span>' +
-              '</button>' +
-              '<button class="btn btn-light text-dark rounded-start-0 rounded-end-5 lh-1 border-0" type="button" id="upload" onclick="loadJSON()">' +
-              '<span class="material-symbols-outlined">upload</span>' +
               '</button>'
 
     return this.container
@@ -258,11 +257,9 @@ new L.Control.QRButton({ position: 'bottomright' }).addTo(map)
 // Graph UI Elements
 const toggleGraphUI = document.getElementById('toggleGraphUI')
 const download = document.getElementById('download')
-const upload = document.getElementById('upload')
 const graphUI = document.getElementsByClassName('graphUI')
 // Click Event der Map deaktivieren, damit keine Marker gesetzt werden wenn man auf den Button drückt
 download.addEventListener('click', function (e) { e.stopPropagation() })
-upload.addEventListener('click', function (e) { e.stopPropagation() })
 
 function closeMenu () {
   const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')
@@ -270,14 +267,13 @@ function closeMenu () {
 }
 
 function activateGraphUI () {
-  map.eachLayer(function (layer) {
-    if (layer.index != undefined) {
-      layer.setOpacity((toggleGraphUI.checked ? 1 : 0))
-    }
-    if (layer.nodeA != undefined) {
-      layer.setStyle({ opacity: (toggleGraphUI.checked ? 1 : 0) })
-    }
-  })
+  toggleGraphUI.checked && loadJSON() // Graphdaten laden
+  if (!toggleGraphUI.checked) {
+    nodes.splice(0, nodes.length)
+    map.eachLayer(function (layer) {
+      (layer.index != undefined || layer.nodeA != undefined) && layer.remove()
+    })
+  }
   for (let i = 0; i < graphUI.length; i++) {
     graphUI[i].classList.toggle('d-none')
   }
@@ -291,7 +287,7 @@ const scannerModal = new bootstrap.Modal('#qrScannerModal')
 function onScanSuccess (decodedText, decodedResult) {
   // handle the scanned code
   console.log(`Code matched = ${decodedText}`, decodedResult)
-  const scannedPosition = JSON.parse(decodedText)   // QR Code text example: {"lat":55,"lng":500}
+  const scannedPosition = JSON.parse(decodedText) // QR Code text example: {"lat":55,"lng":500}
   userPosition = L.latLng(scannedPosition.lat, scannedPosition.lng)
   circle.setLatLng(userPosition)
   map.panTo(userPosition)

@@ -1,5 +1,7 @@
 'use strict'
 
+import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+
 // Graph Variables
 let nodeA = null
 let nodeB = null
@@ -137,7 +139,7 @@ function clickOnEdge (e) {
   }
 }
 
-function createJSON () {
+window.createJSON = function () {
   const json = JSON.stringify(nodes)
   const link = document.getElementById('downloadlink')
   link.href = makeTextFile(json)
@@ -261,12 +263,12 @@ const graphUI = document.getElementsByClassName('graphUI')
 // Click Event der Map deaktivieren, damit keine Marker gesetzt werden wenn man auf den Button drückt
 download.addEventListener('click', function (e) { e.stopPropagation() })
 
-function closeMenu () {
+window.closeMenu = function () {
   const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')
   bsOffcanvas.hide()
 }
 
-function activateGraphUI () {
+window.activateGraphUI = function () {
   toggleGraphUI.checked && loadJSON() // Graphdaten laden
   if (!toggleGraphUI.checked) {
     nodes.splice(0, nodes.length)

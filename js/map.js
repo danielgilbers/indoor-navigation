@@ -1,12 +1,93 @@
 'use strict'
 
 import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js'
+
+/**
+ * Klasse für Knoten
+ * @extends L.marker
+ */
+class Node extends L.marker {
+  /**
+   * Erzeugt einen neuen Knoten im Graphen und erstellt einen Marker
+   * @param {LatLng} latlng yx-Koordinaten
+   * @returns Node
+   */
+  constructor (latlng) {
+    super(latlng)
+    this.latlng = latlng
+    this.links = []
+    this.index = nodes.length
+    const self = this
+    nodes.push({ latlng, get index () { return self.index }, get links () { return self.links } })
+    this.on('click', this.clickOnNode)
+    this.addTo(map)
+
+    return this
+  }
+
+  /**
+   * Bestehenden Knoten übergeben
+   * @param {*} e
+   */
+  clickOnNode = (e) => {
+    checkGraphToggle() && checkAB(nodes[e.target.index])
+  }
+}
+
+/**
+ * Klasse für Kante
+ * @extends L.polyline
+ */
+class Edge extends L.polyline {
+  /**
+   * Erzeugt eine neue Kante im Graphen und erstellt eine Linie
+   *
+   * @param {Node} nodeA Knoten eins
+   * @param {Node} nodeB Knoten zwei
+   * @returns Edge
+   */
+  constructor (nodeA, nodeB) {
+    // Nachbarn in jeweilige Knoten schreiben
+    nodeA.links.push(nodeB.index)
+    nodeB.links.push(nodeA.index)
+
+    super([nodeA.latlng, nodeB.latlng], { bubblingMouseEvents: false })
+    this.nodeA = nodeA
+    this.nodeB = nodeB
+    this.on('click', this.clickOnEdge)
+    this.addTo(map)
+
+    return this
+  }
+
+  /**
+   * Knoten zu Kante hinzufügen
+   * @param {*} e
+   */
+  clickOnEdge = (e) => {
+    if (checkGraphToggle()) {
+      // neuen Knoten erstellen
+      const node = new Node(e.latlng)
+      checkAB(node)
+      // neue Kanten hinzufügen
+      new Edge(node, this.nodeA)
+      new Edge(node, this.nodeB)
+      // alte Kante entfernen
+      let i = this.nodeA.links.indexOf(this.nodeB.index)
+      this.nodeA.links.splice(i, 1)
+      i = this.nodeB.links.indexOf(this.nodeA.index)
+      this.nodeB.links.splice(i, 1)
+      this.remove()
+    }
+  }
+}
 
 // Graph Variables
 let nodeA = null
 let nodeB = null
 const nodes = []
-let edge
+const loadedGraph = []
 
 // JSON File für Download
 let textFile = null
@@ -38,7 +119,7 @@ map.setView(userPosition, 1)
  * @param {*} e
  */
 function clickOnMap (e) {
-  checkGraphToggle() && checkAB(addNode(e.latlng))
+  checkGraphToggle() && checkAB(new Node(e.latlng))
 }
 
 /**
@@ -54,88 +135,33 @@ function checkGraphToggle () {
 /**
  * Funktion prüft ob der Knoten Anfang oder Ende der Kante ist und verbindet diese
  *
- * @param {node} node
- * @param {edge} edge
+ * @param {Node} node
  */
-function checkAB (node, edge) {
+function checkAB (node) {
   if (!nodeA) {
     nodeA = node
   } else {
     nodeB = node
-    nodeA = addEdge(nodeA, nodeB)
+    new Edge(nodeA, nodeB)
+    nodeA = null
   }
-  if (edge) {
-    removeLink(edge)
-    addEdge(node, edge.nodeA)
-    addEdge(node, edge.nodeB)
+}
+
+window.closeMenu = function () {
+  const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')
+  bsOffcanvas.hide()
+}
+
+window.activateGraphUI = function () {
+  toggleGraphUI.checked && loadJSON() // Graphdaten laden
+  if (!toggleGraphUI.checked) {
+    nodes.splice(0, nodes.length)
+    map.eachLayer(function (layer) {
+      (layer.index !== undefined || layer.nodeA !== undefined) && layer.remove()
+    })
   }
-
-  return null
-}
-
-/**
- * Entfernt Verbindung aus beiden Knoten
- *
- * @param {*} edge
- */
-function removeLink (edge) {
-  let i = edge.nodeA.links.indexOf(edge.nodeB.index)
-  edge.nodeA.links.splice(i, 1)
-  i = edge.nodeB.links.indexOf(edge.nodeA.index)
-  edge.nodeB.links.splice(i, 1)
-}
-
-/**
- * Erzeugt einen neuen Knoten im Graphen und erstellt einen Marker
- *
- * @param {LatLng} latlng yx-Koordinaten
- * @returns Knoten
- */
-function addNode (latlng) {
-  const node = { yx: latlng, links: [] }
-
-  const n = L.marker(node.yx)
-  node.index = nodes.push(node) - 1 // Knoten dem Knoten-Array hinzufügen
-  n.index = node.index
-  n.on('click', clickOnNode)
-  n.addTo(map)
-
-  return node
-}
-
-/**
- * Erzeugt eine neue Kante im Graphen und erstellt eine Linie
- *
- * @param {node} nodeA Knoten eins
- * @param {node} nodeB Knoten zwei
- * @returns Null um Variable a wieder zu löschen
- */
-function addEdge (nodeA, nodeB) {
-  // Nachbarn in jeweilige Knoten schreiben
-  nodeA.links.push(nodeB.index)
-  nodeB.links.push(nodeA.index)
-
-  const k = L.polyline([nodeA.yx, nodeB.yx], { bubblingMouseEvents: false })
-  k.nodeA = nodeA
-  k.nodeB = nodeB
-  k.on('click', clickOnEdge)
-  k.addTo(map)
-
-  return null
-}
-
-/**
- * Bestehenden Knoten übergeben
- * @param {*} e
- */
-function clickOnNode (e) {
-  checkGraphToggle() && checkAB(nodes[e.target.index])
-}
-
-function clickOnEdge (e) {
-  if (checkGraphToggle()) {
-    checkAB(addNode(e.latlng), e.target)
-    e.target.remove()
+  for (let i = 0; i < graphUI.length; i++) {
+    graphUI[i].classList.toggle('d-none')
   }
 }
 
@@ -164,23 +190,18 @@ function loadJSON () {
   fetch('./map/graph.json')
     .then((response) => response.json())
     .then((jsonFeature) => {
-      jsonFeature.forEach((element) => nodes.push(element))
-      drawGraph()
+      jsonFeature.forEach((element) => loadedGraph.push(element))
+      drawGraph(loadedGraph)
     })
 }
 
-function drawGraph () {
-  nodes.forEach((node) => {
-    const n = L.marker(node.yx)
-    n.index = node.index
-    n.on('click', clickOnNode)
-    n.addTo(map)
-    node.links.forEach((nodeB) => {
-      const k = L.polyline([node.yx, nodes[nodeB].yx])
-      k.nodeA = node.index
-      k.nodeB = nodeB
-      k.on('click', clickOnEdge)
-      k.addTo(map)
+function drawGraph (graph) {
+  graph.forEach((element) => {
+    const node = new Node(element.latlng)
+    element.links.forEach((link) => {
+      if (link < node.index) {
+        new Edge(node, nodes[link])
+      }
     })
   })
 }
@@ -207,10 +228,10 @@ L.Control.Search = L.Control.extend({
   onAdd: function () {
     this.container = L.DomUtil.create('div', 'input-group vw-100 pe-3 graphUI')
     this.container.innerHTML =
-              '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
-              '<span class="material-symbols-outlined">Menu</span>' +
-              '</button>' +
-              '<input type="text" class="form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'
+      '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
+      '<span class="material-symbols-outlined">Menu</span>' +
+      '</button>' +
+      '<input type="text" class="form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'
 
     return this.container
   }
@@ -226,12 +247,12 @@ L.Control.GraphButtons = L.Control.extend({
   onAdd: function () {
     this.container = L.DomUtil.create('div', 'graphUI d-none')
     this.container.innerHTML =
-              '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
-              '<span class="material-symbols-outlined">Menu</span>' +
-              '</button>' +
-              '<button class="btn btn-light text-dark rounded-start-0 rounded-end-5 lh-1 border-0" type="button" id="download" data-bs-toggle="modal" data-bs-target="#downloadModal" onclick="createJSON()">' +
-              '<span class="material-symbols-outlined">download</span>' +
-              '</button>'
+      '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
+      '<span class="material-symbols-outlined">Menu</span>' +
+      '</button>' +
+      '<button class="btn btn-light text-dark rounded-start-0 rounded-end-5 lh-1 border-0" type="button" id="download" data-bs-toggle="modal" data-bs-target="#downloadModal" onclick="createJSON()">' +
+      '<span class="material-symbols-outlined">download</span>' +
+      '</button>'
 
     return this.container
   }
@@ -246,9 +267,9 @@ L.Control.QRButton = L.Control.extend({
   onAdd: function () {
     this.container = L.DomUtil.create('div', 'graphUI')
     this.container.innerHTML =
-            '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button" id="qrCode" data-bs-toggle="modal" data-bs-target="#qrScannerModal">' +
-            '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">qr_code_scanner</span>' +
-            '</button>'
+      '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button" id="qrCode" data-bs-toggle="modal" data-bs-target="#qrScannerModal">' +
+      '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">qr_code_scanner</span>' +
+      '</button>'
 
     return this.container
   }
@@ -263,23 +284,6 @@ const graphUI = document.getElementsByClassName('graphUI')
 // Click Event der Map deaktivieren, damit keine Marker gesetzt werden wenn man auf den Button drückt
 download.addEventListener('click', function (e) { e.stopPropagation() })
 
-window.closeMenu = function () {
-  const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')
-  bsOffcanvas.hide()
-}
-
-window.activateGraphUI = function () {
-  toggleGraphUI.checked && loadJSON() // Graphdaten laden
-  if (!toggleGraphUI.checked) {
-    nodes.splice(0, nodes.length)
-    map.eachLayer(function (layer) {
-      (layer.index != undefined || layer.nodeA != undefined) && layer.remove()
-    })
-  }
-  for (let i = 0; i < graphUI.length; i++) {
-    graphUI[i].classList.toggle('d-none')
-  }
-}
 // Entferne Leaflet Link
 document.getElementsByClassName('leaflet-control-attribution')[0].remove()
 
@@ -299,7 +303,7 @@ function onScanSuccess (decodedText, decodedResult) {
 function onScanFailure (error) {
   // handle scan failure, usually better to ignore and keep scanning.
   // for example:
-  // console.warn(`Code scan error = ${error}`)
+  console.warn(`Code scan error = ${error}`)
 }
 
 const html5QrcodeScanner = new Html5QrcodeScanner(

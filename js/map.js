@@ -11,7 +11,6 @@ class Node extends L.marker {
   /**
    * Erzeugt einen neuen Knoten im Graphen und erstellt einen Marker
    * @param {LatLng} latlng yx-Koordinaten
-   * @returns Node
    */
   constructor (latlng) {
     super(latlng)
@@ -22,8 +21,6 @@ class Node extends L.marker {
     nodes.push({ latlng, get index () { return self.index }, get links () { return self.links } })
     this.on('click', this.clickOnNode)
     this.addTo(map)
-
-    return this
   }
 
   /**
@@ -31,34 +28,23 @@ class Node extends L.marker {
    * @param {*} e
    */
   clickOnNode = (e) => {
-    checkGraphToggle() && checkAB(nodes[e.target.index])
+    checkGraphToggle() && checkAB(this)
   }
-}
 
-/**
- * Klasse für Kante
- * @extends L.polyline
- */
-class Edge extends L.polyline {
   /**
-   * Erzeugt eine neue Kante im Graphen und erstellt eine Linie
    *
-   * @param {Node} nodeA Knoten eins
-   * @param {Node} nodeB Knoten zwei
-   * @returns Edge
+   * @param {Node} target Ziel Knoten
    */
-  constructor (nodeA, nodeB) {
+  addEdge = (target) => {
     // Nachbarn in jeweilige Knoten schreiben
-    nodeA.links.push(nodeB.index)
-    nodeB.links.push(nodeA.index)
+    this.links.push(target.index)
+    target.links.push(this.index)
 
-    super([nodeA.latlng, nodeB.latlng], { bubblingMouseEvents: false })
-    this.nodeA = nodeA
-    this.nodeB = nodeB
-    this.on('click', this.clickOnEdge)
-    this.addTo(map)
-
-    return this
+    const edge = new L.polyline([this.latlng, target.latlng], { bubblingMouseEvents: false })
+    edge.nodeA = this
+    edge.nodeB = target
+    edge.on('click', this.clickOnEdge)
+    edge.addTo(map)
   }
 
   /**
@@ -67,25 +53,25 @@ class Edge extends L.polyline {
    */
   clickOnEdge = (e) => {
     if (checkGraphToggle()) {
+      const edge = e.target
       // neuen Knoten erstellen
       const node = new Node(e.latlng)
       checkAB(node)
       // neue Kanten hinzufügen
-      new Edge(node, this.nodeA)
-      new Edge(node, this.nodeB)
+      node.addEdge(edge.nodeA)
+      node.addEdge(edge.nodeB)
       // alte Kante entfernen
-      let i = this.nodeA.links.indexOf(this.nodeB.index)
-      this.nodeA.links.splice(i, 1)
-      i = this.nodeB.links.indexOf(this.nodeA.index)
-      this.nodeB.links.splice(i, 1)
-      this.remove()
+      let i = edge.nodeA.links.indexOf(edge.nodeB.index)
+      edge.nodeA.links.splice(i, 1)
+      i = edge.nodeB.links.indexOf(edge.nodeA.index)
+      edge.nodeB.links.splice(i, 1)
+      edge.remove()
     }
   }
 }
 
 // Graph Variables
 let nodeA = null
-let nodeB = null
 const nodes = []
 const loadedGraph = []
 
@@ -141,8 +127,7 @@ function checkAB (node) {
   if (!nodeA) {
     nodeA = node
   } else {
-    nodeB = node
-    new Edge(nodeA, nodeB)
+    node.addEdge(nodeA)
     nodeA = null
   }
 }
@@ -160,8 +145,8 @@ window.activateGraphUI = function () {
       (layer.index !== undefined || layer.nodeA !== undefined) && layer.remove()
     })
   }
-  for (let i = 0; i < graphUI.length; i++) {
-    graphUI[i].classList.toggle('d-none')
+  for (const element of graphUI) {
+    element.classList.toggle('d-none')
   }
 }
 
@@ -185,7 +170,9 @@ function makeTextFile (text) {
   // returns a URL you can use as a href
   return textFile
 }
-
+/**
+ * JSON Daten des Graphen laden
+ */
 function loadJSON () {
   fetch('./map/graph.json')
     .then((response) => response.json())
@@ -194,13 +181,16 @@ function loadJSON () {
       drawGraph(loadedGraph)
     })
 }
-
+/**
+ * Geladenen Graphen erstellen
+ * @param {Array} graph Knoten des Graphen mit Position und Verbindungen als Array
+ */
 function drawGraph (graph) {
   graph.forEach((element) => {
     const node = new Node(element.latlng)
     element.links.forEach((link) => {
       if (link < node.index) {
-        new Edge(node, nodes[link])
+        node.addEdge(nodes[link])
       }
     })
   })

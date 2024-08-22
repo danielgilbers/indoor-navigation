@@ -38,8 +38,8 @@
                 </ul>
                 <hr>
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="toggleGraphUI"
-                        onclick="activateGraphUI(); closeMenu()">
+                    <input class="form-check-input" type="checkbox" role="switch" id="toggleGraphUI" aria-checked="false"
+                        onclick="activateGraphUI(); closeMenu()" onkeydown="activateGraphUI(); closeMenu()">
                     <label class="form-check-label" for="flexSwitchCheckDefault">Graph Editor</label>
                 </div>
             </div>

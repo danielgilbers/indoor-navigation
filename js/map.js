@@ -102,7 +102,6 @@ export const map = L.map('map', {
  */
 function clickOnMap (e) {
   checkGraphToggle() && checkAB(new Node(e.latlng))
-  findProduct('Hammer')
 }
 
 map.on('click', clickOnMap)
@@ -244,7 +243,7 @@ L.Control.Search = L.Control.extend({
       '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
       '<span class="material-symbols-outlined">Menu</span>' +
       '</button>' +
-      '<input type="text" class="form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'
+      '<input id="searchBar" type="text" class="form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'
 
     return this.container
   }
@@ -268,6 +267,14 @@ L.Control.GraphButtons = L.Control.extend({
       '</button>'
 
     return this.container
+  }
+})
+
+const searchBar = document.getElementById('searchBar')
+searchBar.addEventListener('keydown', function (event) {
+  if (event.key === 'Enter') {
+    const inputValue = searchBar.value
+    findProduct(inputValue)
   }
 })
 

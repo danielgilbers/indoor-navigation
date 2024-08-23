@@ -70,6 +70,23 @@ class Node extends L.marker {
   }
 }
 
+/**
+ * Class for products
+ */
+class Product {
+  /**
+   * Create a product
+   * @param {Number} nan 
+   * @param {String} name 
+   * @param {Number} nodeIndex 
+   */
+  constructor (nan, name, nodeIndex) {
+    this.nan = nan
+    this.name = name
+    this.nodeIndex = nodeIndex
+  }
+}
+
 // Graph variables
 /** startnode */
 let nodeA = null

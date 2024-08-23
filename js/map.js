@@ -4,13 +4,13 @@ import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js'
 
 /**
- * Klasse für Knoten
+ * Class for nodes
  * @extends L.marker
  */
 class Node extends L.marker {
   /**
-   * Erzeugt einen neuen Knoten im Graphen und erstellt einen Marker
-   * @param {LatLng} latlng yx-Koordinaten
+   * Create a node and a marker
+   * @param {LatLng} latlng yx-Coordinates
    */
   constructor (latlng) {
     super(latlng)
@@ -24,7 +24,7 @@ class Node extends L.marker {
   }
 
   /**
-   * Bestehenden Knoten übergeben
+   * Select node as start- or endnode
    * @param {*} e
    */
   clickOnNode = (e) => {
@@ -32,11 +32,11 @@ class Node extends L.marker {
   }
 
   /**
-   *
-   * @param {Node} target Ziel Knoten
+   * Create an edge to targetnode
+   * @param {Node} target targetnode
    */
   addEdge = (target) => {
-    // Nachbarn in jeweilige Knoten schreiben
+    // Write linking nodes into node
     this.links.push(target.index)
     target.links.push(this.index)
 
@@ -48,19 +48,19 @@ class Node extends L.marker {
   }
 
   /**
-   * Knoten zu Kante hinzufügen
+   * Add node to edge
    * @param {*} e
    */
   clickOnEdge = (e) => {
     if (checkGraphToggle()) {
       const edge = e.target
-      // neuen Knoten erstellen
+      // Create new node
       const node = new Node(e.latlng)
       checkAB(node)
-      // neue Kanten hinzufügen
+      // Create new edge
       node.addEdge(edge.nodeA)
       node.addEdge(edge.nodeB)
-      // alte Kante entfernen
+      // remove old edge
       let i = edge.nodeA.links.indexOf(edge.nodeB.index)
       edge.nodeA.links.splice(i, 1)
       i = edge.nodeB.links.indexOf(edge.nodeA.index)
@@ -70,15 +70,15 @@ class Node extends L.marker {
   }
 }
 
-// Graph Variables
+// Graph variables
+/** startnode */
 let nodeA = null
 const nodes = []
-const loadedGraph = []
 
-// JSON File für Download
+// JSON file for download
 let textFile = null
 
-// Map Image
+// Map image
 const image = './map/Zollstock-Modellv3.png'
 const boundy = 280
 const boundx = 1366.6
@@ -86,32 +86,32 @@ const bounds = [[0, 0], [boundy, boundx]]
 
 let userPosition = L.latLng(100, 645) // Start: 100, 645
 
-// Map erstellen
+// Create map
 const map = L.map('map', {
   zoomControl: false,
   crs: L.CRS.Simple,
   minZoom: -2
 })
 
-map.on('click', clickOnMap)
-
-// Bild der Karte einbinden und anzeigen
-const imageOverlay = L.imageOverlay(image, bounds)
-imageOverlay.addTo(map)
-map.setView(userPosition, 1)
-
 /**
- * Neuen Knoten erstellen und übergeben
+ * Create new node and check for start or end
  * @param {*} e
  */
 function clickOnMap (e) {
   checkGraphToggle() && checkAB(new Node(e.latlng))
 }
 
+map.on('click', clickOnMap)
+
+// Add background image to map
+const imageOverlay = L.imageOverlay(image, bounds)
+imageOverlay.addTo(map)
+map.setView(userPosition, 1)
+
 /**
- * Helper Function to check Graph Toggle and Menu
+ * Helper function to check graph toggle and menu
  *
- * @returns true if Graph Toggle is checked and Menu is hidden
+ * @returns true if graph toggle is checked and menu is hidden
  */
 function checkGraphToggle () {
   const bsOffcanvas = document.getElementById('offcanvasMenu')
@@ -119,7 +119,7 @@ function checkGraphToggle () {
 }
 
 /**
- * Funktion prüft ob der Knoten Anfang oder Ende der Kante ist und verbindet diese
+ * Check if node is start or end and connect nodes with edge
  *
  * @param {Node} node
  */
@@ -132,13 +132,19 @@ function checkAB (node) {
   }
 }
 
+/**
+ * Close offcanvas menu
+ */
 window.closeMenu = function () {
   const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')
   bsOffcanvas.hide()
 }
 
+/**
+ * Load graph data if graph toggle is on
+ */
 window.activateGraphUI = function () {
-  toggleGraphUI.checked && loadJSON() // Graphdaten laden
+  toggleGraphUI.checked && loadJSON() // Load graph data
   if (!toggleGraphUI.checked) {
     nodes.splice(0, nodes.length)
     map.eachLayer(function (layer) {
@@ -150,12 +156,20 @@ window.activateGraphUI = function () {
   }
 }
 
+/**
+ * Create JSON from nodes array
+ */
 window.createJSON = function () {
   const json = JSON.stringify(nodes)
   const link = document.getElementById('downloadlink')
   link.href = makeTextFile(json)
 }
 
+/**
+ * Create textfile for download
+ * @param {*} text
+ * @returns {String} URL you can use as a href
+ */
 function makeTextFile (text) {
   const data = new Blob([text], { type: 'text/plain' })
 
@@ -167,13 +181,13 @@ function makeTextFile (text) {
 
   textFile = window.URL.createObjectURL(data)
 
-  // returns a URL you can use as a href
   return textFile
 }
 /**
- * JSON Daten des Graphen laden
+ * Load JSON data of graph
  */
 function loadJSON () {
+  const loadedGraph = []
   fetch('./map/graph.json')
     .then((response) => response.json())
     .then((jsonFeature) => {
@@ -182,8 +196,8 @@ function loadJSON () {
     })
 }
 /**
- * Geladenen Graphen erstellen
- * @param {Array} graph Knoten des Graphen mit Position und Verbindungen als Array
+ * Create nodes and edges of graph on map
+ * @param {Array} graph Array of node data
  */
 function drawGraph (graph) {
   graph.forEach((element) => {
@@ -196,6 +210,7 @@ function drawGraph (graph) {
   })
 }
 
+// Position dot icon
 const iconSize = 24
 const iconAnchor = iconSize / 2
 const positionDot = L.icon({
@@ -205,14 +220,14 @@ const positionDot = L.icon({
 })
 
 /**
- * Position Circle
+ * Position dot
  */
 const circle = L.marker(userPosition, {
   icon: positionDot
 }).addTo(map)
 
 /**
- * Search Bar with Menu Button
+ * Search bar with menu button
  */
 L.Control.Search = L.Control.extend({
   onAdd: function () {
@@ -231,7 +246,7 @@ L.Control.Search = L.Control.extend({
 new L.Control.Search({ position: 'topleft' }).addTo(map)
 
 /**
- * Graph UI - Download- und Upload-Button
+ * Graph UI - Download-button
  */
 L.Control.GraphButtons = L.Control.extend({
   onAdd: function () {
@@ -251,7 +266,7 @@ L.Control.GraphButtons = L.Control.extend({
 new L.Control.GraphButtons({ position: 'topleft' }).addTo(map)
 
 /**
- * QR Code Button
+ * QR Code button
  */
 L.Control.QRButton = L.Control.extend({
   onAdd: function () {
@@ -267,21 +282,25 @@ L.Control.QRButton = L.Control.extend({
 
 new L.Control.QRButton({ position: 'bottomright' }).addTo(map)
 
-// Graph UI Elements
+// Graph UI elements
 const toggleGraphUI = document.getElementById('toggleGraphUI')
 const download = document.getElementById('download')
 const graphUI = document.getElementsByClassName('graphUI')
-// Click Event der Map deaktivieren, damit keine Marker gesetzt werden wenn man auf den Button drückt
+// Deactivate click events on map
 download.addEventListener('click', function (e) { e.stopPropagation() })
 
-// Entferne Leaflet Link
+// Remove leaflet link
 document.getElementsByClassName('leaflet-control-attribution')[0].remove()
 
-// QR Code Scanner
+// QR Code scanner
 const scannerModal = new bootstrap.Modal('#qrScannerModal')
 
+/**
+ * Handle scanned code
+ * @param {*} decodedText
+ * @param {*} decodedResult
+ */
 function onScanSuccess (decodedText, decodedResult) {
-  // handle the scanned code
   console.log(`Code matched = ${decodedText}`, decodedResult)
   const scannedPosition = JSON.parse(decodedText) // QR Code text example: {"lat":55,"lng":500}
   userPosition = L.latLng(scannedPosition.lat, scannedPosition.lng)
@@ -290,9 +309,11 @@ function onScanSuccess (decodedText, decodedResult) {
   scannerModal.hide()
 }
 
+/**
+ * Handle scan failure, usually better to ignore and keep scanning.
+ * @param {*} error
+ */
 function onScanFailure (error) {
-  // handle scan failure, usually better to ignore and keep scanning.
-  // for example:
   console.warn(`Code scan error = ${error}`)
 }
 

@@ -13,7 +13,7 @@ class Node extends L.marker {
    * @param {LatLng} latlng yx-Coordinates
    */
   constructor (latlng) {
-    super(latlng)
+    super(latlng) // Marker
     this.latlng = latlng
     this.links = []
     this.index = nodes.length

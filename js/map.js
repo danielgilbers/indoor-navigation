@@ -2,6 +2,7 @@
 
 import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js'
+import { loadProducts, findProduct } from './Products.js'
 
 /**
  * Class for nodes
@@ -73,7 +74,9 @@ class Node extends L.marker {
 // Graph variables
 /** startnode */
 let nodeA = null
+export const loadedGraph = []
 const nodes = []
+export const products = []
 
 // JSON file for download
 let textFile = null
@@ -87,7 +90,7 @@ const bounds = [[0, 0], [boundy, boundx]]
 let userPosition = L.latLng(100, 645) // Start: 100, 645
 
 // Create map
-const map = L.map('map', {
+export const map = L.map('map', {
   zoomControl: false,
   crs: L.CRS.Simple,
   minZoom: -2
@@ -144,7 +147,7 @@ window.closeMenu = function () {
  * Load graph data if graph toggle is on
  */
 window.activateGraphUI = function () {
-  toggleGraphUI.checked && loadJSON() // Load graph data
+  toggleGraphUI.checked && drawGraph(loadedGraph) // Load graph data
   if (!toggleGraphUI.checked) {
     nodes.splice(0, nodes.length)
     map.eachLayer(function (layer) {
@@ -183,18 +186,22 @@ function makeTextFile (text) {
 
   return textFile
 }
+
 /**
  * Load JSON data of graph
  */
 function loadJSON () {
-  const loadedGraph = []
   fetch('./map/graph.json')
     .then((response) => response.json())
     .then((jsonFeature) => {
       jsonFeature.forEach((element) => loadedGraph.push(element))
-      drawGraph(loadedGraph)
     })
 }
+
+loadJSON()
+loadProducts()
+// console.log(products.length)
+
 /**
  * Create nodes and edges of graph on map
  * @param {Array} graph Array of node data
@@ -236,7 +243,7 @@ L.Control.Search = L.Control.extend({
       '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
       '<span class="material-symbols-outlined">Menu</span>' +
       '</button>' +
-      '<input type="text" class="form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'
+      '<input id="searchBar" type="text" class="form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'
 
     return this.container
   }
@@ -260,6 +267,14 @@ L.Control.GraphButtons = L.Control.extend({
       '</button>'
 
     return this.container
+  }
+})
+
+const searchBar = document.getElementById('searchBar')
+searchBar.addEventListener('keydown', function (event) {
+  if (event.key === 'Enter') {
+    const inputValue = searchBar.value
+    findProduct(inputValue)
   }
 })
 

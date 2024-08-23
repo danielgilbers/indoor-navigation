@@ -2,6 +2,7 @@
 
 import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js'
+import { loadProducts, findProduct } from './Products.js'
 
 /**
  * Class for nodes
@@ -70,27 +71,12 @@ class Node extends L.marker {
   }
 }
 
-/**
- * Class for products
- */
-class Product {
-  /**
-   * Create a product
-   * @param {Number} nan 
-   * @param {String} name 
-   * @param {Number} nodeIndex 
-   */
-  constructor (nan, name, nodeIndex) {
-    this.nan = nan
-    this.name = name
-    this.nodeIndex = nodeIndex
-  }
-}
-
 // Graph variables
 /** startnode */
 let nodeA = null
+export const loadedGraph = []
 const nodes = []
+export const products = []
 
 // JSON file for download
 let textFile = null
@@ -104,7 +90,7 @@ const bounds = [[0, 0], [boundy, boundx]]
 let userPosition = L.latLng(100, 645) // Start: 100, 645
 
 // Create map
-const map = L.map('map', {
+export const map = L.map('map', {
   zoomControl: false,
   crs: L.CRS.Simple,
   minZoom: -2
@@ -116,6 +102,7 @@ const map = L.map('map', {
  */
 function clickOnMap (e) {
   checkGraphToggle() && checkAB(new Node(e.latlng))
+  findProduct('Hammer')
 }
 
 map.on('click', clickOnMap)
@@ -161,7 +148,7 @@ window.closeMenu = function () {
  * Load graph data if graph toggle is on
  */
 window.activateGraphUI = function () {
-  toggleGraphUI.checked && loadJSON() // Load graph data
+  toggleGraphUI.checked && drawGraph(loadedGraph) // Load graph data
   if (!toggleGraphUI.checked) {
     nodes.splice(0, nodes.length)
     map.eachLayer(function (layer) {
@@ -200,18 +187,22 @@ function makeTextFile (text) {
 
   return textFile
 }
+
 /**
  * Load JSON data of graph
  */
 function loadJSON () {
-  const loadedGraph = []
   fetch('./map/graph.json')
     .then((response) => response.json())
     .then((jsonFeature) => {
       jsonFeature.forEach((element) => loadedGraph.push(element))
-      drawGraph(loadedGraph)
     })
 }
+
+loadJSON()
+loadProducts()
+// console.log(products.length)
+
 /**
  * Create nodes and edges of graph on map
  * @param {Array} graph Array of node data

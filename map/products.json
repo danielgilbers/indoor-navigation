@@ -1,0 +1,17 @@
+[
+    {
+        "nan": 1234567,
+        "name": "Dübel",
+        "nodeIndex": 10
+    },
+    {
+        "nan": 1000000,
+        "name": "Hammer",
+        "nodeIndex": 15
+    },
+    {
+        "nan": 2000000,
+        "name": "Schraubendreher",
+        "nodeIndex": 35
+    }
+]

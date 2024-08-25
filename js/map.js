@@ -270,11 +270,20 @@ L.Control.GraphButtons = L.Control.extend({
   }
 })
 
+let lastProduct
+
 const searchBar = document.getElementById('searchBar')
 searchBar.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
     const inputValue = searchBar.value
-    findProduct(inputValue)
+    const product = findProduct(inputValue)
+    if (product) {
+      if (lastProduct) {
+        lastProduct.hidePosition()
+      }
+      product.showPosition()
+      lastProduct = product
+    }
   }
 })
 

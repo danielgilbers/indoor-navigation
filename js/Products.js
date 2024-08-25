@@ -15,12 +15,16 @@ export class Product {
     this.nan = nan
     this.name = name
     this.nodeIndex = nodeIndex
+    this.marker = new L.marker(loadedGraph[this.nodeIndex].latlng)
   }
 
   showPosition = () => {
-    const m = new L.marker(loadedGraph[this.nodeIndex].latlng)
-    m.addTo(map)
-    m.bindPopup(this.name).openPopup()
+    this.marker.addTo(map)
+    this.marker.bindPopup(this.name).openPopup()
+  }
+
+  hidePosition = () => {
+    this.marker.remove()
   }
 }
 

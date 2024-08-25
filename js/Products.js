@@ -42,8 +42,6 @@ export function loadProducts () {
  */
 export function findProduct (query) {
   const found = products.find((element) => element.name === query)
-  if (found) {
-    found.showPosition()
-  }
+
   return found
 }

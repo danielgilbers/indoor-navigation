@@ -274,7 +274,10 @@ const searchBar = document.getElementById('searchBar')
 searchBar.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
     const inputValue = searchBar.value
-    findProduct(inputValue)
+    const product = findProduct(inputValue)
+    if (product) {
+      product.showPosition()
+    }
   }
 })
 

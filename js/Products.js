@@ -18,12 +18,12 @@ export class Product {
     this.marker = new L.marker(loadedGraph[this.nodeIndex].latlng)
   }
 
-  showPosition = () => {
+  showMarker = () => {
     this.marker.addTo(map)
     this.marker.bindPopup(this.name).openPopup()
   }
 
-  hidePosition = () => {
+  hideMarker = () => {
     this.marker.remove()
   }
 }

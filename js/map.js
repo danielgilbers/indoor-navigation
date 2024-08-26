@@ -279,9 +279,9 @@ searchBar.addEventListener('keydown', function (event) {
     const product = findProduct(inputValue)
     if (product) {
       if (lastProduct) {
-        lastProduct.hidePosition()
+        lastProduct.hideMarker()
       }
-      product.showPosition()
+      product.showMarker()
       lastProduct = product
     }
   }

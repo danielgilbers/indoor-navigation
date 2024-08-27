@@ -382,6 +382,20 @@ L.Control.QRButton = L.Control.extend({
 
 new L.Control.QRButton({ position: 'bottomright' }).addTo(map)
 
+L.Control.Compass = L.Control.extend({
+  onAdd: function () {
+    this.container = L.DomUtil.create('div', 'graphUI')
+    this.container.innerHTML =
+      '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button" id="Compass" onclick="activateCompass()">' +
+      '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">near_me</span>' +
+      '</button>'
+
+    return this.container
+  }
+})
+
+new L.Control.Compass({ position: 'bottomright' }).addTo(map)
+
 // Graph UI elements
 const toggleGraphUI = document.getElementById('toggleGraphUI')
 const download = document.getElementById('download')
@@ -431,12 +445,12 @@ function handleOrientation (event) {
   map.setBearing(orientation + bias)
 }
 
-DeviceOrientationEvent.requestPermission()
-
-// Request permission for iOS 13+ devices
-if (
-  DeviceOrientationEvent &&
+window.activateCompass = () => {
+  // Request permission for iOS 13+ devices
+  if (
+    DeviceOrientationEvent &&
   typeof DeviceOrientationEvent.requestPermission === 'function'
-) {
-  DeviceOrientationEvent.requestPermission()
+  ) {
+    DeviceOrientationEvent.requestPermission()
+  }
 }

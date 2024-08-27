@@ -2,7 +2,7 @@ function handleOrientation(event) {
   updateFieldIfNotNull('Orientation_a', event.alpha);
   updateFieldIfNotNull('Orientation_b', event.beta);
   updateFieldIfNotNull('Orientation_g', event.gamma);
-  updateFieldIfNotNull('Orientation_compass', event.webkitCompassHeading);
+  updateFieldIfNotNull('Orientation_compass', event.webkitCompassHeading.toFixed(10));
   incrementEventCount();
 }
 

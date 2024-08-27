@@ -2,7 +2,7 @@
 
 import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js'
-import { loadProducts, findProduct, searchProducts } from './Products.js'
+import { findProduct, searchProducts } from './Products.js'
 
 /**
  * Class for nodes
@@ -76,7 +76,6 @@ class Node extends L.marker {
 let nodeA = null
 const loadedGraph = await loadJSON()
 const nodes = []
-export const products = await loadProducts()
 
 // JSON file for download
 let textFile = null
@@ -288,7 +287,7 @@ window.sendSearchQuery = (inputValue) => {
     if (lastProduct) {
       lastProduct.hidePosition()
     }
-    product.showPosition()
+    product.showMarker()
     lastProduct = product
   }
   resetSearchbar()

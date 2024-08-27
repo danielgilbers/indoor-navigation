@@ -274,16 +274,21 @@ searchBar.addEventListener('keyup', function (event) {
   }
   // send event
   if (event.key === 'Enter') {
-    const product = findProduct(inputValue)
-    if (product) {
-      if (lastProduct) {
-        lastProduct.hidePosition()
-      }
-      product.showPosition()
-      lastProduct = product
-    }
+    sendSearchQuery(inputValue)
   }
 })
+
+window.sendSearchQuery = (inputValue) => {
+  const product = findProduct(inputValue)
+  if (product) {
+    if (lastProduct) {
+      lastProduct.hidePosition()
+    }
+    product.showPosition()
+    lastProduct = product
+  }
+  resetSearchbar()
+}
 
 function addClearButton () {
   if (!document.getElementById('clearSearchButton')) {
@@ -307,17 +312,17 @@ searchList.id = 'searchList'
 
 const topControl = document.getElementById('topControl')
 
-const searchValues = []
-
 function showList (query) {
   searchList.innerHTML = ''
   for (const p of searchProducts(query)) {
-    searchList.innerHTML += '<button type="button" class="list-group-item list-group-item-action">' + p.item.name + '</button>'
+    searchList.innerHTML += '<button type="button" class="list-group-item list-group-item-action" onclick="sendSearchQuery(\'' + p.item.name + '\')">' + p.item.name + '</button>'
   }
   if (!document.getElementById('searchList')) {
     topControl.appendChild(searchList)
   }
 }
+
+window.findProduct = findProduct
 
 /**
  * Graph UI - Download-button

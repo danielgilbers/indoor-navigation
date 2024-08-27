@@ -434,6 +434,7 @@ if (
 window.addEventListener('deviceorientation', handleOrientation)
 
 function handleOrientation (event) {
+  const bias = 120 // rotation of png
   const orientation = 360 - event.webkitCompassHeading
-  map.setBearing(orientation)
+  map.setBearing(orientation + bias)
 }

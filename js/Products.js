@@ -24,7 +24,7 @@ export class Product {
   /**
    * Show product on map
    */
-  showPosition = () => {
+  showMarker = () => {
     this.marker.addTo(map)
     this.marker.bindPopup(this.name).openPopup()
   }
@@ -32,7 +32,7 @@ export class Product {
   /**
    * Hide product on map
    */
-  hidePosition = () => {
+  hideMarker = () => {
     this.marker.remove()
   }
 }
@@ -74,7 +74,7 @@ export function findProduct (query) {
 export function searchProducts (query) {
   const fuse = new Fuse(products, {
     keys: ['name'],
-    threshold: 0.3  // 0.0 = perfect match; 1.0 = no match at all
+    threshold: 0.3 // 0.0 = perfect match; 1.0 = no match at all
   })
   return fuse.search(query, { limit: 7 })
 }

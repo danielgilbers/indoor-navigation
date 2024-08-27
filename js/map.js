@@ -95,10 +95,6 @@ export const map = L.map('map', {
   crs: L.CRS.Simple,
   minZoom: -2,
   rotate: true,
-  rotateControl: {
-    closeOnZeroBearing: true,
-    position: 'bottomleft'
-  },
   bearing: 0,
   touchRotate: true
 })
@@ -382,12 +378,15 @@ L.Control.QRButton = L.Control.extend({
 
 new L.Control.QRButton({ position: 'bottomright' }).addTo(map)
 
+/**
+ * Compass Button
+ */
 L.Control.Compass = L.Control.extend({
   onAdd: function () {
     this.container = L.DomUtil.create('div', 'graphUI')
     this.container.innerHTML =
-      '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button" id="Compass" onclick="activateCompass()">' +
-      '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">near_me</span>' +
+      '<button class="btn btn-light text-primary rounded-circle p-2 lh-1" type="button" onclick="toggleCompass()">' +
+      '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;" id="compass">near_me</span>' +
       '</button>'
 
     return this.container
@@ -395,6 +394,8 @@ L.Control.Compass = L.Control.extend({
 })
 
 new L.Control.Compass({ position: 'bottomright' }).addTo(map)
+
+const compassSymbol = document.getElementById('compass')
 
 // Graph UI elements
 const toggleGraphUI = document.getElementById('toggleGraphUI')
@@ -405,6 +406,7 @@ download.addEventListener('click', function (e) { e.stopPropagation() })
 
 // Remove leaflet link
 document.getElementsByClassName('leaflet-control-attribution')[0].remove()
+document.getElementsByClassName('leaflet-control-rotate')[0].remove()
 
 // QR Code scanner
 const scannerModal = new bootstrap.Modal('#qrScannerModal')
@@ -437,20 +439,33 @@ const html5QrcodeScanner = new Html5QrcodeScanner(
   /* verbose= */ false)
 html5QrcodeScanner.render(onScanSuccess, onScanFailure)
 
-window.addEventListener('deviceorientation', handleOrientation)
-
 function handleOrientation (event) {
   const bias = 120 // rotation of png
   const orientation = 360 - event.webkitCompassHeading
   map.setBearing(orientation + bias)
 }
 
-window.activateCompass = () => {
+let compass = false
+
+window.toggleCompass = () => {
   // Request permission for iOS 13+ devices
   if (
     DeviceOrientationEvent &&
   typeof DeviceOrientationEvent.requestPermission === 'function'
   ) {
     DeviceOrientationEvent.requestPermission()
+  }
+
+  if (compass) {
+    window.removeEventListener('deviceorientation', handleOrientation)
+    map.touchRotate.enable()
+    compassSymbol.innerHTML = 'near_me'
+    compass = false
+    map.setBearing(0)
+  } else {
+    window.addEventListener('deviceorientation', handleOrientation)
+    map.touchRotate.disable()
+    compassSymbol.innerHTML = 'explore'
+    compass = true
   }
 }

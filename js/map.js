@@ -250,16 +250,17 @@ L.Control.Search = L.Control.extend({
 })
 
 const searchControl = new L.Control.Search({ position: 'topleft' }).addTo(map)
+const container = searchControl.getContainer()
+const clearSearchButton = L.DomUtil.create('button', 'btn btn-light rounded-start-0 rounded-end-5 lh-1 border-0')
+clearSearchButton.innerHTML = '<span class="material-symbols-outlined">Cancel</span>'
+clearSearchButton.id = 'clearSearchButton'
 
 let lastProduct
 
 const searchBar = document.getElementById('searchBar')
 searchBar.addEventListener('keyup', function (event) {
   const inputValue = searchBar.value
-  const container = searchControl.getContainer()
-  const clearSearchButton = L.DomUtil.create('button', 'btn btn-light rounded-start-0 rounded-end-5 lh-1 border-0')
-  clearSearchButton.innerHTML = '<span class="material-symbols-outlined">Cancel</span>'
-  clearSearchButton.id = 'clearSearchButton'
+
   // add cancel butten when there is something written
   if (inputValue) {
     addClearButton()
@@ -277,23 +278,23 @@ searchBar.addEventListener('keyup', function (event) {
       lastProduct = product
     }
   }
-
-  function addClearButton () {
-    if (!document.getElementById('clearSearchButton')) {
-      container.appendChild(clearSearchButton)
-      container.lastChild.addEventListener('click', resetSearchbar)
-    }
-    searchBar.classList.remove('rounded-end-5')
-    searchBar.classList.add('rounded-end-0')
-  }
-
-  function resetSearchbar () {
-    searchBar.value = ''
-    document.getElementById('clearSearchButton').remove()
-    searchBar.classList.remove('rounded-end-0')
-    searchBar.classList.add('rounded-end-5')
-  }
 })
+
+function addClearButton () {
+  if (!document.getElementById('clearSearchButton')) {
+    container.appendChild(clearSearchButton)
+    container.lastChild.addEventListener('click', resetSearchbar)
+  }
+  searchBar.classList.remove('rounded-end-5')
+  searchBar.classList.add('rounded-end-0')
+}
+
+function resetSearchbar () {
+  searchBar.value = ''
+  document.getElementById('clearSearchButton').remove()
+  searchBar.classList.remove('rounded-end-0')
+  searchBar.classList.add('rounded-end-5')
+}
 
 /**
  * Graph UI - Download-button

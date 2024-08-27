@@ -200,7 +200,6 @@ function loadJSON () {
 
 loadJSON()
 loadProducts()
-// console.log(products.length)
 
 /**
  * Create nodes and edges of graph on map
@@ -243,7 +242,7 @@ L.Control.Search = L.Control.extend({
       '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
       '<span class="material-symbols-outlined">Menu</span>' +
       '</button>' +
-      '<input id="searchBar" type="text" class="form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping">'
+      '<input id="searchBar" type="text" class="form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping" autocomplete="off">'
 
     return this.container
   }
@@ -255,20 +254,15 @@ const searchControl = new L.Control.Search({ position: 'topleft' }).addTo(map)
 let lastProduct
 
 const searchBar = document.getElementById('searchBar')
-console.log(searchBar)
 searchBar.addEventListener('keyup', function (event) {
   const inputValue = searchBar.value
   const container = searchControl.getContainer()
-  const cancelButton = L.DomUtil.create('button', 'btn btn-light rounded-start-0 rounded-end-5 lh-1 border-0')
-  cancelButton.innerHTML = '<span class="material-symbols-outlined">Cancel</span>'
+  const clearSearchButton = L.DomUtil.create('button', 'btn btn-light rounded-start-0 rounded-end-5 lh-1 border-0')
+  clearSearchButton.innerHTML = '<span class="material-symbols-outlined">Cancel</span>'
+  clearSearchButton.id = 'clearSearchButton'
   // add cancel butten when there is something written
   if (inputValue) {
-    if (container.lastChild.nodeName !== 'BUTTON') {
-      container.appendChild(cancelButton)
-      container.lastChild.addEventListener('click', resetSearchbar)
-    }
-    searchBar.classList.remove('rounded-end-5')
-    searchBar.classList.add('rounded-end-0')
+    addClearButton()
   } else { // remove cancel button
     resetSearchbar()
   }
@@ -284,11 +278,18 @@ searchBar.addEventListener('keyup', function (event) {
     }
   }
 
+  function addClearButton () {
+    if (!document.getElementById('clearSearchButton')) {
+      container.appendChild(clearSearchButton)
+      container.lastChild.addEventListener('click', resetSearchbar)
+    }
+    searchBar.classList.remove('rounded-end-5')
+    searchBar.classList.add('rounded-end-0')
+  }
+
   function resetSearchbar () {
     searchBar.value = ''
-    if (container.lastChild.nodeName === 'BUTTON') {
-      container.lastChild.remove()
-    }
+    document.getElementById('clearSearchButton').remove()
     searchBar.classList.remove('rounded-end-0')
     searchBar.classList.add('rounded-end-5')
   }

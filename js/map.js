@@ -434,6 +434,6 @@ if (
 window.addEventListener('deviceorientation', handleOrientation)
 
 function handleOrientation (event) {
-  const orientation = 360 - event.webkitCompassHeading.toFixed(10)
+  const orientation = 360 - event.webkitCompassHeading
   map.setBearing(orientation)
 }

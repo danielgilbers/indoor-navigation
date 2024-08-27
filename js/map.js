@@ -250,7 +250,49 @@ L.Control.Search = L.Control.extend({
 
 })
 
-new L.Control.Search({ position: 'topleft' }).addTo(map)
+const searchControl = new L.Control.Search({ position: 'topleft' }).addTo(map)
+
+let lastProduct
+
+const searchBar = document.getElementById('searchBar')
+console.log(searchBar)
+searchBar.addEventListener('keyup', function (event) {
+  const inputValue = searchBar.value
+  const container = searchControl.getContainer()
+  const cancelButton = L.DomUtil.create('button', 'btn btn-light rounded-start-0 rounded-end-5 lh-1 border-0')
+  cancelButton.innerHTML = '<span class="material-symbols-outlined">Cancel</span>'
+  // add cancel butten when there is something written
+  if (inputValue) {
+    if (container.lastChild.nodeName !== 'BUTTON') {
+      container.appendChild(cancelButton)
+      container.lastChild.addEventListener('click', resetSearchbar)
+    }
+    searchBar.classList.remove('rounded-end-5')
+    searchBar.classList.add('rounded-end-0')
+  } else { // remove cancel button
+    resetSearchbar()
+  }
+  // send event
+  if (event.key === 'Enter') {
+    const product = findProduct(inputValue)
+    if (product) {
+      if (lastProduct) {
+        lastProduct.hidePosition()
+      }
+      product.showPosition()
+      lastProduct = product
+    }
+  }
+
+  function resetSearchbar () {
+    searchBar.value = ''
+    if (container.lastChild.nodeName === 'BUTTON') {
+      container.lastChild.remove()
+    }
+    searchBar.classList.remove('rounded-end-0')
+    searchBar.classList.add('rounded-end-5')
+  }
+})
 
 /**
  * Graph UI - Download-button
@@ -267,23 +309,6 @@ L.Control.GraphButtons = L.Control.extend({
       '</button>'
 
     return this.container
-  }
-})
-
-let lastProduct
-
-const searchBar = document.getElementById('searchBar')
-searchBar.addEventListener('keydown', function (event) {
-  if (event.key === 'Enter') {
-    const inputValue = searchBar.value
-    const product = findProduct(inputValue)
-    if (product) {
-      if (lastProduct) {
-        lastProduct.hidePosition()
-      }
-      product.showPosition()
-      lastProduct = product
-    }
   }
 })
 

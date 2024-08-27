@@ -1,6 +1,7 @@
 'use strict'
 
 import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+import 'https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate-src.js'
 import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js'
 import { findProduct, searchProducts } from './Products.js'
 
@@ -92,7 +93,14 @@ let userPosition = L.latLng(100, 645) // Start: 100, 645
 export const map = L.map('map', {
   zoomControl: false,
   crs: L.CRS.Simple,
-  minZoom: -2
+  minZoom: -2,
+  rotate: true,
+  rotateControl: {
+    closeOnZeroBearing: true,
+    position: 'bottomleft',
+  },
+  bearing: 0,
+  touchRotate: true
 })
 
 /**

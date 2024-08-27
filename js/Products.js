@@ -21,11 +21,17 @@ export class Product {
     this.marker = new L.marker(loadedGraph[this.nodeIndex].latlng)
   }
 
+  /**
+   * Show product on map
+   */
   showPosition = () => {
     this.marker.addTo(map)
     this.marker.bindPopup(this.name).openPopup()
   }
 
+  /**
+   * Hide product on map
+   */
   hidePosition = () => {
     this.marker.remove()
   }
@@ -60,10 +66,15 @@ export function findProduct (query) {
   return found
 }
 
+/**
+ * Fuzzy search for products
+ * @param {String} query Searchquery
+ * @returns Array of more or less matching products
+ */
 export function searchProducts (query) {
   const fuse = new Fuse(products, {
     keys: ['name'],
-    threshold: 0.3
+    threshold: 0.3  // 0.0 = perfect match; 1.0 = no match at all
   })
   return fuse.search(query, { limit: 7 })
 }

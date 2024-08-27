@@ -278,6 +278,10 @@ searchBar.addEventListener('keyup', function (event) {
   }
 })
 
+/**
+ * Show product on map and hide last product
+ * @param {String} inputValue Searchquery
+ */
 window.sendSearchQuery = (inputValue) => {
   const product = findProduct(inputValue)
   if (product) {
@@ -290,6 +294,9 @@ window.sendSearchQuery = (inputValue) => {
   resetSearchbar()
 }
 
+/**
+ * Add x-Button behind input field
+ */
 function addClearButton () {
   if (!document.getElementById('clearSearchButton')) {
     searchGroup.appendChild(clearSearchButton)
@@ -299,6 +306,9 @@ function addClearButton () {
   searchBar.classList.add('rounded-end-0')
 }
 
+/**
+ * Remove x-Button from search group
+ */
 function resetSearchbar () {
   searchBar.value = ''
   document.getElementById('clearSearchButton').remove()
@@ -312,6 +322,10 @@ searchList.id = 'searchList'
 
 const topControl = document.getElementById('topControl')
 
+/**
+ * Show clickable list of possible products
+ * @param {String} query Searchquery
+ */
 function showList (query) {
   searchList.innerHTML = ''
   for (const p of searchProducts(query)) {

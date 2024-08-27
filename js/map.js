@@ -425,10 +425,10 @@ html5QrcodeScanner.render(onScanSuccess, onScanFailure)
 
 // Request permission for iOS 13+ devices
 if (
-  DeviceMotionEvent &&
-  typeof DeviceMotionEvent.requestPermission === 'function'
+  DeviceOrientationEvent &&
+  typeof DeviceOrientationEvent.requestPermission === 'function'
 ) {
-  DeviceMotionEvent.requestPermission()
+  DeviceOrientationEvent.requestPermission()
 }
 
 window.addEventListener('deviceorientation', handleOrientation)

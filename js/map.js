@@ -97,7 +97,7 @@ export const map = L.map('map', {
   rotate: true,
   rotateControl: {
     closeOnZeroBearing: true,
-    position: 'bottomleft',
+    position: 'bottomleft'
   },
   bearing: 0,
   touchRotate: true
@@ -426,14 +426,14 @@ html5QrcodeScanner.render(onScanSuccess, onScanFailure)
 // Request permission for iOS 13+ devices
 if (
   DeviceMotionEvent &&
-  typeof DeviceMotionEvent.requestPermission === "function"
+  typeof DeviceMotionEvent.requestPermission === 'function'
 ) {
-  DeviceMotionEvent.requestPermission();
+  DeviceMotionEvent.requestPermission()
 }
 
-window.addEventListener("deviceorientation", handleOrientation);
+window.addEventListener('deviceorientation', handleOrientation)
 
-function handleOrientation(event) {
-  let orientation = -event.webkitCompassHeading.toFixed(10)
+function handleOrientation (event) {
+  const orientation = 360 - event.webkitCompassHeading.toFixed(10)
   map.setBearing(orientation)
 }

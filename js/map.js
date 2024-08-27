@@ -439,6 +439,10 @@ const html5QrcodeScanner = new Html5QrcodeScanner(
   /* verbose= */ false)
 html5QrcodeScanner.render(onScanSuccess, onScanFailure)
 
+/**
+ * Hande the device orientation
+ * @param {DeviceOrientationEvent} event 
+ */
 function handleOrientation (event) {
   const bias = 120 // rotation of png
   const orientation = 360 - event.webkitCompassHeading
@@ -447,6 +451,9 @@ function handleOrientation (event) {
 
 let compass = false
 
+/**
+ * Toggle Compass on and off
+ */
 window.toggleCompass = () => {
   // Request permission for iOS 13+ devices
   if (
@@ -461,7 +468,6 @@ window.toggleCompass = () => {
     map.touchRotate.enable()
     compassSymbol.innerHTML = 'near_me'
     compass = false
-    map.setBearing(0)
   } else {
     window.addEventListener('deviceorientation', handleOrientation)
     map.touchRotate.disable()

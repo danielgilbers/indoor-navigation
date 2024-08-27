@@ -431,10 +431,12 @@ function handleOrientation (event) {
   map.setBearing(orientation + bias)
 }
 
+DeviceOrientationEvent.requestPermission()
+
 // Request permission for iOS 13+ devices
 if (
-  DeviceOrientationEvent// &&
-  //typeof DeviceOrientationEvent.requestPermission === 'function'
+  DeviceOrientationEvent &&
+  typeof DeviceOrientationEvent.requestPermission === 'function'
 ) {
   DeviceOrientationEvent.requestPermission()
 }

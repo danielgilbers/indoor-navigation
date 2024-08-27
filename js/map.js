@@ -2,7 +2,7 @@
 
 import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js'
-import { loadProducts, findProduct } from './Products.js'
+import { loadProducts, findProduct, searchProducts } from './Products.js'
 
 /**
  * Class for nodes
@@ -74,9 +74,9 @@ class Node extends L.marker {
 // Graph variables
 /** startnode */
 let nodeA = null
-export const loadedGraph = []
+const loadedGraph = await loadJSON()
 const nodes = []
-export const products = []
+export const products = await loadProducts()
 
 // JSON file for download
 let textFile = null
@@ -190,16 +190,18 @@ function makeTextFile (text) {
 /**
  * Load JSON data of graph
  */
-function loadJSON () {
-  fetch('./map/graph.json')
-    .then((response) => response.json())
-    .then((jsonFeature) => {
-      jsonFeature.forEach((element) => loadedGraph.push(element))
-    })
-}
+export async function loadJSON () {
+  const payload = []
 
-loadJSON()
-loadProducts()
+  try {
+    const response = await fetch('./map/graph.json')
+    const jsonFeature = await response.json()
+    jsonFeature.forEach((element) => payload.push(element))
+    return payload
+  } catch (error) {
+    console.error('Fehler beim Laden der JSON-Daten:', error)
+  }
+}
 
 /**
  * Create nodes and edges of graph on map
@@ -237,20 +239,22 @@ const circle = L.marker(userPosition, {
  */
 L.Control.Search = L.Control.extend({
   onAdd: function () {
-    this.container = L.DomUtil.create('div', 'input-group vw-100 pe-3 graphUI')
+    this.container = L.DomUtil.create('div')
     this.container.innerHTML =
+      '<div class="input-group vw-100 pe-3 graphUI" id="searchGroup">' +
       '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
       '<span class="material-symbols-outlined">Menu</span>' +
       '</button>' +
-      '<input id="searchBar" type="text" class="form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping" autocomplete="off">'
-
+      '<input id="searchBar" type="text" class="form-control rounded-start-0 rounded-end-5 border-0" placeholder="Suche" aria-label="Search" aria-describedby="addon-wrapping" autocomplete="off">' +
+      '</div>'
+    this.container.id = 'topControl'
     return this.container
   }
 
 })
 
-const searchControl = new L.Control.Search({ position: 'topleft' }).addTo(map)
-const container = searchControl.getContainer()
+new L.Control.Search({ position: 'topleft' }).addTo(map)
+const searchGroup = document.getElementById('searchGroup')
 const clearSearchButton = L.DomUtil.create('button', 'btn btn-light rounded-start-0 rounded-end-5 lh-1 border-0')
 clearSearchButton.innerHTML = '<span class="material-symbols-outlined">Cancel</span>'
 clearSearchButton.id = 'clearSearchButton'
@@ -264,6 +268,7 @@ searchBar.addEventListener('keyup', function (event) {
   // add cancel butten when there is something written
   if (inputValue) {
     addClearButton()
+    showList(inputValue)
   } else { // remove cancel button
     resetSearchbar()
   }
@@ -282,8 +287,8 @@ searchBar.addEventListener('keyup', function (event) {
 
 function addClearButton () {
   if (!document.getElementById('clearSearchButton')) {
-    container.appendChild(clearSearchButton)
-    container.lastChild.addEventListener('click', resetSearchbar)
+    searchGroup.appendChild(clearSearchButton)
+    searchGroup.lastChild.addEventListener('click', resetSearchbar)
   }
   searchBar.classList.remove('rounded-end-5')
   searchBar.classList.add('rounded-end-0')
@@ -292,8 +297,26 @@ function addClearButton () {
 function resetSearchbar () {
   searchBar.value = ''
   document.getElementById('clearSearchButton').remove()
+  document.getElementById('searchList').remove()
   searchBar.classList.remove('rounded-end-0')
   searchBar.classList.add('rounded-end-5')
+}
+
+const searchList = L.DomUtil.create('div', 'list-group pe-3')
+searchList.id = 'searchList'
+
+const topControl = document.getElementById('topControl')
+
+const searchValues = []
+
+function showList (query) {
+  searchList.innerHTML = ''
+  for (const p of searchProducts(query)) {
+    searchList.innerHTML += '<button type="button" class="list-group-item list-group-item-action">' + p.item.name + '</button>'
+  }
+  if (!document.getElementById('searchList')) {
+    topControl.appendChild(searchList)
+  }
 }
 
 /**

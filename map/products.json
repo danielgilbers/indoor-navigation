@@ -13,5 +13,465 @@
         "nan": 2000000,
         "name": "Schraubendreher",
         "nodeIndex": 35
+    },
+    {
+        "nan": 3000000,
+        "name": "Nagel",
+        "nodeIndex": 10
+    },
+    {
+        "nan": 4000000,
+        "name": "Bohrmaschine",
+        "nodeIndex": 20
+    },
+    {
+        "nan": 5000000,
+        "name": "Zange",
+        "nodeIndex": 25
+    },
+    {
+        "nan": 6000000,
+        "name": "Schraubzwinge",
+        "nodeIndex": 15
+    },
+    {
+        "nan": 7000000,
+        "name": "Säge",
+        "nodeIndex": 30
+    },
+    {
+        "nan": 8000000,
+        "name": "Wasserwaage",
+        "nodeIndex": 40
+    },
+    {
+        "nan": 9000000,
+        "name": "Schraube",
+        "nodeIndex": 10
+    },
+    {
+        "nan": 1100000,
+        "name": "Schmierfett",
+        "nodeIndex": 45
+    },
+    {
+        "nan": 1200000,
+        "name": "Holzleim",
+        "nodeIndex": 50
+    },
+    {
+        "nan": 1300000,
+        "name": "Spachtel",
+        "nodeIndex": 55
+    },
+    {
+        "nan": 1400000,
+        "name": "Lackfarbe",
+        "nodeIndex": 60
+    },
+    {
+        "nan": 1500000,
+        "name": "Abdeckfolie",
+        "nodeIndex": 65
+    },
+    {
+        "nan": 1600000,
+        "name": "Schleifpapier",
+        "nodeIndex": 70
+    },
+    {
+        "nan": 1700000,
+        "name": "Klebeband",
+        "nodeIndex": 75
+    },
+    {
+        "nan": 1800000,
+        "name": "Pinsel",
+        "nodeIndex": 80
+    },
+    {
+        "nan": 1900000,
+        "name": "Steckdose",
+        "nodeIndex": 85
+    },
+    {
+        "nan": 2100000,
+        "name": "Kabel",
+        "nodeIndex": 90
+    },
+    {
+        "nan": 2200000,
+        "name": "Kreuzschlüssel",
+        "nodeIndex": 35
+    },
+    {
+        "nan": 2300000,
+        "name": "Winkelschleifer",
+        "nodeIndex": 20
+    },
+    {
+        "nan": 2400000,
+        "name": "Schutzbrille",
+        "nodeIndex": 95
+    },
+    {
+        "nan": 2500000,
+        "name": "Werkzeugkoffer",
+        "nodeIndex": 100
+    },
+    {
+        "nan": 2600000,
+        "name": "Schlagschrauber",
+        "nodeIndex": 25
+    },
+    {
+        "nan": 2700000,
+        "name": "Bit-Set",
+        "nodeIndex": 35
+    },
+    {
+        "nan": 2800000,
+        "name": "Multimeter",
+        "nodeIndex": 105
+    },
+    {
+        "nan": 2900000,
+        "name": "Bithalter",
+        "nodeIndex": 35
+    },
+    {
+        "nan": 3100000,
+        "name": "Akkuschrauber",
+        "nodeIndex": 20
+    },
+    {
+        "nan": 3200000,
+        "name": "Drehmomentschlüssel",
+        "nodeIndex": 25
+    },
+    {
+        "nan": 3300000,
+        "name": "Dichtungsband",
+        "nodeIndex": 110
+    },
+    {
+        "nan": 3400000,
+        "name": "Gummihammer",
+        "nodeIndex": 15
+    },
+    {
+        "nan": 3500000,
+        "name": "Handschuhe",
+        "nodeIndex": 95
+    },
+    {
+        "nan": 3600000,
+        "name": "Holzbohrer",
+        "nodeIndex": 20
+    },
+    {
+        "nan": 3700000,
+        "name": "Metallbohrer",
+        "nodeIndex": 20
+    },
+    {
+        "nan": 3800000,
+        "name": "Zollstock",
+        "nodeIndex": 40
+    },
+    {
+        "nan": 3900000,
+        "name": "Kreissägeblatt",
+        "nodeIndex": 30
+    },
+    {
+        "nan": 4100000,
+        "name": "Kabelbinder",
+        "nodeIndex": 90
+    },
+    {
+        "nan": 4200000,
+        "name": "Dichtmasse",
+        "nodeIndex": 110
+    },
+    {
+        "nan": 4300000,
+        "name": "Holzschraube",
+        "nodeIndex": 10
+    },
+    {
+        "nan": 4400000,
+        "name": "Metallschraube",
+        "nodeIndex": 10
+    },
+    {
+        "nan": 4500000,
+        "name": "Ratsche",
+        "nodeIndex": 25
+    },
+    {
+        "nan": 4600000,
+        "name": "Wasserpumpenzange",
+        "nodeIndex": 25
+    },
+    {
+        "nan": 4700000,
+        "name": "Stichsäge",
+        "nodeIndex": 30
+    },
+    {
+        "nan": 4800000,
+        "name": "Feile",
+        "nodeIndex": 55
+    },
+    {
+        "nan": 4900000,
+        "name": "Heißklebepistole",
+        "nodeIndex": 115
+    },
+    {
+        "nan": 5100000,
+        "name": "Kettensäge",
+        "nodeIndex": 30
+    },
+    {
+        "nan": 5200000,
+        "name": "Stichsägeblatt",
+        "nodeIndex": 30
+    },
+    {
+        "nan": 5300000,
+        "name": "Werkbank",
+        "nodeIndex": 100
+    },
+    {
+        "nan": 5400000,
+        "name": "Rollgabelschlüssel",
+        "nodeIndex": 35
+    },
+    {
+        "nan": 5500000,
+        "name": "Rohrzange",
+        "nodeIndex": 25
+    },
+    {
+        "nan": 5600000,
+        "name": "Winkelschraubendreher",
+        "nodeIndex": 35
+    },
+    {
+        "nan": 5700000,
+        "name": "Blechschere",
+        "nodeIndex": 25
+    },
+    {
+        "nan": 5800000,
+        "name": "Kabelschuhzange",
+        "nodeIndex": 90
+    },
+    {
+        "nan": 5900000,
+        "name": "Multitool",
+        "nodeIndex": 115
+    },
+    {
+        "nan": 6100000,
+        "name": "Dosenöffner",
+        "nodeIndex": 15
+    },
+    {
+        "nan": 6200000,
+        "name": "Drehzahlmesser",
+        "nodeIndex": 105
+    },
+    {
+        "nan": 6300000,
+        "name": "Kreuzlinienlaser",
+        "nodeIndex": 40
+    },
+    {
+        "nan": 6400000,
+        "name": "Fliesenschneider",
+        "nodeIndex": 30
+    },
+    {
+        "nan": 6500000,
+        "name": "Abisolierzange",
+        "nodeIndex": 90
+    },
+    {
+        "nan": 6600000,
+        "name": "Lötkolben",
+        "nodeIndex": 105
+    },
+    {
+        "nan": 6700000,
+        "name": "Heißluftpistole",
+        "nodeIndex": 115
+    },
+    {
+        "nan": 6800000,
+        "name": "Kappsäge",
+        "nodeIndex": 30
+    },
+    {
+        "nan": 6900000,
+        "name": "Lasermessgerät",
+        "nodeIndex": 40
+    },
+    {
+        "nan": 7100000,
+        "name": "Bohrfutter",
+        "nodeIndex": 20
+    },
+    {
+        "nan": 7200000,
+        "name": "Kernbohrer",
+        "nodeIndex": 20
+    },
+    {
+        "nan": 7300000,
+        "name": "Staubmaske",
+        "nodeIndex": 95
+    },
+    {
+        "nan": 7400000,
+        "name": "Schleifgerät",
+        "nodeIndex": 70
+    },
+    {
+        "nan": 7500000,
+        "name": "Heizkörperpinsel",
+        "nodeIndex": 80
+    },
+    {
+        "nan": 7600000,
+        "name": "Kombi-Schraubendreher",
+        "nodeIndex": 35
+    },
+    {
+        "nan": 7700000,
+        "name": "VDE-Schraubendreher",
+        "nodeIndex": 35
+    },
+    {
+        "nan": 7800000,
+        "name": "Schraubendreher-Set",
+        "nodeIndex": 35
+    },
+    {
+        "nan": 7900000,
+        "name": "Diamanttrennscheibe",
+        "nodeIndex": 30
+    },
+    {
+        "nan": 8100000,
+        "name": "Ersatzklinge",
+        "nodeIndex": 55
+    },
+    {
+        "nan": 8200000,
+        "name": "Glasschneider",
+        "nodeIndex": 30
+    },
+    {
+        "nan": 8300000,
+        "name": "Bit-Schraubendreher",
+        "nodeIndex": 35
+    },
+    {
+        "nan": 8400000,
+        "name": "Lochsäge",
+        "nodeIndex": 20
+    },
+    {
+        "nan": 8500000,
+        "name": "Rundfeile",
+        "nodeIndex": 55
+    },
+    {
+        "nan": 8600000,
+        "name": "Bauschaum",
+        "nodeIndex": 110
+    },
+    {
+        "nan": 8700000,
+        "name": "Glättekelle",
+        "nodeIndex": 55
+    },
+    {
+        "nan": 8800000,
+        "name": "Nylonhammer",
+        "nodeIndex": 15
+    },
+    {
+        "nan": 8900000,
+        "name": "Flachmeißel",
+        "nodeIndex": 55
+    },
+    {
+        "nan": 9100000,
+        "name": "Rundschlinge",
+        "nodeIndex": 100
+    },
+    {
+        "nan": 9200000,
+        "name": "Klemmbrett",
+        "nodeIndex": 95
+    },
+    {
+        "nan": 9300000,
+        "name": "Gerüstbock",
+        "nodeIndex": 100
+    },
+    {
+        "nan": 9400000,
+        "name": "Schubkarre",
+        "nodeIndex": 100
+    },
+    {
+        "nan": 9500000,
+        "name": "Kniepolster",
+        "nodeIndex": 95
+    },
+    {
+        "nan": 9600000,
+        "name": "Markierspray",
+        "nodeIndex": 60
+    },
+    {
+        "nan": 9700000,
+        "name": "Baustellenradio",
+        "nodeIndex": 105
+    },
+    {
+        "nan": 9800000,
+        "name": "Schweißgerät",
+        "nodeIndex": 115
+    },
+    {
+        "nan": 9900000,
+        "name": "Streifenschneider",
+        "nodeIndex": 30
+    },
+    {
+        "nan": 1111111,
+        "name": "Bit-Adapter",
+        "nodeIndex": 35
+    },
+    {
+        "nan": 2222222,
+        "name": "Fuchsschwanz",
+        "nodeIndex": 30
+    },
+    {
+        "nan": 3333333,
+        "name": "Bandschleifer",
+        "nodeIndex": 70
+    },
+    {
+        "nan": 4444444,
+        "name": "Elektrohobel",
+        "nodeIndex": 70
     }
 ]

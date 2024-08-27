@@ -422,3 +422,18 @@ const html5QrcodeScanner = new Html5QrcodeScanner(
   { fps: 10, qrbox: { width: 250, height: 250 } },
   /* verbose= */ false)
 html5QrcodeScanner.render(onScanSuccess, onScanFailure)
+
+// Request permission for iOS 13+ devices
+if (
+  DeviceMotionEvent &&
+  typeof DeviceMotionEvent.requestPermission === "function"
+) {
+  DeviceMotionEvent.requestPermission();
+}
+
+window.addEventListener("deviceorientation", handleOrientation);
+
+function handleOrientation(event) {
+  let orientation = event.webkitCompassHeading.toFixed(10)
+  map.setBearing(orientation)
+}

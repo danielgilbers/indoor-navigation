@@ -62,7 +62,8 @@ export function findProduct (query) {
 
 export function searchProducts (query) {
   const fuse = new Fuse(products, {
-    keys: ['name']
+    keys: ['name'],
+    threshold: 0.3
   })
-  return fuse.search(query)
+  return fuse.search(query, { limit: 7 })
 }

@@ -76,7 +76,6 @@ class Node extends L.marker {
 let nodeA = null
 const loadedGraph = await loadJSON()
 const nodes = []
-export const products = await loadProducts()
 
 // JSON file for download
 let textFile = null

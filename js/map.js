@@ -423,18 +423,18 @@ const html5QrcodeScanner = new Html5QrcodeScanner(
   /* verbose= */ false)
 html5QrcodeScanner.render(onScanSuccess, onScanFailure)
 
-// Request permission for iOS 13+ devices
-if (
-  DeviceOrientationEvent &&
-  typeof DeviceOrientationEvent.requestPermission === 'function'
-) {
-  DeviceOrientationEvent.requestPermission()
-}
-
 window.addEventListener('deviceorientation', handleOrientation)
 
 function handleOrientation (event) {
   const bias = 120 // rotation of png
   const orientation = 360 - event.webkitCompassHeading
   map.setBearing(orientation + bias)
+}
+
+// Request permission for iOS 13+ devices
+if (
+  DeviceOrientationEvent &&
+  typeof DeviceOrientationEvent.requestPermission === 'function'
+) {
+  DeviceOrientationEvent.requestPermission()
 }

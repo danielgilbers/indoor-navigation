@@ -1,7 +1,7 @@
 'use strict'
 
 import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.mjs'
+import Fuse from 'https://unpkg.com/fuse.js@7.0.0/dist/fuse.basic.min.mjs'
 import { map, loadJSON } from './map.js'
 
 const loadedGraph = await loadJSON()

@@ -4,8 +4,12 @@ import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import Fuse from 'https://unpkg.com/fuse.js@7.0.0/dist/fuse.basic.min.mjs'
 import { map } from './map.js'
 import { loadJSON } from './Graph.js'
+import Astar from './Pathfinding.js'
+import astar from './astar.js'
 
-const loadedGraph = await loadJSON()
+const loadedGraph = await loadJSON().then(() => {
+  const astar = new Astar(loadedGraph)
+})
 
 /**
  * Class for products
@@ -63,6 +67,7 @@ async function loadProducts () {
  */
 export function findProduct (query) {
   const found = products.find((element) => element.name === query)
+
 
   return found
 }

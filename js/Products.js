@@ -2,14 +2,15 @@
 
 import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import Fuse from 'https://unpkg.com/fuse.js@7.0.0/dist/fuse.basic.min.mjs'
-import { map, loadJSON } from './map.js'
+import { map } from './map.js'
+import { loadJSON } from './Graph.js'
 
 const loadedGraph = await loadJSON()
 
 /**
  * Class for products
  */
-export class Product {
+class Product {
   /**
    * Create a product
    * @param {Object} Object containing nan, name and nodeIndex
@@ -42,7 +43,7 @@ const products = await loadProducts()
 /**
  * Load JSON data of products
  */
-export async function loadProducts () {
+async function loadProducts () {
   const payload = []
 
   try {

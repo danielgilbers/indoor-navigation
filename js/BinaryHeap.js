@@ -45,7 +45,7 @@ export default class BinaryHeap {
     }
   }
 
-  build =() => {
+  build = () => {
     for (let i = (this.content.length - 1) / 2 - 1; i >= 0; i--) {
       this.siftDown(i)
     }

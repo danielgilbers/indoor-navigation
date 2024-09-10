@@ -9,3 +9,16 @@ test('swap elements', () => {
   expect(heap.content[1]).toBe(1)
   expect(heap.content[2]).toBe(3)
 })
+
+test('sift down', () => {
+    const heap = new BinaryHeap(function(node) {
+        return node
+    })
+    heap.content = [1,2,0]
+    let sorted = [0,1,2]
+    console.log(heap.content)
+    heap.siftDown(0)
+    console.log(heap.content)
+
+    expect(heap.content).toStrictEqual(sorted)
+})

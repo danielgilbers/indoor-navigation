@@ -1,3 +1,4 @@
+/* global L */
 'use strict'
 
 import { map, toggleGraphUI, graphUI } from './map.js'

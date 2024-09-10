@@ -1,3 +1,4 @@
+/* global L */
 'use strict'
 
 import BinaryHeap from './BinaryHeap.js'

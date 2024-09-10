@@ -15,11 +15,6 @@ export default class BinaryHeap {
   }
 
   swap = (x, y) => {
-    /*
-        let temp = this.content[x]
-        this.content[x] = this.content[y]
-        this.content[y] = temp
-        */
     [this.content[x], this.content[y]] = [this.content[y], this.content[x]]
   }
 
@@ -29,12 +24,12 @@ export default class BinaryHeap {
     let min = index
     const calculatedCost = this.scoreFunction(this.content[index])
     console.log('Calculated: ' + calculatedCost)
-    if (leftIndex < this.content.length - 1) {
+    if (leftIndex < this.content.length) {
       if (this.scoreFunction(this.content[leftIndex]) < calculatedCost) {
         min = leftIndex
       }
     }
-    if (rightIndex < this.content.length - 1) {
+    if (rightIndex < this.content.length) {
       if (this.scoreFunction(this.content[rightIndex]) < calculatedCost) {
         min = rightIndex
       }
@@ -46,7 +41,8 @@ export default class BinaryHeap {
   }
 
   build = () => {
-    for (let i = (this.content.length - 1) / 2 - 1; i >= 0; i--) {
+    for (let i = ((this.content.length - 1) / 2) - 1; i >= 0; i--) {
+      console.log('Iteration: ' + this.content.length)
       this.siftDown(i)
     }
   }

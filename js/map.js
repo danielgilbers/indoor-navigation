@@ -1,3 +1,4 @@
+/* global L, bootstrap, Html5QrcodeScanner, DeviceOrientationEvent */
 'use strict'
 
 import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
@@ -95,7 +96,7 @@ searchBar.addEventListener('keyup', function (event) {
   }
   // send event
   if (event.key === 'Enter') {
-    sendSearchQuery(inputValue)
+    window.sendSearchQuery(inputValue)
   }
 })
 

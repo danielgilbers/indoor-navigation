@@ -1,3 +1,4 @@
+/* global test, expect */
 import BinaryHeap from '../BinaryHeap'
 
 test('swap elements', () => {
@@ -11,14 +12,14 @@ test('swap elements', () => {
 })
 
 test('sift down', () => {
-    const heap = new BinaryHeap(function(node) {
-        return node
-    })
-    heap.content = [1,2,0]
-    let sorted = [0,1,2]
-    console.log(heap.content)
-    heap.siftDown(0)
-    console.log(heap.content)
+  const heap = new BinaryHeap(function (node) {
+    return node
+  })
+  heap.content = [1, 2, 0]
+  const sorted = [0, 1, 2]
+  console.log(heap.content)
+  heap.build()
+  console.log(heap.content)
 
-    expect(heap.content).toStrictEqual(sorted)
+  expect(heap.content).toStrictEqual(sorted)
 })

@@ -1,9 +1,8 @@
 /* global L */
 'use strict'
 
+import '../node_modules/leaflet/dist/leaflet.js'
 import BinaryHeap from './BinaryHeap.js'
-
-// import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 
 /**
  * Class for A*-Pathfinding
@@ -30,35 +29,34 @@ export default class Astar {
     console.log('Suche Weg von ' + start.index + ' nach ' + end.index)
     this.cleanDirty()
 
-    const openHeap = new BinaryHeap()
+    const openHeap = new BinaryHeap(function (node) {
+      return node.previousCost + node.estimatedCost
+    })
 
     const closestNode = start
     start.estimatedCost = this.heuristic(start, end)
   }
 
-  markDirty = (node) => {
+  markDirty (node) {
     this.dirtyNodes.push(node)
   }
 
-  cleanDirty = () => {
+  cleanDirty () {
     for (const node of this.dirtyNodes) {
       this.cleanNode(node)
     }
     this.dirtyNodes = []
   }
 
-  cleanNode = (node) => {
+  cleanNode (node) {
     node.previousCost = 0 // g(x)
     node.estimatedCost = 0 // h(x)
-    node.calculatedCost = () => {
-      return this.previousCost + this.estimatedCost
-    }
     node.visited = false
     node.closed = false
     node.parent = null
   }
 
-  heuristic = (start, end) => {
-    return L.point(start.latlng).distanceTo(L.point(end.latlng))
+  heuristic (start, end) {
+    return L.point(start.latlng.lat, start.latlng.lng).distanceTo(L.point(end.latlng.lat, end.latlng.lng))
   }
 }

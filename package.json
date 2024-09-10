@@ -13,9 +13,14 @@
   "jest": {
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
-    }
+    },
+    "testEnvironment": "jsdom"
   },
   "standard": {
     "parser": "@babel/eslint-parser"
+  },
+  "dependencies": {
+    "jest-environment-jsdom": "^29.7.0",
+    "leaflet": "^1.9.4"
   }
 }

@@ -1,7 +1,8 @@
 /* global L, bootstrap, Html5QrcodeScanner, DeviceOrientationEvent */
 'use strict'
 
-import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+// import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+import '../node_modules/leaflet/dist/leaflet.js'
 import 'https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate-src.js'
 import 'https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.min.js'
 import { findProduct, searchProducts } from './Products.js'

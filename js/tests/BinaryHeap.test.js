@@ -11,15 +11,13 @@ test('swap elements', () => {
   expect(heap.content[2]).toBe(3)
 })
 
-test('sift down', () => {
+test('heapsort', () => {
   const heap = new BinaryHeap(function (node) {
     return node
   })
-  heap.content = [1, 2, 0]
-  const sorted = [0, 1, 2]
-  console.log(heap.content)
-  heap.build()
-  console.log(heap.content)
+  heap.content = [1, 2, 0, 500, 69]
+  const sorted = [0, 1, 2, 69, 500]
+  heap.sort()
 
   expect(heap.content).toStrictEqual(sorted)
 })

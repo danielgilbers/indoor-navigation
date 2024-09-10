@@ -32,7 +32,7 @@
     })
   }
 
-  var astar = {
+  const astar = {
   /**
   * Perform an A* Search on a graph given a start and end node.
   * @param {Graph} graph

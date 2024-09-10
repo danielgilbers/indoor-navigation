@@ -35,6 +35,13 @@ export default class Astar {
 
     const closestNode = start
     start.estimatedCost = this.heuristic(start, end)
+    this.markDirty(start)
+
+    /*
+    while (openHeap.content.length > 0) {
+      const currentNode = openHeap.pop()
+    }
+      */
   }
 
   markDirty (node) {

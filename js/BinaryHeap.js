@@ -83,4 +83,13 @@ export default class BinaryHeap {
       this.#siftDown(0, size)
     }
   }
+
+  /**
+   * Adds object to content array
+   * @param {Object} node
+   */
+  push (node) {
+    this.content.push(node)
+    this.#siftDown(this.content.length - 1, this.content.length)
+  }
 }

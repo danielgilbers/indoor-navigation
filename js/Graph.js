@@ -11,15 +11,15 @@ class Node extends L.marker {
    * Create a node and a marker
    * @param {LatLng} latlng yx-Coordinates
    */
-  constructor(latlng) {
-    super(latlng); // Marker
-    this.latlng = latlng;
-    this.links = [];
-    this.index = nodes.length;
-    const self = this;
-    nodes.push({ latlng, get index() { return self.index; }, get links() { return self.links; } });
-    this.on('click', this.clickOnNode);
-    this.addTo(map);
+  constructor (latlng) {
+    super(latlng) // Marker
+    this.latlng = latlng
+    this.links = []
+    this.index = nodes.length
+    const self = this
+    nodes.push({ latlng, get index () { return self.index }, get links () { return self.links } })
+    this.on('click', this.clickOnNode)
+    this.addTo(map)
   }
 
   /**
@@ -27,8 +27,8 @@ class Node extends L.marker {
    * @param {*} e
    */
   clickOnNode = (e) => {
-    checkGraphToggle() && checkAB(this);
-  };
+    checkGraphToggle() && checkAB(this)
+  }
 
   /**
    * Create an edge to targetnode
@@ -36,15 +36,15 @@ class Node extends L.marker {
    */
   addEdge = (target) => {
     // Write linking nodes into node
-    this.links.push(target.index);
-    target.links.push(this.index);
+    this.links.push(target.index)
+    target.links.push(this.index)
 
-    const edge = new L.polyline([this.latlng, target.latlng], { bubblingMouseEvents: false });
-    edge.nodeA = this;
-    edge.nodeB = target;
-    edge.on('click', this.clickOnEdge);
-    edge.addTo(map);
-  };
+    const edge = new L.polyline([this.latlng, target.latlng], { bubblingMouseEvents: false })
+    edge.nodeA = this
+    edge.nodeB = target
+    edge.on('click', this.clickOnEdge)
+    edge.addTo(map)
+  }
 
   /**
    * Add node to edge
@@ -52,21 +52,21 @@ class Node extends L.marker {
    */
   clickOnEdge = (e) => {
     if (checkGraphToggle()) {
-      const edge = e.target;
+      const edge = e.target
       // Create new node
-      const node = new Node(e.latlng);
-      checkAB(node);
+      const node = new Node(e.latlng)
+      checkAB(node)
       // Create new edge
-      node.addEdge(edge.nodeA);
-      node.addEdge(edge.nodeB);
+      node.addEdge(edge.nodeA)
+      node.addEdge(edge.nodeB)
       // remove old edge
-      let i = edge.nodeA.links.indexOf(edge.nodeB.index);
-      edge.nodeA.links.splice(i, 1);
-      i = edge.nodeB.links.indexOf(edge.nodeA.index);
-      edge.nodeB.links.splice(i, 1);
-      edge.remove();
+      let i = edge.nodeA.links.indexOf(edge.nodeB.index)
+      edge.nodeA.links.splice(i, 1)
+      i = edge.nodeB.links.indexOf(edge.nodeA.index)
+      edge.nodeB.links.splice(i, 1)
+      edge.remove()
     }
-  };
+  }
 }
 
 // Graph variables
@@ -80,7 +80,7 @@ const nodes = []
  *
  * @param {Node} node
  */
-function checkAB(node) {
+function checkAB (node) {
   if (!nodeA) {
     nodeA = node
   } else {
@@ -93,7 +93,7 @@ function checkAB(node) {
  * Create new node and check for start or end
  * @param {*} e
  */
-export function clickOnMap(e) {
+export function clickOnMap (e) {
   checkGraphToggle() && checkAB(new Node(e.latlng))
 }
 
@@ -102,7 +102,7 @@ export function clickOnMap(e) {
  *
  * @returns true if graph toggle is checked and menu is hidden
  */
-function checkGraphToggle() {
+function checkGraphToggle () {
   const bsOffcanvas = document.getElementById('offcanvasMenu')
   return (!bsOffcanvas.classList.contains('showing') && toggleGraphUI.checked)
 }
@@ -140,7 +140,7 @@ let textFile = null
  * @param {*} text
  * @returns {String} URL you can use as a href
  */
-function makeTextFile(text) {
+function makeTextFile (text) {
   const data = new Blob([text], { type: 'text/plain' })
 
   // If we are replacing a previously generated file we need to
@@ -157,7 +157,7 @@ function makeTextFile(text) {
 /**
  * Load JSON data of graph
  */
-export async function loadJSON() {
+export async function loadJSON () {
   const payload = []
 
   try {
@@ -174,7 +174,7 @@ export async function loadJSON() {
  * Create nodes and edges of graph on map
  * @param {Array} graph Array of node data
  */
-function drawGraph(graph) {
+function drawGraph (graph) {
   graph.forEach((element) => {
     const node = new Node(element.latlng)
     element.links.forEach((link) => {

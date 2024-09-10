@@ -24,7 +24,7 @@ export const map = L.map('map', {
   touchRotate: true
 })
 
-map.on('click', clickOnMap);
+map.on('click', clickOnMap)
 
 // Add background image to map
 const imageOverlay = L.imageOverlay(image, bounds)
@@ -259,7 +259,7 @@ html5QrcodeScanner.render(onScanSuccess, onScanFailure)
 
 /**
  * Hande the device orientation
- * @param {DeviceOrientationEvent} event 
+ * @param {DeviceOrientationEvent} event
  */
 function handleOrientation (event) {
   const bias = 120 // rotation of png

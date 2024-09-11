@@ -14,21 +14,13 @@ export default class BinaryHeap {
   }
 
   /**
-   * Get index of left child
+   * Get index of left and right child
    * @param {Number} parentIndex
-   * @returns {Number} Index of left child
+   * @returns {Array} Indices of left and right child
    */
-  #leftIndex (parentIndex) {
-    return 2 * parentIndex + 1
-  }
-
-  /**
-   * Get index of right child
-   * @param {Number} parentIndex
-   * @returns {Number} Index of right child
-   */
-  #rightIndex (parentIndex) {
-    return 2 * parentIndex + 2
+  #childIndices (parentIndex) {
+    const leftChild = (parentIndex << 1) | 1 // Bit-Shifting: 2 * parentIndex + 1
+    return [leftChild, leftChild + 1]
   }
 
   /**
@@ -46,8 +38,7 @@ export default class BinaryHeap {
    * @param {Number} size
    */
   #siftDown (index, size) {
-    const leftIndex = this.#leftIndex(index)
-    const rightIndex = this.#rightIndex(index)
+    const [leftIndex, rightIndex] = this.#childIndices(index)
     let max = index
 
     if (leftIndex < size && this.scoreFunction(this.content[leftIndex]) > this.scoreFunction(this.content[max])) {

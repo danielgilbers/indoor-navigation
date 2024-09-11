@@ -49,6 +49,12 @@ export default class Astar {
     }
   }
 
+  /**
+   * Check all neighbors and push new or better ones to openList
+   * @param {Node} currentNode
+   * @param {BinaryHeap} openList
+   * @param {Node} end
+   */
   expandNode (currentNode, openList, end) {
     const neighbors = this.getNeighbors(currentNode)
 
@@ -108,7 +114,20 @@ export default class Astar {
     return L.point(start.latlng.lat, start.latlng.lng).distanceTo(L.point(end.latlng.lat, end.latlng.lng))
   }
 
+  /**
+   * Return Array of path nodes
+   * @param {Node} node
+   * @returns {Array} path
+   */
   pathTo (node) {
-    console.log('Pfad gefunden')
+    let curr = node
+    const path = []
+    path.unshift(curr)
+    do {
+      curr = this.graph[curr.parent]
+      path.unshift(curr)
+    } while (curr.parent != null)
+    console.log(path)
+    return path
   }
 }

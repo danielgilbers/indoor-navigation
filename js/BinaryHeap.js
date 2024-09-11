@@ -46,19 +46,19 @@ export default class BinaryHeap {
    * @param {Number} index
    * @param {Number} size
    */
-  #siftDown (index, size) {
+  #siftDown (index) {
     const [leftIndex, rightIndex] = this.#childIndices(index)
     let min = index
 
-    if (leftIndex < size && this.scoreFunction(this.content[leftIndex]) < this.scoreFunction(this.content[min])) {
+    if (leftIndex < this.content.length && this.scoreFunction(this.content[leftIndex]) < this.scoreFunction(this.content[min])) {
       min = leftIndex
     }
-    if (rightIndex < size && this.scoreFunction(this.content[rightIndex]) < this.scoreFunction(this.content[min])) {
+    if (rightIndex < this.content.length && this.scoreFunction(this.content[rightIndex]) < this.scoreFunction(this.content[min])) {
       min = rightIndex
     }
     if (min !== index) {
       this.swap(index, min)
-      this.#siftDown(min, size)
+      this.#siftDown(min)
     }
   }
 
@@ -67,17 +67,15 @@ export default class BinaryHeap {
    */
   build () {
     for (let i = ((this.content.length - 1) >> 1); i >= 0; i--) {
-      this.#siftDown(i, this.content.length)
+      this.#siftDown(i)
     }
   }
 
   /**
-   * Decrease value and let it bubble up
-   * @param {Number} index Index of element to change
-   * @param {Object} newNode Value of element to change
+   * Bubble last value up if it is lower than parent
    */
-  #decrease (index, newNode) {
-    this.content[index] = newNode
+  #bubbleUp () {
+    let index = this.content.length - 1
     let parentIndex = this.#parentIndex(index)
     while (index > 0 && this.scoreFunction(this.content[index]) < this.scoreFunction(this.content[parentIndex])) {
       this.swap(index, parentIndex)
@@ -92,6 +90,20 @@ export default class BinaryHeap {
    */
   push (node) {
     this.content.push(node)
-    this.#decrease(this.content.length - 1, node)
+    this.#bubbleUp()
+  }
+
+  /**
+   * Pop root element and rebuild heap
+   * @returns lowest element
+   */
+  pop () {
+    const result = this.content[0]
+    const end = this.content.pop()
+    if (this.content.length > 0) {
+      this.content[0] = end
+      this.#siftDown(0)
+    }
+    return result
   }
 }

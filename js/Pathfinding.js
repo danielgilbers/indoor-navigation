@@ -142,9 +142,7 @@ export default class Astar {
   }
 
   hideRoute () {
-    console.log(this.polyline)
     if (this.polyline) {
-      console.log('remove...')
       this.polyline.remove()
     }
   }

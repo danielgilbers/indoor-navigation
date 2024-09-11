@@ -66,7 +66,7 @@ const products = await loadProducts()
  */
 export function findProduct (query) {
   const found = products.find((element) => element.name === query)
-  console.log(astar.search(loadedGraph[0], loadedGraph[found.nodeIndex]))
+  astar.search(loadedGraph[0], loadedGraph[found.nodeIndex])
 
   return found
 }

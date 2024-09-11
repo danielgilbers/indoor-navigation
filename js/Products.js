@@ -10,6 +10,7 @@ import Astar from './Pathfinding.js'
 const loadedGraph = await loadJSON()
 const astar = new Astar(loadedGraph)
 console.log(astar)
+astar.search(loadedGraph[0], loadedGraph[100])
 
 /**
  * Class for products

@@ -25,11 +25,10 @@ export default class Astar {
      * @param {Node} start Start Node
      * @param {Node} end End Node
      */
-  search = (start, end) => {
-    console.log('Suche Weg von ' + start.index + ' nach ' + end.index)
+  search (start, end) {
     this.cleanDirty()
 
-    const openHeap = new BinaryHeap(function (node) {
+    const openList = new BinaryHeap(function (node) {
       return node.previousCost + node.estimatedCost
     })
 
@@ -37,11 +36,48 @@ export default class Astar {
     start.estimatedCost = this.heuristic(start, end)
     this.markDirty(start)
 
-    /*
-    while (openHeap.content.length > 0) {
-      const currentNode = openHeap.pop()
+    openList.push(start)
+
+    while (openList.content.length > 0) {
+      const currentNode = openList.pop()
+
+      if (currentNode === end) {
+        return this.pathTo(currentNode)
+      }
+
+      currentNode.closed = true
+
+      const neighbors = this.getNeighbors(currentNode)
+
+      for (const neighbor of neighbors) {
+        if (neighbor.closed) {
+          continue
+        }
+        const linkCost = currentNode.previousCost + this.heuristic(currentNode, neighbor)
+
+        if (neighbor.visited && linkCost >= neighbor.previousCost) {
+          continue
+        }
+
+        neighbor.visited = true
+        neighbor.parent = currentNode.index
+        neighbor.previousCost = linkCost
+        neighbor.estimatedCost = this.heuristic(neighbor, end)
+
+        openList.push(neighbor)
+        this.markDirty(neighbor)
+      }
     }
-      */
+  }
+
+  getNeighbors (node) {
+    const result = []
+
+    for (const index of node.links) {
+      result.push(this.graph[index])
+    }
+
+    return result
   }
 
   markDirty (node) {
@@ -65,5 +101,9 @@ export default class Astar {
 
   heuristic (start, end) {
     return L.point(start.latlng.lat, start.latlng.lng).distanceTo(L.point(end.latlng.lat, end.latlng.lng))
+  }
+
+  pathTo (node) {
+    console.log('Pfad gefunden')
   }
 }

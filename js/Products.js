@@ -41,8 +41,6 @@ class Product {
   }
 }
 
-const products = await loadProducts()
-
 /**
  * Load JSON data of products
  */
@@ -58,6 +56,8 @@ async function loadProducts () {
     console.error('Fehler beim Laden der Produkte:', error)
   }
 }
+
+const products = await loadProducts()
 
 /**
  * Search for product name

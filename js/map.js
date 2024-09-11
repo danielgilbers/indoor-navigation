@@ -109,7 +109,7 @@ window.sendSearchQuery = (inputValue) => {
   const product = findProduct(inputValue)
   if (product) {
     if (lastProduct) {
-      lastProduct.hidePosition()
+      lastProduct.hideMarker()
     }
     product.showMarker()
     lastProduct = product

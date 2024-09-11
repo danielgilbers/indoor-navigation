@@ -3,6 +3,7 @@
 
 import '../node_modules/leaflet/dist/leaflet.js'
 import BinaryHeap from './BinaryHeap.js'
+import { map } from './map.js'
 
 /**
  * Class for A*-Pathfinding
@@ -122,12 +123,29 @@ export default class Astar {
   pathTo (node) {
     let curr = node
     const path = []
-    path.unshift(curr)
     do {
-      curr = this.graph[curr.parent]
       path.unshift(curr)
+      curr = this.graph[curr.parent]
     } while (curr.parent != null)
-    console.log(path)
+    this.drawRoute(path)
     return path
+  }
+
+  drawRoute (path) {
+    this.hideRoute()
+    const pathLatLngs = []
+    for (const node of path) {
+      pathLatLngs.push(node.latlng)
+    }
+    this.polyline = new L.polyline([pathLatLngs])
+    this.polyline.addTo(map)
+  }
+
+  hideRoute () {
+    console.log(this.polyline)
+    if (this.polyline) {
+      console.log('remove...')
+      this.polyline.remove()
+    }
   }
 }

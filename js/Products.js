@@ -9,8 +9,6 @@ import Astar from './Pathfinding.js'
 
 const loadedGraph = await loadJSON()
 const astar = new Astar(loadedGraph)
-console.log(astar)
-astar.search(loadedGraph[0], loadedGraph[100])
 
 /**
  * Class for products
@@ -68,6 +66,7 @@ async function loadProducts () {
  */
 export function findProduct (query) {
   const found = products.find((element) => element.name === query)
+  console.log(astar.search(loadedGraph[0], loadedGraph[found.nodeIndex]))
 
   return found
 }

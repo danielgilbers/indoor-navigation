@@ -10,6 +10,16 @@ test('swap elements', () => {
   expect(heap.content).toStrictEqual(swapped)
 })
 
+test('build heap', () => {
+  const heap = new BinaryHeap(function (node) {
+    return node
+  })
+  heap.content = [23, 1, 6, 19, 14, 18, 8, 24, 15]
+  heap.build()
+
+  expect(heap.content[0]).toBe(1)
+})
+
 test('push', () => {
   const heap = new BinaryHeap(function (node) {
     return node
@@ -20,4 +30,15 @@ test('push', () => {
   heap.push(newElement)
 
   expect(heap.content[0]).toBe(newElement)
+})
+
+test('pop', () => {
+  const heap = new BinaryHeap(function (node) {
+    return node
+  })
+  heap.content = [23, 1, 6, 19, 14, 18, 8, 24, 15]
+  const size = heap.content.length
+  heap.build()
+  expect(heap.pop()).toBe(1)
+  expect(heap.content.length).toBe(size - 1)
 })

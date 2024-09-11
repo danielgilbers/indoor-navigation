@@ -64,9 +64,11 @@ const products = await loadProducts()
  * @param {String} query Search String
  * @returns {Product} found Product
  */
-export function findProduct (query) {
+export function findProduct (query, userPosition) {
   const found = products.find((element) => element.name === query)
-  astar.search(loadedGraph[0], loadedGraph[found.nodeIndex])
+
+  const nearestNode = astar.nearestNode(userPosition, loadedGraph)
+  astar.search(nearestNode, loadedGraph[found.nodeIndex])
 
   return found
 }

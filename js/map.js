@@ -106,7 +106,7 @@ searchBar.addEventListener('keyup', function (event) {
  * @param {String} inputValue Searchquery
  */
 window.sendSearchQuery = (inputValue) => {
-  const product = findProduct(inputValue)
+  const product = findProduct(inputValue, userPosition)
   if (product) {
     if (lastProduct) {
       lastProduct.hideMarker()
@@ -158,8 +158,6 @@ function showList (query) {
     topControl.appendChild(searchList)
   }
 }
-
-window.findProduct = findProduct
 
 /**
  * Graph UI - Download-button

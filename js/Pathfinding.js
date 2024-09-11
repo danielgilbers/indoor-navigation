@@ -14,10 +14,10 @@ export default class Astar {
      * @param {Array} graph Array of Nodes
      */
   constructor (graph) {
-    for (const node of graph) {
+    this.graph = [...graph]
+    for (const node of this.graph) {
       this.cleanNode(node)
     }
-    this.graph = graph
     this.dirtyNodes = []
   }
 
@@ -123,9 +123,10 @@ export default class Astar {
   pathTo (node) {
     let curr = node
     const path = []
+    path.unshift(curr)
     do {
-      path.unshift(curr)
       curr = this.graph[curr.parent]
+      path.unshift(curr)
     } while (curr.parent != null)
     this.drawRoute(path)
     return path
@@ -145,5 +146,15 @@ export default class Astar {
     if (this.polyline) {
       this.polyline.remove()
     }
+  }
+
+  nearestNode (position, graph) {
+    const nearestHeap = new BinaryHeap(function (node) {
+      return L.point(position.lat, position.lng).distanceTo(L.point(node.latlng.lat, node.latlng.lng))
+    })
+    nearestHeap.content = [...graph]
+    nearestHeap.build()
+
+    return graph[nearestHeap.content[0].index]
   }
 }

@@ -32,7 +32,6 @@ export default class Astar {
       return node.previousCost + node.estimatedCost
     })
 
-    const closestNode = start
     start.estimatedCost = this.heuristic(start, end)
     this.markDirty(start)
 
@@ -46,27 +45,33 @@ export default class Astar {
       }
 
       currentNode.closed = true
+      this.expandNode(currentNode, openList, end)
+    }
+  }
 
-      const neighbors = this.getNeighbors(currentNode)
+  expandNode (currentNode, openList, end) {
+    const neighbors = this.getNeighbors(currentNode)
 
-      for (const neighbor of neighbors) {
-        if (neighbor.closed) {
-          continue
-        }
-        const linkCost = currentNode.previousCost + this.heuristic(currentNode, neighbor)
-
-        if (neighbor.visited && linkCost >= neighbor.previousCost) {
-          continue
-        }
-
-        neighbor.visited = true
-        neighbor.parent = currentNode.index
-        neighbor.previousCost = linkCost
-        neighbor.estimatedCost = this.heuristic(neighbor, end)
-
-        openList.push(neighbor)
-        this.markDirty(neighbor)
+    for (const neighbor of neighbors) {
+      if (neighbor.closed) {
+        continue
       }
+      const linkCost = currentNode.previousCost + this.heuristic(currentNode, neighbor)
+
+      if (neighbor.visited && linkCost >= neighbor.previousCost) {
+        continue
+      }
+
+      neighbor.parent = currentNode.index
+      neighbor.previousCost = linkCost
+      neighbor.estimatedCost = this.heuristic(neighbor, end)
+      if (!neighbor.visited) {
+        neighbor.visited = true
+        openList.push(neighbor)
+      } else {
+        openList.reScore(neighbor)
+      }
+      this.markDirty(neighbor)
     }
   }
 

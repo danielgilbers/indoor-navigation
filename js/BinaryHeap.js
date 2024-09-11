@@ -72,10 +72,9 @@ export default class BinaryHeap {
   }
 
   /**
-   * Bubble last value up if it is lower than parent
+   * Bubble value up if it is lower than parent
    */
-  #bubbleUp () {
-    let index = this.content.length - 1
+  #bubbleUp (index) {
     let parentIndex = this.#parentIndex(index)
     while (index > 0 && this.scoreFunction(this.content[index]) < this.scoreFunction(this.content[parentIndex])) {
       this.swap(index, parentIndex)
@@ -90,7 +89,7 @@ export default class BinaryHeap {
    */
   push (node) {
     this.content.push(node)
-    this.#bubbleUp()
+    this.#bubbleUp(this.content.length - 1)
   }
 
   /**
@@ -105,5 +104,13 @@ export default class BinaryHeap {
       this.#siftDown(0)
     }
     return result
+  }
+
+  /**
+   * Rescore node and bubble up
+   * @param {Object} node Node to rescore
+   */
+  reScore (node) {
+    this.#bubbleUp(this.content.indexOf(node))
   }
 }

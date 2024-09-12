@@ -239,7 +239,7 @@ function onScanSuccess (decodedText, decodedResult) {
   const scannedPosition = JSON.parse(decodedText) // QR Code text example: {"lat":55,"lng":500}
   userPosition = L.latLng(scannedPosition.lat, scannedPosition.lng)
   circle.setLatLng(userPosition)
-  map.panTo(userPosition)
+  map.flyTo(userPosition, 1)
   scannerModal.hide()
 }
 

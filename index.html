@@ -4,14 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Indoor Navigation">
     <title>Indoor Navigation</title>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="./node_modules/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/style.css">
     
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -40,7 +41,7 @@
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="toggleGraphUI" aria-checked="false"
                         onclick="activateGraphUI(); closeMenu()" onkeydown="activateGraphUI(); closeMenu()">
-                    <label class="form-check-label" for="flexSwitchCheckDefault">Graph Editor</label>
+                    <label class="form-check-label" for="toggleGraphUI">Graph Editor</label>
                 </div>
             </div>
         </div>

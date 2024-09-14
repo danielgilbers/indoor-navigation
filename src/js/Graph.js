@@ -74,7 +74,6 @@ class Node extends L.marker {
 // Graph variables
 /** startnode */
 let nodeA = null
-// const loadedGraph = await loadJSON()
 const nodes = []
 
 /**
@@ -154,22 +153,6 @@ function makeTextFile (text) {
   textFile = window.URL.createObjectURL(data)
 
   return textFile
-}
-
-/**
- * Load JSON data of graph
- */
-export async function loadJSON () {
-  const payload = []
-
-  try {
-    const response = await fetch('../data/zollstock/graph.json')
-    const jsonFeature = await response.json()
-    jsonFeature.forEach((element) => payload.push(element))
-    return payload
-  } catch (error) {
-    console.error('Fehler beim Laden der JSON-Daten:', error)
-  }
 }
 
 /**

@@ -1,5 +1,8 @@
 {
   "name": "indoor-navigation",
+  "sideEffects": [
+    "*.css"
+  ],
   "version": "1.0.0",
   "description": "[![Deploy to Pages](https://github.com/danielgilbers/indoor-navigation/actions/workflows/static.yml/badge.svg)](https://github.com/danielgilbers/indoor-navigation/actions/workflows/static.yml)\r [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)",
   "private": true,
@@ -20,7 +23,7 @@
   },
   "scripts": {
     "test": "jest",
-    "watch": "webpack -- watch",
+    "watch": "webpack --watch",
     "build": "webpack"
   },
   "jest": {

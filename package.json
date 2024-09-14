@@ -14,17 +14,21 @@
     "@babel/preset-env": "^7.25.4",
     "babel-jest": "^29.7.0",
     "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.0",
     "html-webpack-plugin": "^5.6.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "mini-css-extract-plugin": "^2.9.1",
     "standard": "^17.1.0",
     "style-loader": "^4.0.0",
+    "terser-webpack-plugin": "^5.3.10",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"
   },
   "scripts": {
     "test": "jest",
     "watch": "webpack --watch",
+    "stats": "webpack --profile --json > stats.json",
     "build": "webpack"
   },
   "jest": {

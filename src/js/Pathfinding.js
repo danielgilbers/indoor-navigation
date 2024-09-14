@@ -1,7 +1,7 @@
 /* global L */
 'use strict'
 
-import '../node_modules/leaflet/dist/leaflet.js'
+import 'leaflet'
 import BinaryHeap from './BinaryHeap.js'
 import { map } from './map.js'
 

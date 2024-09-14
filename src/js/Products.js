@@ -1,13 +1,15 @@
 /* global L */
 'use strict'
 
-import '../node_modules/leaflet/dist/leaflet.js'
-import Fuse from 'https://unpkg.com/fuse.js@7.0.0/dist/fuse.basic.min.mjs'
+import 'leaflet'
+import Fuse from 'fuse.js'
 import { map } from './map.js'
 import { loadJSON } from './Graph.js'
 import Astar from './Pathfinding.js'
+import loadedGraph from '../data/zollstock/graph.json'
+import productJSON from '../data/zollstock/products.json'
 
-const loadedGraph = await loadJSON()
+// const loadedGraph = await loadJSON()
 const astar = new Astar(loadedGraph)
 
 /**
@@ -48,7 +50,7 @@ async function loadProducts () {
   const payload = []
 
   try {
-    const response = await fetch('./map/products.json')
+    const response = await fetch('../data/zollstock/products.json')
     const jsonFeature = await response.json()
     jsonFeature.forEach((element) => payload.push(new Product(element)))
     return payload
@@ -57,7 +59,10 @@ async function loadProducts () {
   }
 }
 
-const products = await loadProducts()
+// const products = await loadProducts()
+const products = []
+productJSON.forEach((element) => products.push(new Product(element)))
+
 
 /**
  * Search for product name

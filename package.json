@@ -1,14 +1,27 @@
 {
+  "name": "indoor-navigation",
+  "version": "1.0.0",
+  "description": "[![Deploy to Pages](https://github.com/danielgilbers/indoor-navigation/actions/workflows/static.yml/badge.svg)](https://github.com/danielgilbers/indoor-navigation/actions/workflows/static.yml)\r [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)",
+  "private": true,
+  "author": "Daniel Gilbers",
+  "license": "BSD-2-Clause",
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.1",
     "@babel/plugin-transform-modules-commonjs": "^7.24.8",
     "@babel/preset-env": "^7.25.4",
     "babel-jest": "^29.7.0",
+    "css-loader": "^7.1.2",
     "jest": "^29.7.0",
-    "standard": "^17.1.0"
+    "jest-environment-jsdom": "^29.7.0",
+    "standard": "^17.1.0",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "watch": "webpack -- watch",
+    "build": "webpack"
   },
   "jest": {
     "transform": {
@@ -21,7 +34,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
-    "jest-environment-jsdom": "^29.7.0",
+    "fuse.js": "^7.0.0",
     "leaflet": "^1.9.4",
     "leaflet-rotate": "^0.2.8"
   }

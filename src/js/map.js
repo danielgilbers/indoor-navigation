@@ -1,15 +1,17 @@
-/* global L, bootstrap, Html5QrcodeScanner, DeviceOrientationEvent */
+/* global L, Html5QrcodeScanner, DeviceOrientationEvent */
 'use strict'
 
 // import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-import '../node_modules/leaflet/dist/leaflet.js'
-import '../node_modules/leaflet-rotate/dist/leaflet-rotate-src.js'
-import '../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'
+import 'leaflet'
+import 'leaflet-rotate'
+import { Modal, Offcanvas } from 'bootstrap'
 import { findProduct, searchProducts } from './Products.js'
 import { clickOnMap } from './Graph.js'
+import '../css/style.css'
+import positionDotImage from '../img/position-dot.png'
+import mapImage from '../data/zollstock/Zollstock-Modellv3.png'
 
 // Map image
-const image = './map/Zollstock-Modellv3.png'
 const boundy = 280
 const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]
@@ -29,7 +31,7 @@ export const map = L.map('map', {
 map.on('click', clickOnMap)
 
 // Add background image to map
-const imageOverlay = L.imageOverlay(image, bounds)
+const imageOverlay = L.imageOverlay(mapImage, bounds)
 imageOverlay.addTo(map)
 map.setView(userPosition, 1)
 
@@ -37,7 +39,7 @@ map.setView(userPosition, 1)
  * Close offcanvas menu
  */
 window.closeMenu = function () {
-  const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')
+  const bsOffcanvas = Offcanvas.getInstance('#offcanvasMenu')
   bsOffcanvas.hide()
 }
 
@@ -45,7 +47,7 @@ window.closeMenu = function () {
 const iconSize = 24
 const iconAnchor = iconSize / 2
 const positionDot = L.icon({
-  iconUrl: './img/position-dot.png',
+  iconUrl: positionDotImage,
   iconSize: [iconSize, iconSize],
   iconAnchor: [iconAnchor, iconAnchor]
 })
@@ -227,7 +229,7 @@ document.getElementsByClassName('leaflet-control-attribution')[0].remove()
 document.getElementsByClassName('leaflet-control-rotate')[0].remove()
 
 // QR Code scanner
-const scannerModal = new bootstrap.Modal('#qrScannerModal')
+const scannerModal = new Modal('#qrScannerModal')
 
 /**
  * Handle scanned code

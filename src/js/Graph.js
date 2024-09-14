@@ -2,6 +2,7 @@
 'use strict'
 
 import { map, toggleGraphUI, graphUI } from './map.js'
+import loadedGraph from '../data/zollstock/graph.json'
 
 /**
  * Class for nodes
@@ -73,7 +74,7 @@ class Node extends L.marker {
 // Graph variables
 /** startnode */
 let nodeA = null
-const loadedGraph = await loadJSON()
+// const loadedGraph = await loadJSON()
 const nodes = []
 
 /**
@@ -162,7 +163,7 @@ export async function loadJSON () {
   const payload = []
 
   try {
-    const response = await fetch('./map/graph.json')
+    const response = await fetch('../data/zollstock/graph.json')
     const jsonFeature = await response.json()
     jsonFeature.forEach((element) => payload.push(element))
     return payload

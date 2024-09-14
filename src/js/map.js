@@ -1,15 +1,17 @@
-/* global L, Html5QrcodeScanner, DeviceOrientationEvent */
+/* global L, DeviceOrientationEvent */
 'use strict'
 
 // import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import 'leaflet'
 import 'leaflet-rotate'
+import { Html5QrcodeScanner } from 'html5-qrcode'
 import { Modal, Offcanvas } from 'bootstrap'
 import { findProduct, searchProducts } from './Products.js'
 import { clickOnMap } from './Graph.js'
-import '../css/style.css'
 import positionDotImage from '../img/position-dot.png'
 import mapImage from '../data/zollstock/Zollstock-Modellv3.png'
+
+import '../css/style.css'
 
 // Map image
 const boundy = 280

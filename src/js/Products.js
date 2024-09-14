@@ -63,7 +63,6 @@ async function loadProducts () {
 const products = []
 productJSON.forEach((element) => products.push(new Product(element)))
 
-
 /**
  * Search for product name
  * @param {String} query Search String

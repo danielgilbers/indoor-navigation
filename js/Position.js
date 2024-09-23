@@ -11,6 +11,6 @@ export function rotationMatrix (event) {
 
 export function kFilter (arr) {
   const kFilter = new KalmanFilter()
-  const res = kFilter.filterAll(arr)
+  const res = kFilter.filterAll(arr).flat()
   return res
 }

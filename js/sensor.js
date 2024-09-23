@@ -6,17 +6,19 @@ let orientationArray = new Array(3)
 let accelerationArray = new Array(3)
 let globalX = 0
 let globalY = 0
+const lastValues = []
 
+// handleOrientation({ alpha: 69, beta: 32, gamma: 80, webkitCompassHeading: 359 })
+// handleMotion()
 function handleOrientation (event) {
   orientationArray = addValue([event.webkitCompassHeading, event.beta, event.gamma])
+  // orientationArray = addValue([30, 14, 69])
   updateFieldIfNotNull('Orientation_a', event.alpha)
   updateFieldIfNotNull('Orientation_b', event.beta)
   updateFieldIfNotNull('Orientation_g', event.gamma)
   updateFieldIfNotNull('Orientation_compass', event.webkitCompassHeading)
   incrementEventCount()
 }
-
-const lastValues = []
 
 function addValue (newValue) {
   if (lastValues.lengh >= 100) {
@@ -38,13 +40,14 @@ function updateFieldIfNotNull (fieldName, value, precision = 10) {
 
 function handleMotion (event) {
   accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z])
+  // accelerationArray = addValue([0.2, 0.1, 0.5])
   const acceleration = kFilter(accelerationArray)
   const orientation = kFilter(orientationArray)
 
-  const accel = acceleration[acceleration.lengh - 1]
-  const yaw = orientation[orientation.lengh - 1][0]
-  const pitch = orientation[orientation.lengh - 1][1]
-  const roll = orientation[orientation.lengh - 1][2]
+  const accel = acceleration[acceleration.length - 1]
+  const yaw = orientation[orientation.length - 1][0]
+  const pitch = orientation[orientation.length - 1][1]
+  const roll = orientation[orientation.length - 1][2]
   const groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
 
   if (!isNaN(groundAccel.ax)) {
@@ -68,6 +71,7 @@ function handleMotion (event) {
   updateFieldIfNotNull('Gyroscope_z', event.rotationRate.alpha)
   updateFieldIfNotNull('Gyroscope_x', event.rotationRate.beta)
   updateFieldIfNotNull('Gyroscope_y', event.rotationRate.gamma)
+
   incrementEventCount()
 }
 

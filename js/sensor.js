@@ -15,12 +15,14 @@ function handleOrientation (event) {
   incrementEventCount()
 }
 
-const lastTenValues = new Array(10).fill(0)
+const lastValues = []
 
 function addValue (newValue) {
-  lastTenValues.shift()
-  lastTenValues.push(newValue)
-  return lastTenValues
+  if (lastValues.lengh >= 1000) {
+    lastValues.shift()
+  }
+  lastValues.push(newValue)
+  return lastValues
 }
 
 function calculateStandardDeviation (arr) {

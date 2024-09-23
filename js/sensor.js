@@ -16,6 +16,7 @@ if (debug) {
 function handleOrientation (event) {
   if (debug) {
     orientationArray = addValue([30, 14, 69], orientationArray)
+    orientationArray = addValue([30, 14, 69], orientationArray)
   } else {
     orientationArray = addValue([event.webkitCompassHeading, event.beta, event.gamma], orientationArray)
   }
@@ -122,22 +123,3 @@ demoButton.onclick = function (e) {
     isRunning = true
   }
 }
-
-/*
-Light and proximity are not supported anymore by mainstream browsers.
-window.addEventListener('devicelight', function(e) {
-   document.getElementById("DeviceLight").innerHTML="AmbientLight current Value: "+e.value+" Max: "+e.max+" Min: "+e.min;
-});
-
-window.addEventListener('lightlevel', function(e) {
-   document.getElementById("Lightlevel").innerHTML="Light level: "+e.value;
-});
-
-window.addEventListener('deviceproximity', function(e) {
-   document.getElementById("DeviceProximity").innerHTML="DeviceProximity current Value: "+e.value+" Max: "+e.max+" Min: "+e.min;
-});
-
-window.addEventListener('userproximity', function(event) {
-   document.getElementById("UserProximity").innerHTML="UserProximity: "+event.near;
-});
-*/

@@ -80,8 +80,7 @@ export function getGroundAcceleration (accel, yaw, pitch, roll) {
 
 export function kFilter (arr) {
   const kFilter = new KalmanFilter({
-    observation: 3,
-    dynamic: 'constant-position'
+    observation: 3
   })
   const res = kFilter.filterAll(arr)
   return res

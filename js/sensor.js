@@ -1,24 +1,15 @@
 /* global DeviceMotionEvent */
 
-import { kFilter, getGroundAcceleration } from './Position.js'
-
-let yaw, pitch, roll
-let globalX = 0
-let globalY = 0
+import { kFilter } from './Position.js'
 
 function handleOrientation (event) {
-  yaw = event.webkitCompassHeading
-  pitch = event.beta
-  roll = event.gamma
   updateFieldIfNotNull('Orientation_a', event.alpha)
   updateFieldIfNotNull('Orientation_b', event.beta)
-  
   const arr = addValue(event.beta)
   updateFieldIfNotNull('std_dev_b', calculateStandardDeviation(arr))
   const arrKal = kFilter(arr)
   updateFieldIfNotNull('Orientation_b_kalman', arrKal[arrKal.length - 1])
   updateFieldIfNotNull('std_dev_b_kalman', calculateStandardDeviation(arr) - calculateStandardDeviation(arrKal))
-  
   updateFieldIfNotNull('Orientation_g', event.gamma)
   updateFieldIfNotNull('Orientation_compass', event.webkitCompassHeading)
   incrementEventCount()
@@ -51,16 +42,6 @@ function updateFieldIfNotNull (fieldName, value, precision = 10) {
 }
 
 function handleMotion (event) {
-  const accel = [event.acceleration.x, event.acceleration.y, event.acceleration.z]
-  const groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
-  if (!groundAccel.ax.isNaN()) {
-    globalX += groundAccel.ax
-    globalY += groundAccel.ay
-  }
-
-  updateFieldIfNotNull('X_position', groundAccel.ax)
-  updateFieldIfNotNull('Y_position', groundAccel.ay)
-
   updateFieldIfNotNull('Accelerometer_gx', event.accelerationIncludingGravity.x)
   updateFieldIfNotNull('Accelerometer_gy', event.accelerationIncludingGravity.y)
   updateFieldIfNotNull('Accelerometer_gz', event.accelerationIncludingGravity.z)
@@ -106,3 +87,22 @@ demoButton.onclick = function (e) {
     isRunning = true
   }
 }
+
+/*
+Light and proximity are not supported anymore by mainstream browsers.
+window.addEventListener('devicelight', function(e) {
+   document.getElementById("DeviceLight").innerHTML="AmbientLight current Value: "+e.value+" Max: "+e.max+" Min: "+e.min;
+});
+
+window.addEventListener('lightlevel', function(e) {
+   document.getElementById("Lightlevel").innerHTML="Light level: "+e.value;
+});
+
+window.addEventListener('deviceproximity', function(e) {
+   document.getElementById("DeviceProximity").innerHTML="DeviceProximity current Value: "+e.value+" Max: "+e.max+" Min: "+e.min;
+});
+
+window.addEventListener('userproximity', function(event) {
+   document.getElementById("UserProximity").innerHTML="UserProximity: "+event.near;
+});
+*/

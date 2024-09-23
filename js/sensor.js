@@ -71,7 +71,7 @@ function handleMotion (event) {
   const groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
 
   if (!isNaN(groundAccel.ax)) {
-    const intervall = 0.00002
+    const intervall = 0.02
     globalAX = globalAX * intervall + 0.5 * groundAccel.ax * Math.pow(intervall, 2)
     globalAY = globalAY * intervall + 0.5 * groundAccel.ay * Math.pow(intervall, 2)
     globalX = globalX + globalAX * intervall

@@ -3,6 +3,8 @@
 import { kFilter, getGroundAcceleration } from './Position.js'
 
 let yaw, pitch, roll
+let globalX = 0
+let globalY = 0
 
 function handleOrientation (event) {
   yaw = event.webkitCompassHeading
@@ -49,8 +51,11 @@ function updateFieldIfNotNull (fieldName, value, precision = 10) {
 function handleMotion (event) {
   const accel = [event.acceleration.x, event.acceleration.y, event.acceleration.z]
   const groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
-  updateFieldIfNotNull('X_position', groundAccel.ax)
-  updateFieldIfNotNull('Y_position', groundAccel.ay)
+  globalX += groundAccel.ax
+  globalY += groundAccel.ay
+
+  updateFieldIfNotNull('X_position', globalX)
+  updateFieldIfNotNull('Y_position', globalY)
 
   updateFieldIfNotNull('Accelerometer_gx', event.accelerationIncludingGravity.x)
   updateFieldIfNotNull('Accelerometer_gy', event.accelerationIncludingGravity.y)

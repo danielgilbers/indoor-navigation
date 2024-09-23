@@ -2,21 +2,15 @@
 
 import { kFilter, getGroundAcceleration } from './Position.js'
 
-let yaw, pitch, roll
+let orientationArray = new Array(3)
+let accelerationArray = new Array(3)
 let globalX = 0
 let globalY = 0
 
 function handleOrientation (event) {
-  yaw = event.webkitCompassHeading
-  pitch = event.beta
-  roll = event.gamma
+  orientationArray = addValue([event.webkitCompassHeading, event.beta, event.gamma])
   updateFieldIfNotNull('Orientation_a', event.alpha)
   updateFieldIfNotNull('Orientation_b', event.beta)
-  const arr = addValue(event.beta)
-  updateFieldIfNotNull('std_dev_b', calculateStandardDeviation(arr))
-  const arrKal = kFilter(arr)
-  updateFieldIfNotNull('Orientation_b_kalman', arrKal[arrKal.length - 1])
-  updateFieldIfNotNull('std_dev_b_kalman', calculateStandardDeviation(arr) - calculateStandardDeviation(arrKal))
   updateFieldIfNotNull('Orientation_g', event.gamma)
   updateFieldIfNotNull('Orientation_compass', event.webkitCompassHeading)
   incrementEventCount()
@@ -32,12 +26,6 @@ function addValue (newValue) {
   return lastValues
 }
 
-function calculateStandardDeviation (arr) {
-  const mean = arr.reduce((sum, value) => sum + value, 0) / arr.length
-  const variance = arr.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / arr.length
-  return Math.sqrt(variance)
-}
-
 function incrementEventCount () {
   const counterElement = document.getElementById('num-observed-events')
   const eventCount = parseInt(counterElement.innerHTML)
@@ -49,7 +37,14 @@ function updateFieldIfNotNull (fieldName, value, precision = 10) {
 }
 
 function handleMotion (event) {
-  const accel = [event.acceleration.x, event.acceleration.y, event.acceleration.z]
+  accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z])
+  const acceleration = kFilter(accelerationArray)
+  const orientation = kFilter(orientationArray)
+
+  const accel = acceleration[acceleration.lengh - 1]
+  const yaw = orientation[orientation.lengh - 1][0]
+  const pitch = orientation[orientation.lengh - 1][1]
+  const roll = orientation[orientation.lengh - 1][2]
   const groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
 
   if (!isNaN(groundAccel.ax)) {

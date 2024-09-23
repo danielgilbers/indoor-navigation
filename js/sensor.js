@@ -1,9 +1,15 @@
 /* global DeviceMotionEvent */
 
+import { kalmanFilter } from './Position.js'
+
 function handleOrientation (event) {
   updateFieldIfNotNull('Orientation_a', event.alpha)
   updateFieldIfNotNull('Orientation_b', event.beta)
-  updateFieldIfNotNull('std_dev_b', calculateStandardDeviation(addValue(event.beta)))
+  const arr = addValue(event.beta)
+  updateFieldIfNotNull('std_dev_b', calculateStandardDeviation(arr))
+  const arrKal = kalmanFilter(arr)
+  updateFieldIfNotNull('Orientation_b_kalman', arrKal[arrKal.length - 1])
+  updateFieldIfNotNull('std_dev_b_kalman', calculateStandardDeviation(arrKal))
   updateFieldIfNotNull('Orientation_g', event.gamma)
   updateFieldIfNotNull('Orientation_compass', event.webkitCompassHeading)
   incrementEventCount()

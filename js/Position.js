@@ -8,6 +8,8 @@ export function rotationMatrix (event) {
   return rotationMatrix
 }
 
-export function kalmanFilter (event) {
+export function kalmanFilter (arr) {
   const kFilter = new KalmanFilter()
+  const res = kFilter.filterAll(arr)
+  return res
 }

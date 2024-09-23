@@ -58,8 +58,8 @@ function handleMotion (event) {
     globalY += groundAccel.ay
   }
 
-  updateFieldIfNotNull('X_position', globalX)
-  updateFieldIfNotNull('Y_position', globalY)
+  updateFieldIfNotNull('X_position', groundAccel.ax)
+  updateFieldIfNotNull('Y_position', groundAccel.ay)
 
   updateFieldIfNotNull('Accelerometer_gx', event.accelerationIncludingGravity.x)
   updateFieldIfNotNull('Accelerometer_gy', event.accelerationIncludingGravity.y)

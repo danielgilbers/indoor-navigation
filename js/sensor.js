@@ -3,9 +3,24 @@
 function handleOrientation (event) {
   updateFieldIfNotNull('Orientation_a', event.alpha)
   updateFieldIfNotNull('Orientation_b', event.beta)
+  updateFieldIfNotNull('std_dev_b', calculateStandardDeviation(addValue(event.beta)))
   updateFieldIfNotNull('Orientation_g', event.gamma)
   updateFieldIfNotNull('Orientation_compass', event.webkitCompassHeading)
   incrementEventCount()
+}
+
+const lastTenValues = new Array(10).fill(0)
+
+function addValue (newValue) {
+  lastTenValues.shift()
+  lastTenValues.push(newValue)
+  return lastTenValues
+}
+
+function calculateStandardDeviation (arr) {
+  const mean = arr.reduce((sum, value) => sum + value, 0) / arr.length
+  const variance = arr.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / arr.length
+  return Math.sqrt(variance)
 }
 
 function incrementEventCount () {

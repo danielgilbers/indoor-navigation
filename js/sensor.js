@@ -52,7 +52,7 @@ function updateFieldIfNotNull (fieldName, value, precision = 10) {
 
 function handleMotion (event) {
   const accel = [event.acceleration.x, event.acceleration.y, event.acceleration.z]
-  const groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
+  let groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
   if (!groundAccel.ax.isNaN()) {
     globalX += groundAccel.ax
     globalY += groundAccel.ay

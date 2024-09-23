@@ -7,7 +7,7 @@ function toRadians (deg) {
   return deg * (Math.PI / 180)
 }
 
-function rotateVector (accel, yaw, pitch, roll) {
+export function rotateVector (accel, yaw, pitch, roll) {
   const theta = toRadians(yaw)
   const beta = toRadians(pitch)
   const gamma = toRadians(roll)
@@ -65,7 +65,7 @@ function multiplyMatrixVector (matrix, vector) {
   return result
 }
 
-function getGroundAcceleration (accel, yaw, pitch, roll) {
+export function getGroundAcceleration (accel, yaw, pitch, roll) {
   // Berechne die globale Beschleunigung
   const globalAccel = rotateVector(accel, yaw, pitch, roll)
 

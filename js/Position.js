@@ -1,6 +1,9 @@
+/* global kalmanFilter */
 'use strict'
 
-import { KalmanFilter } from 'https://unpkg.com/kalman-filter@2.3.0/index.js'
+import './kalman-filter.min.js'
+
+const { KalmanFilter } = kalmanFilter
 
 export function rotationMatrix (event) {
   const rotationMatrix = [] // ???
@@ -8,6 +11,8 @@ export function rotationMatrix (event) {
   return rotationMatrix
 }
 
-export function kalmanFilter (event) {
+export function kFilter (arr) {
   const kFilter = new KalmanFilter()
+  const res = kFilter.filterAll(arr)
+  return res
 }

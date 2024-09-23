@@ -1,6 +1,6 @@
 /* global DeviceMotionEvent */
 
-import { kFilter, getGroundAcceleration } from './Position.js'
+import { getGroundAcceleration, KalmanFilter } from './Position.js'
 
 const debug = false
 
@@ -10,6 +10,15 @@ let globalX = 0
 let globalY = 0
 let globalAX = 0
 let globalAY = 0
+let position = { x: 0, y: 0 }
+
+// Beispielaufruf
+const dt = 0.001 // Zeitintervall (z.B. 100 ms)
+const processNoise = 0.1 // Prozessrauschen
+const measurementNoise = 0.1 // Messrauschen
+const estimationError = 0.1 // Anfangsfehlerabschätzung
+
+const kalman = new KalmanFilter(dt, processNoise, measurementNoise, estimationError)
 
 if (debug) {
   handleOrientation({ alpha: 69, beta: 32, gamma: 80, webkitCompassHeading: 359 })
@@ -55,31 +64,35 @@ function handleMotion (event) {
     accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z], accelerationArray)
   }
 
-  console.log(accelerationArray)
-  console.log(orientationArray)
+  // const acceleration = kFilter(accelerationArray)
+  // const orientation = kFilter(orientationArray)
 
-  const acceleration = kFilter(accelerationArray)
-  const orientation = kFilter(orientationArray)
-
-  console.log(acceleration)
-  console.log(orientation)
-
+  /*
   const accel = acceleration[acceleration.length - 1]
   const yaw = orientation[orientation.length - 1][0]
   const pitch = orientation[orientation.length - 1][1]
   const roll = orientation[orientation.length - 1][2]
+  */
+  const accel = accelerationArray[accelerationArray.length - 1]
+  const yaw = orientationArray[orientationArray.length - 1][0]
+  const pitch = orientationArray[orientationArray.length - 1][1]
+  const roll = orientationArray[orientationArray.length - 1][2]
   const groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
 
   if (!isNaN(groundAccel.ax)) {
     const intervall = 0.02
+
+    // Beispiel: Sensordaten verwenden
+    position = updateKalmanFilter(groundAccel.ax, groundAccel.ay)
+
     globalAX = globalAX + groundAccel.ax * intervall
     globalAY = globalAY + groundAccel.ay * intervall
     globalX = globalX + globalAX * intervall + 0.5 * groundAccel.ax * Math.pow(intervall, 2)
     globalY = globalY + globalAY * intervall + 0.5 * groundAccel.ay * Math.pow(intervall, 2)
   }
 
-  updateFieldIfNotNull('X_position', globalX)
-  updateFieldIfNotNull('Y_position', globalY)
+  updateFieldIfNotNull('X_position', position.x)
+  updateFieldIfNotNull('Y_position', position.y)
 
   if (!debug) {
     updateFieldIfNotNull('Accelerometer_gx', event.accelerationIncludingGravity.x)
@@ -127,4 +140,13 @@ demoButton.onclick = function (e) {
     demoButton.classList.add('btn-danger')
     isRunning = true
   }
+}
+
+// In der Schleife, wo du deine Sensoren liest:
+function updateKalmanFilter (ax, ay) {
+  kalman.predict()
+  kalman.update(ax, ay)
+  const position = kalman.getPosition()
+  console.log(`Position: x=${position.x}, y=${position.y}`)
+  return position
 }

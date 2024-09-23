@@ -13,10 +13,10 @@ let globalAY = 0
 let position = { x: 0, y: 0 }
 
 // Beispielaufruf
-const dt = 0.001 // Zeitintervall (z.B. 100 ms)
-const processNoise = 0.1 // Prozessrauschen
-const measurementNoise = 0.1 // Messrauschen
-const estimationError = 0.1 // Anfangsfehlerabschätzung
+const dt = 0.1 // Zeitintervall (z.B. 100 ms)
+const processNoise = 0.01 // Prozessrauschen
+const measurementNoise = 0.01 // Messrauschen
+const estimationError = 0.01 // Anfangsfehlerabschätzung
 
 const kalman = new KalmanFilter(dt, processNoise, measurementNoise, estimationError)
 

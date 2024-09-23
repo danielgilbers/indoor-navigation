@@ -72,10 +72,10 @@ function handleMotion (event) {
 
   if (!isNaN(groundAccel.ax)) {
     const intervall = 0.02
-    globalAX = globalAX * intervall + 0.5 * groundAccel.ax * Math.pow(intervall, 2)
-    globalAY = globalAY * intervall + 0.5 * groundAccel.ay * Math.pow(intervall, 2)
-    globalX = globalX + globalAX * intervall
-    globalY = globalY + globalAY * intervall
+    globalAX = globalAX + groundAccel.ax * intervall
+    globalAY = globalAY + groundAccel.ay * intervall
+    globalX = globalX + globalAX * intervall + 0.5 * groundAccel.ax * Math.pow(intervall, 2)
+    globalY = globalY + globalAY * intervall + 0.5 * groundAccel.ay * Math.pow(intervall, 2)
   }
 
   updateFieldIfNotNull('X_position', globalX)

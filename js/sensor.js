@@ -2,17 +2,23 @@
 
 import { kFilter, getGroundAcceleration } from './Position.js'
 
-let orientationArray = new Array(3)
-let accelerationArray = new Array(3)
+const debug = false
+
+let orientationArray = []
+let accelerationArray = []
 let globalX = 0
 let globalY = 0
-const lastValues = []
 
-// handleOrientation({ alpha: 69, beta: 32, gamma: 80, webkitCompassHeading: 359 })
-// handleMotion()
+if (debug) {
+  handleOrientation({ alpha: 69, beta: 32, gamma: 80, webkitCompassHeading: 359 })
+  handleMotion()
+}
 function handleOrientation (event) {
-  orientationArray = addValue([event.webkitCompassHeading, event.beta, event.gamma])
-  // orientationArray = addValue([30, 14, 69])
+  if (debug) {
+    orientationArray = addValue([30, 14, 69], orientationArray)
+  } else {
+    orientationArray = addValue([event.webkitCompassHeading, event.beta, event.gamma], orientationArray)
+  }
   updateFieldIfNotNull('Orientation_a', event.alpha)
   updateFieldIfNotNull('Orientation_b', event.beta)
   updateFieldIfNotNull('Orientation_g', event.gamma)
@@ -20,7 +26,7 @@ function handleOrientation (event) {
   incrementEventCount()
 }
 
-function addValue (newValue) {
+function addValue (newValue, lastValues = []) {
   if (lastValues.length >= 100) {
     lastValues.shift()
   }
@@ -39,10 +45,21 @@ function updateFieldIfNotNull (fieldName, value, precision = 10) {
 }
 
 function handleMotion (event) {
-  accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z])
-  // accelerationArray = addValue([0.2, 0.1, 0.5])
+  if (debug) {
+    accelerationArray = addValue([0.2, 0.1, 0.5], accelerationArray)
+    accelerationArray = addValue([0.2, 0.1, 0.5], accelerationArray)
+  } else {
+    accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z], accelerationArray)
+  }
+
+  console.log(accelerationArray)
+  console.log(orientationArray)
+
   const acceleration = kFilter(accelerationArray)
   const orientation = kFilter(orientationArray)
+
+  console.log(acceleration)
+  console.log(orientation)
 
   const accel = acceleration[acceleration.length - 1]
   const yaw = orientation[orientation.length - 1][0]
@@ -58,20 +75,21 @@ function handleMotion (event) {
   updateFieldIfNotNull('X_position', globalX)
   updateFieldIfNotNull('Y_position', globalY)
 
-  updateFieldIfNotNull('Accelerometer_gx', event.accelerationIncludingGravity.x)
-  updateFieldIfNotNull('Accelerometer_gy', event.accelerationIncludingGravity.y)
-  updateFieldIfNotNull('Accelerometer_gz', event.accelerationIncludingGravity.z)
+  if (!debug) {
+    updateFieldIfNotNull('Accelerometer_gx', event.accelerationIncludingGravity.x)
+    updateFieldIfNotNull('Accelerometer_gy', event.accelerationIncludingGravity.y)
+    updateFieldIfNotNull('Accelerometer_gz', event.accelerationIncludingGravity.z)
 
-  updateFieldIfNotNull('Accelerometer_x', event.acceleration.x)
-  updateFieldIfNotNull('Accelerometer_y', event.acceleration.y)
-  updateFieldIfNotNull('Accelerometer_z', event.acceleration.z)
+    updateFieldIfNotNull('Accelerometer_x', event.acceleration.x)
+    updateFieldIfNotNull('Accelerometer_y', event.acceleration.y)
+    updateFieldIfNotNull('Accelerometer_z', event.acceleration.z)
 
-  updateFieldIfNotNull('Accelerometer_i', event.interval, 2)
+    updateFieldIfNotNull('Accelerometer_i', event.interval, 2)
 
-  updateFieldIfNotNull('Gyroscope_z', event.rotationRate.alpha)
-  updateFieldIfNotNull('Gyroscope_x', event.rotationRate.beta)
-  updateFieldIfNotNull('Gyroscope_y', event.rotationRate.gamma)
-
+    updateFieldIfNotNull('Gyroscope_z', event.rotationRate.alpha)
+    updateFieldIfNotNull('Gyroscope_x', event.rotationRate.beta)
+    updateFieldIfNotNull('Gyroscope_y', event.rotationRate.gamma)
+  }
   incrementEventCount()
 }
 

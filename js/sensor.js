@@ -27,7 +27,7 @@ function handleOrientation (event) {
 }
 
 function addValue (newValue, lastValues = []) {
-  if (lastValues.length >= 100) {
+  if (lastValues.length >= 1000) {
     lastValues.shift()
   }
   lastValues.push(newValue)

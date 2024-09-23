@@ -9,7 +9,7 @@ function handleOrientation (event) {
   updateFieldIfNotNull('std_dev_b', calculateStandardDeviation(arr))
   const arrKal = kFilter(arr)
   updateFieldIfNotNull('Orientation_b_kalman', arrKal[arrKal.length - 1])
-  updateFieldIfNotNull('std_dev_b_kalman', calculateStandardDeviation(arrKal))
+  updateFieldIfNotNull('std_dev_b_kalman', calculateStandardDeviation(arr) - calculateStandardDeviation(arrKal))
   updateFieldIfNotNull('Orientation_g', event.gamma)
   updateFieldIfNotNull('Orientation_compass', event.webkitCompassHeading)
   incrementEventCount()

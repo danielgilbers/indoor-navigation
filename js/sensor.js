@@ -12,11 +12,13 @@ function handleOrientation (event) {
   roll = event.gamma
   updateFieldIfNotNull('Orientation_a', event.alpha)
   updateFieldIfNotNull('Orientation_b', event.beta)
+  /*
   const arr = addValue(event.beta)
   updateFieldIfNotNull('std_dev_b', calculateStandardDeviation(arr))
   const arrKal = kFilter(arr)
   updateFieldIfNotNull('Orientation_b_kalman', arrKal[arrKal.length - 1])
   updateFieldIfNotNull('std_dev_b_kalman', calculateStandardDeviation(arr) - calculateStandardDeviation(arrKal))
+  */
   updateFieldIfNotNull('Orientation_g', event.gamma)
   updateFieldIfNotNull('Orientation_compass', event.webkitCompassHeading)
   incrementEventCount()
@@ -51,8 +53,10 @@ function updateFieldIfNotNull (fieldName, value, precision = 10) {
 function handleMotion (event) {
   const accel = [event.acceleration.x, event.acceleration.y, event.acceleration.z]
   const groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
-  globalX += groundAccel.ax
-  globalY += groundAccel.ay
+  if (!groundAccel.ax.isNaN()) {
+    globalX += groundAccel.ax
+    globalY += groundAccel.ay
+  }
 
   updateFieldIfNotNull('X_position', globalX)
   updateFieldIfNotNull('Y_position', globalY)

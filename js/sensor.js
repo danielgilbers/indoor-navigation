@@ -52,7 +52,7 @@ function handleMotion (event) {
   const accel = [event.acceleration.x, event.acceleration.y, event.acceleration.z]
   const groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
 
-  if (!groundAccel.ax.isNaN()) {
+  if (!isNaN(groundAccel.ax)) {
     globalX += groundAccel.ax
     globalY += groundAccel.ay
   }

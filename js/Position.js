@@ -90,13 +90,13 @@ export class KalmanFilter {
   constructor (dt, processNoise, measurementNoise, estimationError) {
     this.dt = dt // Zeitintervall zwischen Messungen
 
-    // Zustandsvariablen
+    // Zustandsvariablen (Position und Geschwindigkeit)
     this.x = 0 // Position in x-Richtung
     this.y = 0 // Position in y-Richtung
     this.vx = 0 // Geschwindigkeit in x-Richtung
     this.vy = 0 // Geschwindigkeit in y-Richtung
 
-    // Kovarianzmatrix
+    // Kovarianzmatrix (Unsicherheit in Zuständen)
     this.P = [
       [1, 0, 0, 0], // Unsicherheit in x, vx, y, vy
       [0, 1, 0, 0],
@@ -104,7 +104,7 @@ export class KalmanFilter {
       [0, 0, 0, 1]
     ]
 
-    // Prozessrauschen
+    // Prozessrauschen (Modellunsicherheit)
     this.Q = [
       [processNoise, 0, 0, 0],
       [0, processNoise, 0, 0],
@@ -112,25 +112,25 @@ export class KalmanFilter {
       [0, 0, 0, processNoise]
     ]
 
-    // Messrauschen
+    // Messrauschen (Unsicherheit in den Sensorwerten)
     this.R = [
       [measurementNoise, 0],
       [0, measurementNoise]
     ]
 
     // Messung
-    this.Z = [0, 0] // Beschleunigungsmessung in x und y
+    this.Z = [0, 0] // Aktuelle Messwerte (Beschleunigung in x und y)
 
     // Unsicherheit im Zustand
     this.estimationError = estimationError
   }
 
   predict () {
-    // Vorhersage der neuen Position und Geschwindigkeit basierend auf dem letzten Zustand
-    this.x += this.vx * this.dt
-    this.y += this.vy * this.dt
+    // Vorhersage der neuen Position basierend auf der Geschwindigkeit
+    this.x += this.vx * this.dt + 0.5 * this.Z[0] * this.dt * this.dt // Position = alte Position + Geschwindigkeit * Zeit + 0.5 * Beschleunigung * Zeit^2
+    this.y += this.vy * this.dt + 0.5 * this.Z[1] * this.dt * this.dt
 
-    // Update Geschwindigkeit basierend auf Beschleunigung (aus dem letzten Schritt)
+    // Geschwindigkeit aktualisieren (basierend auf der Beschleunigung)
     this.vx += this.Z[0] * this.dt
     this.vy += this.Z[1] * this.dt
 
@@ -159,7 +159,7 @@ export class KalmanFilter {
       [0, this.P[3][3] / S[1][1]]
     ]
 
-    // Zustandsvariablen aktualisieren
+    // Zustandsvariablen aktualisieren basierend auf den neuen Messungen
     this.x += K[0][0] * (ax - this.vx)
     this.vx += K[1][0] * (ax - this.vx)
     this.y += K[2][1] * (ay - this.vy)

@@ -8,6 +8,8 @@ let orientationArray = []
 let accelerationArray = []
 let globalX = 0
 let globalY = 0
+let globalAX = 0
+let globalAY = 0
 
 if (debug) {
   handleOrientation({ alpha: 69, beta: 32, gamma: 80, webkitCompassHeading: 359 })
@@ -69,8 +71,11 @@ function handleMotion (event) {
   const groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
 
   if (!isNaN(groundAccel.ax)) {
-    globalX += groundAccel.ax
-    globalY += groundAccel.ay
+    const intervall = 0.00002
+    globalAX = globalAX * intervall + 0.5 * groundAccel.ax * Math.pow(intervall, 2)
+    globalAY = globalAY * intervall + 0.5 * groundAccel.ay * Math.pow(intervall, 2)
+    globalX = globalX + globalAX * intervall
+    globalY = globalY + globalAY * intervall
   }
 
   updateFieldIfNotNull('X_position', globalX)

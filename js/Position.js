@@ -127,7 +127,7 @@ export function calculatePosition (motionArray, userPosition) {
   yFiltered = filteredArrays[lastIndex][1]
   zFiltered = filteredArrays[lastIndex][2]
 
-  lastOrientation = motionArray[lastIndex][3] + rotationBias
+  lastOrientation = 360 - motionArray[lastIndex][3] + rotationBias
   magnitude = Math.sqrt(xFiltered * xFiltered + yFiltered * yFiltered + zFiltered * zFiltered)
   if (magnitudeArray.length >= magnitudeArrayLength) {
     magnitudeArray.shift()

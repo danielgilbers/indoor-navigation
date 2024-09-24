@@ -56,7 +56,7 @@ function handleMotion (event) {
     // accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z], accelerationArray)
     downloadArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
   }
-/*
+  /*
   updateFieldIfNotNull('X_position', position.x)
   updateFieldIfNotNull('Y_position', position.y)
   */

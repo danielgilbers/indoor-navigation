@@ -3,6 +3,8 @@
 
 const { KalmanFilter } = kalmanFilter
 
+const stepThreshold = 0.1
+
 function toRadians (deg) {
   return deg * (Math.PI / 180)
 }
@@ -92,4 +94,16 @@ export function kFilter (arr) {
   })
   const res = kFilter.filterAll(arr)
   return res
+}
+
+export function detectPeak (data) {
+  const len = data.length
+  if (len < 3) return false
+
+  const last = data[len - 1]
+  const beforeLast = data[len - 2]
+  const twoBeforeLast = data[len - 3]
+
+  // Prüfe, ob es einen Peak gibt (der mittlere Wert ist größer als die umliegenden)
+  return (beforeLast > last && beforeLast > twoBeforeLast && beforeLast > stepThreshold)
 }

@@ -5,6 +5,9 @@ import { makeTextFile } from './Graph.js'
 
 const debug = false
 
+const kalmanArrayLength = 200
+const magnitudeArrayLength = 5
+
 const downloadArray = []
 const motionArray = []
 
@@ -37,7 +40,7 @@ function handleOrientation (event) {
     zFiltered = filteredArrays[lastIndex][2]
     lastOrientation = event.webkitCompassHeading
     magnitude = Math.sqrt(xFiltered * xFiltered + yFiltered * yFiltered + zFiltered * zFiltered)
-    if (magnitudeArray.length >= 100) {
+    if (magnitudeArray.length >= magnitudeArrayLength) {
       magnitudeArray.shift()
     }
     magnitudeArray.push(magnitude)
@@ -74,7 +77,7 @@ function handleMotion (event) {
   } else {
     // accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z], accelerationArray)
     downloadArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
-    if (motionArray.length >= 500) {
+    if (motionArray.length >= kalmanArrayLength) {
       motionArray.shift()
     }
     motionArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])

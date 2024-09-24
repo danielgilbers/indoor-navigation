@@ -7,7 +7,7 @@ const debug = false
 
 const orientationArray = []
 const accelerationArray = []
-const downloadArray = []
+const downloadArray = [['x', 'y', 'z', 'compass', 'beta', 'gamma']]
 const globalX = 0
 const globalY = 0
 const globalAX = 0

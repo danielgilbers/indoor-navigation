@@ -12,7 +12,7 @@ const magnitudeArray = []
 const stepLength = 10 // Schrittweite in Metern
 const stepThreshold = 2
 
-const rotationBias = 120
+const rotationBias = 60
 
 function toRadians (deg) {
   return deg * (Math.PI / 180)
@@ -127,7 +127,7 @@ export function calculatePosition (motionArray, userPosition) {
   yFiltered = filteredArrays[lastIndex][1]
   zFiltered = filteredArrays[lastIndex][2]
 
-  lastOrientation = 360 - motionArray[lastIndex][3] + rotationBias
+  lastOrientation = motionArray[lastIndex][3] + rotationBias
   magnitude = Math.sqrt(xFiltered * xFiltered + yFiltered * yFiltered + zFiltered * zFiltered)
   if (magnitudeArray.length >= magnitudeArrayLength) {
     magnitudeArray.shift()

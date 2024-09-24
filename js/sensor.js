@@ -1,12 +1,9 @@
 /* global DeviceMotionEvent */
 
-import { getGroundAcceleration, kFilter } from './Position.js'
+import { kFilter } from './Position.js'
 import { makeTextFile } from './Graph.js'
 
 const debug = false
-
-const orientationArray = []
-const accelerationArray = []
 
 const downloadArray = []
 
@@ -15,11 +12,6 @@ if (debug) {
 } else {
   downloadArray.push(['x', 'y', 'z', 'compass', 'beta', 'gamma', 'x-filter', 'y-filter', 'z-filter', 'compass-filter', 'beta-filter', 'gamma-filter'])
 }
-
-const globalX = 0
-const globalY = 0
-const globalAX = 0
-const globalAY = 0
 
 function handleOrientation (event) {
   if (debug) {
@@ -64,31 +56,7 @@ function handleMotion (event) {
     // accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z], accelerationArray)
     downloadArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
   }
-
-  // const acceleration = kFilter(accelerationArray)
-  // const orientation = kFilter(orientationArray)
-
-  /*
-  const accel = acceleration[acceleration.length - 1]
-  const yaw = orientation[orientation.length - 1][0]
-  const pitch = orientation[orientation.length - 1][1]
-  const roll = orientation[orientation.length - 1][2]
-
-  const accel = accelerationArray[accelerationArray.length - 1]
-  const yaw = orientationArray[orientationArray.length - 1][0]
-  const pitch = orientationArray[orientationArray.length - 1][1]
-  const roll = orientationArray[orientationArray.length - 1][2]
-  const groundAccel = getGroundAcceleration(accel, yaw, pitch, roll)
-
-  if (!isNaN(groundAccel.ax)) {
-    const intervall = 0.02
-
-    globalAX = globalAX + groundAccel.ax * intervall
-    globalAY = globalAY + groundAccel.ay * intervall
-    globalX = globalX + globalAX * intervall + 0.5 * groundAccel.ax * Math.pow(intervall, 2)
-    globalY = globalY + globalAY * intervall + 0.5 * groundAccel.ay * Math.pow(intervall, 2)
-  }
-
+/*
   updateFieldIfNotNull('X_position', position.x)
   updateFieldIfNotNull('Y_position', position.y)
   */
@@ -151,8 +119,6 @@ window.createSensordata = function () {
 }
 
 function useKalman () {
-  // Hilfsfunktion, um Daten zu extrahieren, den ersten Eintrag zu entfernen und den Filter anzuwenden
-
   const data = downloadArray.map((dataPoint) => dataPoint)
   data.shift() // Entferne den ersten Eintrag
   const filteredArrays = kFilter(data).map((element) => [element[0], element[1], element[2], element[3], element[4], element[5]]) // Wende den Filter an
@@ -162,9 +128,7 @@ function useKalman () {
     if (index === 0) {
       return arr // Überspringe den ersten Eintrag
     }
-
     const combined = [...arr]
-
     combined.push(...filteredArrays[index - 1]) // Index - 1 wegen shift()
 
     return combined

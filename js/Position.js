@@ -3,13 +3,20 @@
 
 const { KalmanFilter } = kalmanFilter
 
-const stepThreshold = 3
+const magnitudeArrayLength = 5
+
+const position = { lat: 0, lng: 0 }
+let lastIndex, xFiltered, yFiltered, zFiltered, magnitude, lastOrientation
+const magnitudeArray = []
+
+const stepLength = 0.7 // Schrittweite in Metern
+const stepThreshold = 2
 
 function toRadians (deg) {
   return deg * (Math.PI / 180)
 }
 
-export function rotateVector (accel, yaw, pitch, roll) {
+function rotateVector (accel, yaw, pitch, roll) {
   const theta = toRadians(yaw)
   const beta = toRadians(pitch)
   const gamma = toRadians(roll)
@@ -106,4 +113,33 @@ export function detectPeak (data) {
 
   // Prüfe, ob es einen Peak gibt (der mittlere Wert ist größer als die umliegenden)
   return (beforeLast > last && beforeLast > twoBeforeLast && beforeLast > stepThreshold)
+}
+
+export function calculatePosition (motionArray, userPosition) {
+  position.lat = userPosition.lat
+  position.lng = userPosition.lng
+  const filteredArrays = kFilter(motionArray).map((element) => [element[0], element[1], element[2], element[3], element[4], element[5]]) // Wende den Filter an
+
+  lastIndex = filteredArrays.length - 1
+  xFiltered = filteredArrays[lastIndex][0]
+  yFiltered = filteredArrays[lastIndex][1]
+  zFiltered = filteredArrays[lastIndex][2]
+
+  lastOrientation = motionArray[lastIndex][3]
+  magnitude = Math.sqrt(xFiltered * xFiltered + yFiltered * yFiltered + zFiltered * zFiltered)
+  if (magnitudeArray.length >= magnitudeArrayLength) {
+    magnitudeArray.shift()
+  }
+  magnitudeArray.push(magnitude)
+
+  if (detectPeak(magnitudeArray)) {
+    updatePosition()
+    return position
+  }
+}
+
+function updatePosition () {
+  const directionRad = lastOrientation * (Math.PI / 180)
+  position.lat += stepLength * Math.cos(directionRad)
+  position.lng += stepLength * Math.sin(directionRad)
 }

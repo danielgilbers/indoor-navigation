@@ -6,6 +6,10 @@ import 'https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js'
 import 'https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.min.js'
 import { findProduct, searchProducts } from './Products.js'
 import { clickOnMap } from './Graph.js'
+import { calculatePosition } from './Position.js'
+
+const motionArray = []
+const motionArrayLength = 100
 
 // Map image
 const image = './map/Zollstock-Modellv3.png'
@@ -264,6 +268,17 @@ function handleOrientation (event) {
   const bias = 120 // rotation of png
   const orientation = 360 - event.webkitCompassHeading
   map.setBearing(orientation + bias)
+  motionArray[motionArray.length - 1].push(event.webkitCompassHeading, event.beta, event.gamma)
+  userPosition = L.latLng(calculatePosition(motionArray, userPosition))
+  circle.setLatLng(userPosition)
+  map.flyTo(userPosition, 1)
+}
+
+function handleMotion (event) {
+  if (motionArray.length >= motionArrayLength) {
+    motionArray.shift()
+  }
+  motionArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
 }
 
 let compass = false
@@ -282,11 +297,13 @@ window.toggleCompass = () => {
 
   if (compass) {
     window.removeEventListener('deviceorientation', handleOrientation)
+    window.removeEventListener('devicemotion', handleMotion)
     map.touchRotate.enable()
     compassSymbol.innerHTML = 'near_me'
     compass = false
   } else {
     window.addEventListener('deviceorientation', handleOrientation)
+    window.addEventListener('devicemotion', handleMotion)
     map.touchRotate.disable()
     compassSymbol.innerHTML = 'explore'
     compass = true

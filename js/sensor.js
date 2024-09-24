@@ -7,17 +7,15 @@ const debug = false
 
 const orientationArray = []
 const accelerationArray = []
-const downloadArray = [['x', 'y', 'z', 'compass', 'beta', 'gamma', 'x-filter', 'y-filter', 'z-filter', 'compass-filter', 'beta-filter', 'gamma-filter']]
+// const downloadArray = [['x', 'y', 'z', 'compass', 'beta', 'gamma', 'x-filter', 'y-filter', 'z-filter', 'compass-filter', 'beta-filter', 'gamma-filter']]
+
+const downloadArray = [['x', 'y', 'z', 'compass', 'beta', 'gamma'], [-0.0114717033094028, 0.00418359669442288, -0.0255740017175674, 0, -0.848926260585234, 0.267244395239223], [-0.0121591056182514, 0.00837291074357926, -0.0342523982137441, 354.748474121093, -0.848929402972943, 0.266889163885687], [-0.00331094661231618, 0.00230272398442029, -0.0162947167187929, 354.748474121093, -0.84942421532424, 0.263277566060056], [0.00260306777101941, -0.000763403854239732, -0.0243733937561511, 354.748474121093, -0.849852910106526, 0.260197824139838], [-0.00258012985342647, -0.00860909411963075, -0.0212310040771961, 354.748474121093, -0.850230007792838, 0.259007269693749], [-0.00445552723729051, -0.00423177408454939, -0.0203279177576303, 354.748474121093, -0.849134693124831, 0.255101348892952], [0.0121951587457442, -0.0126492363559082, -0.0191278943181037, 354.748474121093, -0.849355297214773, 0.250490444265228]]
 
 const globalX = 0
 const globalY = 0
 const globalAX = 0
 const globalAY = 0
 
-if (debug) {
-  handleMotion()
-  handleOrientation({ alpha: 69, beta: 32, gamma: 80, webkitCompassHeading: 359 })
-}
 function handleOrientation (event) {
   if (debug) {
     // orientationArray = addValue([30, 14, 69], orientationArray)
@@ -56,7 +54,7 @@ function handleMotion (event) {
   if (debug) {
     // accelerationArray = addValue([0.2, 0.1, 0.5], accelerationArray)
     // accelerationArray = addValue([0.2, 0.1, 0.5], accelerationArray)
-    downloadArray.push([0.2, 0.1, 0.5])
+    // downloadArray.push([0.2, 0.1, 0.5])
   } else {
     // accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z], accelerationArray)
     downloadArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])

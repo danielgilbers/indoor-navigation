@@ -34,7 +34,7 @@ function handleOrientation (event) {
     orientationArray.push([30, 14, 69])
   } else {
     // orientationArray = addValue([event.webkitCompassHeading, event.beta, event.gamma], orientationArray)
-    downloadArray[downloadArray.length - 1].push(event.webkitCompassHeading, event.beta, event.gamma)
+    downloadArray[downloadArray.length - 1].push(event.webkitCompassHeading.toFixed(4), event.beta.toFixed(4), event.gamma.toFixed(4))
   }
   updateFieldIfNotNull('Orientation_a', event.alpha)
   updateFieldIfNotNull('Orientation_b', event.beta)
@@ -69,7 +69,7 @@ function handleMotion (event) {
     accelerationArray.push([0.2, 0.1, 0.5])
   } else {
     // accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z], accelerationArray)
-    downloadArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
+    downloadArray.push([event.acceleration.x.toFixed(4), event.acceleration.y.toFixed(4), event.acceleration.z.toFixed(4)])
   }
 
   // const acceleration = kFilter(accelerationArray)

@@ -12,7 +12,7 @@ const magnitudeArray = []
 const stepLength = 10 // Schrittweite in Metern
 const stepThreshold = 2
 
-const rotationBias = 60
+const rotationBias = 240
 
 function toRadians (deg) {
   return deg * (Math.PI / 180)

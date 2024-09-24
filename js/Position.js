@@ -81,7 +81,8 @@ export function getGroundAcceleration (accel, yaw, pitch, roll) {
 export function kFilter (arr) {
   const kFilter = new KalmanFilter({
     observation: {
-      sensorCovariance: [3]
+      name: 'sensor',
+      sensorCovariance: [30]
     },
     dynamic: {
       name: 'constant-speed'

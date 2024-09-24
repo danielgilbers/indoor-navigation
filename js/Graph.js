@@ -141,7 +141,7 @@ let textFile = null
  * @param {*} text
  * @returns {String} URL you can use as a href
  */
-function makeTextFile (text) {
+export function makeTextFile (text) {
   const data = new Blob([text], { type: 'text/plain' })
 
   // If we are replacing a previously generated file we need to

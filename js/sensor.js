@@ -1,16 +1,18 @@
 /* global DeviceMotionEvent */
 
 import { getGroundAcceleration, KalmanFilter } from './Position.js'
+import { makeTextFile } from './Graph.js'
 
 const debug = false
 
-let orientationArray = []
-let accelerationArray = []
-let globalX = 0
-let globalY = 0
-let globalAX = 0
-let globalAY = 0
-let position = { x: 0, y: 0 }
+const orientationArray = []
+const accelerationArray = []
+const downloadArray = []
+const globalX = 0
+const globalY = 0
+const globalAX = 0
+const globalAY = 0
+const position = { x: 0, y: 0 }
 
 // Beispielaufruf
 const dt = 0.1 // Zeitintervall (z.B. 100 ms)
@@ -26,10 +28,13 @@ if (debug) {
 }
 function handleOrientation (event) {
   if (debug) {
-    orientationArray = addValue([30, 14, 69], orientationArray)
-    orientationArray = addValue([30, 14, 69], orientationArray)
+    // orientationArray = addValue([30, 14, 69], orientationArray)
+    // orientationArray = addValue([30, 14, 69], orientationArray)
+    orientationArray.push([30, 14, 69])
+    orientationArray.push([30, 14, 69])
   } else {
-    orientationArray = addValue([event.webkitCompassHeading, event.beta, event.gamma], orientationArray)
+    // orientationArray = addValue([event.webkitCompassHeading, event.beta, event.gamma], orientationArray)
+    downloadArray.push([event.webkitCompassHeading, event.beta, event.gamma])
   }
   updateFieldIfNotNull('Orientation_a', event.alpha)
   updateFieldIfNotNull('Orientation_b', event.beta)
@@ -39,7 +44,7 @@ function handleOrientation (event) {
 }
 
 function addValue (newValue, lastValues = []) {
-  if (lastValues.length >= 200) {
+  if (lastValues.length >= 500) {
     lastValues.shift()
   }
   lastValues.push(newValue)
@@ -58,10 +63,13 @@ function updateFieldIfNotNull (fieldName, value, precision = 10) {
 
 function handleMotion (event) {
   if (debug) {
-    accelerationArray = addValue([0.2, 0.1, 0.5], accelerationArray)
-    accelerationArray = addValue([0.2, 0.1, 0.5], accelerationArray)
+    // accelerationArray = addValue([0.2, 0.1, 0.5], accelerationArray)
+    // accelerationArray = addValue([0.2, 0.1, 0.5], accelerationArray)
+    accelerationArray.push([0.2, 0.1, 0.5])
+    accelerationArray.push([0.2, 0.1, 0.5])
   } else {
-    accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z], accelerationArray)
+    // accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z], accelerationArray)
+    downloadArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
   }
 
   // const acceleration = kFilter(accelerationArray)
@@ -72,7 +80,7 @@ function handleMotion (event) {
   const yaw = orientation[orientation.length - 1][0]
   const pitch = orientation[orientation.length - 1][1]
   const roll = orientation[orientation.length - 1][2]
-  */
+
   const accel = accelerationArray[accelerationArray.length - 1]
   const yaw = orientationArray[orientationArray.length - 1][0]
   const pitch = orientationArray[orientationArray.length - 1][1]
@@ -93,7 +101,7 @@ function handleMotion (event) {
 
   updateFieldIfNotNull('X_position', position.x)
   updateFieldIfNotNull('Y_position', position.y)
-
+  */
   if (!debug) {
     updateFieldIfNotNull('Accelerometer_gx', event.accelerationIncludingGravity.x)
     updateFieldIfNotNull('Accelerometer_gy', event.accelerationIncludingGravity.y)
@@ -149,4 +157,13 @@ function updateKalmanFilter (ax, ay) {
   const position = kalman.getPosition()
   console.log(`Position: x=${position.x}, y=${position.y}`)
   return position
+}
+
+/**
+ * Create JSON from nodes array
+ */
+window.createSensordata = function () {
+  const csv = downloadArray.map((d) => { return d.join(';') }).join('\n')
+  const link = document.getElementById('downloadSensordatalink')
+  link.href = makeTextFile(csv)
 }

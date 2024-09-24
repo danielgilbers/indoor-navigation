@@ -82,7 +82,7 @@ export function kFilter (arr) {
   const kFilter = new KalmanFilter({
     observation: {
       name: 'sensor',
-      sensorCovariance: [30]
+      sensorCovariance: [3]
     },
     dynamic: {
       name: 'constant-speed'

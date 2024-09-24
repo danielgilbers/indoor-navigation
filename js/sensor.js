@@ -1,26 +1,18 @@
 /* global DeviceMotionEvent */
 
-import { getGroundAcceleration, KalmanFilter } from './Position.js'
+import { getGroundAcceleration, kFilter } from './Position.js'
 import { makeTextFile } from './Graph.js'
 
 const debug = false
 
 const orientationArray = []
 const accelerationArray = []
-const downloadArray = [['x', 'y', 'z', 'compass', 'beta', 'gamma']]
+const downloadArray = [['x', 'y', 'z', 'compass', 'beta', 'gamma', 'x-filter', 'y-filter', 'z-filter', 'compass-filter', 'beta-filter', 'gamma-filter']]
+
 const globalX = 0
 const globalY = 0
 const globalAX = 0
 const globalAY = 0
-const position = { x: 0, y: 0 }
-
-// Beispielaufruf
-const dt = 0.1 // Zeitintervall (z.B. 100 ms)
-const processNoise = 0.01 // Prozessrauschen
-const measurementNoise = 0.01 // Messrauschen
-const estimationError = 0.01 // Anfangsfehlerabschätzung
-
-const kalman = new KalmanFilter(dt, processNoise, measurementNoise, estimationError)
 
 if (debug) {
   handleMotion()
@@ -30,8 +22,7 @@ function handleOrientation (event) {
   if (debug) {
     // orientationArray = addValue([30, 14, 69], orientationArray)
     // orientationArray = addValue([30, 14, 69], orientationArray)
-    orientationArray.push([30, 14, 69])
-    orientationArray.push([30, 14, 69])
+    downloadArray[downloadArray.length - 1].push(30, 14, 69)
   } else {
     // orientationArray = addValue([event.webkitCompassHeading, event.beta, event.gamma], orientationArray)
     downloadArray[downloadArray.length - 1].push(event.webkitCompassHeading, event.beta, event.gamma)
@@ -65,8 +56,7 @@ function handleMotion (event) {
   if (debug) {
     // accelerationArray = addValue([0.2, 0.1, 0.5], accelerationArray)
     // accelerationArray = addValue([0.2, 0.1, 0.5], accelerationArray)
-    accelerationArray.push([0.2, 0.1, 0.5])
-    accelerationArray.push([0.2, 0.1, 0.5])
+    downloadArray.push([0.2, 0.1, 0.5])
   } else {
     // accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z], accelerationArray)
     downloadArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
@@ -89,9 +79,6 @@ function handleMotion (event) {
 
   if (!isNaN(groundAccel.ax)) {
     const intervall = 0.02
-
-    // Beispiel: Sensordaten verwenden
-    position = updateKalmanFilter(groundAccel.ax, groundAccel.ay)
 
     globalAX = globalAX + groundAccel.ax * intervall
     globalAY = globalAY + groundAccel.ay * intervall
@@ -150,20 +137,42 @@ demoButton.onclick = function (e) {
   }
 }
 
-// In der Schleife, wo du deine Sensoren liest:
-function updateKalmanFilter (ax, ay) {
-  kalman.predict()
-  kalman.update(ax, ay)
-  const position = kalman.getPosition()
-  console.log(`Position: x=${position.x}, y=${position.y}`)
-  return position
-}
-
 /**
  * Create JSON from nodes array
  */
 window.createSensordata = function () {
-  const csv = downloadArray.map((d) => { return d.join(';') }).join('\n')
+  const filteredArray = useKalman()
+  const csv = filteredArray.map((d) => { return d.join(';') }).join('\n')
   const link = document.getElementById('downloadSensordatalink')
   link.href = makeTextFile(csv)
+}
+
+function useKalman () {
+  // Hilfsfunktion, um Daten zu extrahieren, den ersten Eintrag zu entfernen und den Filter anzuwenden
+  const applyKalmanFilter = (index) => {
+    const data = downloadArray.map((dataPoint) => dataPoint[index])
+    data.shift() // Entferne den ersten Eintrag
+    return kFilter(data) // Wende den Filter an
+  }
+
+  // Liste der Datenindices, die verarbeitet werden sollen
+  const dataIndices = [0, 1, 2, 3, 4, 5]
+
+  // Verarbeite alle Datenreihen und wende den Kalman-Filter an
+  const filteredArrays = dataIndices.map(applyKalmanFilter)
+
+  // Kombiniere die gefilterten Arrays mit den originalen Daten
+  const combinedArray = downloadArray.map((arr, index) => {
+    if (index === 0) {
+      return arr // Überspringe den ersten Eintrag
+    }
+
+    const combined = [...arr]
+    filteredArrays.forEach((filteredData) => {
+      combined.push(filteredData[index - 1]) // Index - 1 wegen shift()
+    })
+    return combined
+  })
+
+  return combinedArray
 }

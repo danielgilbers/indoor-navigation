@@ -30,7 +30,7 @@ function handleOrientation (event) {
     downloadArray[downloadArray.length - 1].push(30, 14, 69)
   } else {
     // orientationArray = addValue([event.webkitCompassHeading, event.beta, event.gamma], orientationArray)
-    downloadArray[downloadArray.length - 1].push(event.webkitCompassHeading, event.beta, event.gamma)
+    // downloadArray[downloadArray.length - 1].push(event.webkitCompassHeading, event.beta, event.gamma)
     motionArray[motionArray.length - 1].push(event.webkitCompassHeading, event.beta, event.gamma)
     const filteredArrays = kFilter(motionArray).map((element) => [element[0], element[1], element[2], element[3], element[4], element[5]]) // Wende den Filter an
 
@@ -76,7 +76,7 @@ function handleMotion (event) {
     // downloadArray.push([0.2, 0.1, 0.5])
   } else {
     // accelerationArray = addValue([event.acceleration.x, event.acceleration.y, event.acceleration.z], accelerationArray)
-    downloadArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
+    // downloadArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
     if (motionArray.length >= kalmanArrayLength) {
       motionArray.shift()
     }

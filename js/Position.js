@@ -3,7 +3,7 @@
 
 const { KalmanFilter } = kalmanFilter
 
-const stepThreshold = 0.8
+const stepThreshold = 1.5
 
 function toRadians (deg) {
   return deg * (Math.PI / 180)

@@ -9,8 +9,8 @@ const position = { lat: 0, lng: 0 }
 let lastIndex, xFiltered, yFiltered, zFiltered, magnitude, lastOrientation
 const magnitudeArray = []
 
-const stepLength = 10 // Schrittweite in Metern
-const stepThreshold = 2
+const stepLength = 0.7 // Schrittweite in Metern
+const stepThreshold = 2.3
 
 const rotationBias = 240
 

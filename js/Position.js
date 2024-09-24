@@ -79,7 +79,7 @@ export function getGroundAcceleration (accel, yaw, pitch, roll) {
 }
 
 export function kFilter (arr) {
-  const kFilter = new KalmanFilter()
+  const kFilter = new KalmanFilter({ dynamic: 'constant-speed' })
   const res = kFilter.filterAll(arr)
   return res
 }

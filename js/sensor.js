@@ -152,7 +152,8 @@ function useKalman () {
   const applyKalmanFilter = (index) => {
     const data = downloadArray.map((dataPoint) => dataPoint[index])
     data.shift() // Entferne den ersten Eintrag
-    return kFilter(data) // Wende den Filter an
+    const result = kFilter(data).map((element) => element[0]) // Wende den Filter an
+    return result
   }
 
   // Liste der Datenindices, die verarbeitet werden sollen

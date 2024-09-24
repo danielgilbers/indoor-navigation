@@ -78,27 +78,12 @@ export function getGroundAcceleration (accel, yaw, pitch, roll) {
   return groundAccel
 }
 
-export function kFilterOne (arr) {
+export function kFilter (arr) {
   const kFilter = new KalmanFilter({
     observation: {
       name: 'sensor',
-      sensorCovariance: [3]
-    },
-    dynamic: {
-      name: 'constant-speed'
-      // covariance: [0.3, 5] // 0.3, 30
-    }
-  })
-  const res = kFilter.filterAll(arr)
-  return res
-}
-
-export function kFilterThree (arr) {
-  const kFilter = new KalmanFilter({
-    observation: {
-      name: 'sensor',
-      sensorDimension: 3,
-      sensorCovariance: [3, 3, 3]
+      sensorDimension: 6,
+      sensorCovariance: [3, 3, 3, 3, 3, 3]
     },
     dynamic: {
       name: 'constant-speed'

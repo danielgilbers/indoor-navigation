@@ -23,8 +23,8 @@ const estimationError = 0.01 // Anfangsfehlerabschätzung
 const kalman = new KalmanFilter(dt, processNoise, measurementNoise, estimationError)
 
 if (debug) {
-  handleOrientation({ alpha: 69, beta: 32, gamma: 80, webkitCompassHeading: 359 })
   handleMotion()
+  handleOrientation({ alpha: 69, beta: 32, gamma: 80, webkitCompassHeading: 359 })
 }
 function handleOrientation (event) {
   if (debug) {
@@ -34,7 +34,7 @@ function handleOrientation (event) {
     orientationArray.push([30, 14, 69])
   } else {
     // orientationArray = addValue([event.webkitCompassHeading, event.beta, event.gamma], orientationArray)
-    downloadArray.push([event.webkitCompassHeading, event.beta, event.gamma])
+    downloadArray[downloadArray.length - 1].push(event.webkitCompassHeading, event.beta, event.gamma)
   }
   updateFieldIfNotNull('Orientation_a', event.alpha)
   updateFieldIfNotNull('Orientation_b', event.beta)

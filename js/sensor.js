@@ -1,6 +1,6 @@
 /* global DeviceMotionEvent */
 
-import { getGroundAcceleration, kFilter } from './Position.js'
+import { getGroundAcceleration, kFilterOne, kFilterThree } from './Position.js'
 import { makeTextFile } from './Graph.js'
 
 const debug = false
@@ -147,18 +147,27 @@ window.createSensordata = function () {
 
 function useKalman () {
   // Hilfsfunktion, um Daten zu extrahieren, den ersten Eintrag zu entfernen und den Filter anzuwenden
-  const applyKalmanFilter = (index) => {
+  const applyKalmanFilterOne = (index) => {
     const data = downloadArray.map((dataPoint) => dataPoint[index])
     data.shift() // Entferne den ersten Eintrag
-    const result = kFilter(data).map((element) => element[0]) // Wende den Filter an
+    const result = kFilterOne(data).map((element) => element[0]) // Wende den Filter an
+    return result
+  }
+
+  const applyKalmanFilterThree = (index) => {
+    const data = downloadArray.map((dataPoint) => [dataPoint[index], dataPoint[index + 1], dataPoint[index + 2]])
+    data.shift() // Entferne den ersten Eintrag
+    const result = kFilterThree(data).map((element) => [element[0], element[1], element[2]]) // Wende den Filter an
     return result
   }
 
   // Liste der Datenindices, die verarbeitet werden sollen
-  const dataIndices = [0, 1, 2, 3, 4, 5]
+  const dataIndicesOne = [0, 1, 2, 3, 4, 5]
+  const dataIndicesThree = [0, 3]
 
   // Verarbeite alle Datenreihen und wende den Kalman-Filter an
-  const filteredArrays = dataIndices.map(applyKalmanFilter)
+  // const filteredArrays = dataIndicesOne.map(applyKalmanFilterOne)
+  const filteredArrays = dataIndicesThree.map(applyKalmanFilterThree)
 
   // Kombiniere die gefilterten Arrays mit den originalen Daten
   const combinedArray = downloadArray.map((arr, index) => {
@@ -168,7 +177,7 @@ function useKalman () {
 
     const combined = [...arr]
     filteredArrays.forEach((filteredData) => {
-      combined.push(filteredData[index - 1]) // Index - 1 wegen shift()
+      combined.push(...filteredData[index - 1]) // Index - 1 wegen shift()
     })
     return combined
   })

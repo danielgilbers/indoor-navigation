@@ -105,7 +105,6 @@ searchBar.addEventListener('keyup', function (event) {
     showList(inputValue)
     if (event.key === 'Enter') {
       window.sendSearchQuery(inputValue)
-      activeTarget = true
     }
   } else { // remove cancel button if it exists
     searchGroup.lastChild.id === 'clearSearchButton' && resetSearchbar()
@@ -122,6 +121,7 @@ window.sendSearchQuery = (inputValue) => {
   removeList()
   const product = findProduct(inputValue, userPosition)
   if (product) {
+    activeTarget = true
     if (lastProduct) {
       lastProduct.product.hideMarker()
     }

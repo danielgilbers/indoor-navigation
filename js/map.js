@@ -411,9 +411,9 @@ function getDirection (points) {
   }
 
   // Punkte extrahieren
-  const p1 = points[0]
-  const p2 = points[1]
-  const p3 = points[2]
+  const p1 = points[0][0]
+  const p2 = points[0][1]
+  const p3 = points[0][2]
 
   // Vektoren berechnen
   const v1 = { x: p2.lng - p1.lng, y: p2.lat - p1.lat }

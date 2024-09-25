@@ -70,7 +70,7 @@ export function findProduct (query, userPosition) {
   const nearestNode = astar.nearestNode(userPosition, loadedGraph)
   astar.search(nearestNode, loadedGraph[found.nodeIndex])
 
-  return found
+  return { product: found, astar }
 }
 
 /**

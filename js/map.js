@@ -90,6 +90,7 @@ clearSearchButton.id = 'clearSearchButton'
 let lastProduct
 
 const searchBar = document.getElementById('searchBar')
+
 searchBar.addEventListener('keyup', function (event) {
   const inputValue = searchBar.value
 
@@ -111,15 +112,16 @@ searchBar.addEventListener('keyup', function (event) {
  * @param {String} inputValue Searchquery
  */
 window.sendSearchQuery = (inputValue) => {
+  searchBar.value = inputValue
+  removeList()
   const product = findProduct(inputValue, userPosition)
   if (product) {
     if (lastProduct) {
-      lastProduct.hideMarker()
+      lastProduct.product.hideMarker()
     }
-    product.showMarker()
+    product.product.showMarker()
     lastProduct = product
   }
-  resetSearchbar()
 }
 
 /**
@@ -140,7 +142,10 @@ function addClearButton () {
 function resetSearchbar () {
   searchBar.value = ''
   document.getElementById('clearSearchButton').remove()
-  document.getElementById('searchList').remove()
+  if (lastProduct) {
+    lastProduct.product.hideMarker()
+    lastProduct.astar.hideRoute()
+  }
   searchBar.classList.remove('rounded-end-0')
   searchBar.classList.add('rounded-end-5')
 }
@@ -162,6 +167,10 @@ function showList (query) {
   if (!document.getElementById('searchList')) {
     topControl.appendChild(searchList)
   }
+}
+
+function removeList () {
+  topControl.removeChild(searchList)
 }
 
 /**

@@ -1,9 +1,10 @@
-/* global L, bootstrap, Html5QrcodeScanner, DeviceOrientationEvent */
+/* global L, bootstrap, Html5QrcodeScanner, DeviceOrientationEvent, _ */
 'use strict'
 
 import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import 'https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js'
 import 'https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.min.js'
+import 'https://unpkg.com/lodash@4.17.21/lodash.min.js'
 import { findProduct, searchProducts } from './Products.js'
 import { clickOnMap } from './Graph.js'
 import { calculatePosition } from './Position.js'
@@ -30,6 +31,17 @@ export const map = L.map('map', {
 })
 
 map.on('click', clickOnMap)
+map.on('moveend', endOfMapMovement)
+
+function endOfMapMovement (e) {
+  let result = 'kein plan'
+  if (_.isEqual(map.getCenter(), userPosition)) {
+    result = 'ja'
+  } else {
+    result = 'nein'
+  }
+  console.log(result)
+}
 
 // Add background image to map
 const imageOverlay = L.imageOverlay(image, bounds)
@@ -272,7 +284,7 @@ function handleOrientation (event) {
   const newPosition = calculatePosition(motionArray, userPosition, bias)
   userPosition = L.latLng(newPosition.lat, newPosition.lng)
   circle.setLatLng(userPosition)
-  map.flyTo(userPosition, 1)
+  map.flyTo(userPosition, map.getZoom())
 }
 
 function handleMotion (event) {

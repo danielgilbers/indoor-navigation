@@ -12,6 +12,8 @@ import { calculatePosition } from './Position.js'
 const motionArray = []
 const motionArrayLength = 100
 
+let directionSymbol, directionText
+
 // Map image
 const image = './map/Zollstock-Modellv3.png'
 const boundy = 280
@@ -222,8 +224,8 @@ const directions = L.DomUtil.create('div', 'card text-bg-success mb-3')
 directions.id = 'directions'
 directions.innerHTML =
   '<div class="card-body d-flex align-items-center">' +
-  '<span class="material-symbols-outlined me-3 mb-bg">straight</span>' +
-  '<h5 class="card-title mb-0">Weiter dem Pfad folgen</h5>' +
+  '<span class="material-symbols-outlined me-3 mb-bg">north</span>' +
+  '<h5 class="card-title mb-0">Weiter geradeaus</h5>' +
   '</div>'
 
 /**
@@ -375,7 +377,68 @@ function handleOrientation (event) {
 
   if (activeTarget) {
     const inputValue = searchBar.value
-    findProduct(inputValue, userPosition)
+    const product = findProduct(inputValue, userPosition)
+    const points = product.astar.polyline.getLatLngs()
+    directionSymbol = getDirection(points)
+    directionText = getDirectionText(directionSymbol)
+    directions.innerHTML =
+  '<div class="card-body d-flex align-items-center">' +
+  '<span class="material-symbols-outlined me-3 mb-bg">' + directionSymbol + '</span>' +
+  '<h5 class="card-title mb-0">' + directionText + '</h5>' +
+  '</div>'
+  }
+}
+
+function getDirectionText (symbol) {
+  switch (symbol) {
+    case 'sports_score':
+      return 'Ziel erreicht'
+    case 'north':
+      return 'Weiter geradeaus'
+    case 'arrow_top_left':
+      return 'Links abbiegen'
+    case 'arrow_top_right':
+      return 'Rechts abbiegen'
+    default:
+      return 'Bitte an Mitarbeiter wenden'
+  }
+}
+
+function getDirection (points) {
+  // Überprüfen, ob es weniger als drei Punkte gibt
+  if (points.length < 3) {
+    return 'sports_score'
+  }
+
+  // Punkte extrahieren
+  const p1 = points[0]
+  const p2 = points[1]
+  const p3 = points[2]
+
+  // Vektoren berechnen
+  const v1 = { x: p2.lng - p1.lng, y: p2.lat - p1.lat }
+  const v2 = { x: p3.lng - p2.lng, y: p3.lat - p2.lat }
+
+  // Längen der Vektoren berechnen
+  const v1Length = Math.sqrt(v1.x * v1.x + v1.y * v1.y)
+  const v2Length = Math.sqrt(v2.x * v2.x + v2.y * v2.y)
+
+  // Skalarprodukt berechnen
+  const dotProduct = v1.x * v2.x + v1.y * v2.y
+
+  // Winkel berechnen (in Grad)
+  const angle = Math.acos(dotProduct / (v1Length * v2Length)) * (180 / Math.PI)
+
+  // Kreuzprodukt berechnen (um die Richtung zu bestimmen)
+  const crossProduct = v1.x * v2.y - v1.y * v2.x
+
+  // Entscheiden, ob gerade, links oder rechts
+  if (angle < 45) {
+    return 'north'
+  } else if (crossProduct > 0) {
+    return 'arrow_top_left'
+  } else {
+    return 'arrow_top_right'
   }
 }
 

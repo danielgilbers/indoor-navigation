@@ -95,6 +95,8 @@ let lastProduct
 
 const searchBar = document.getElementById('searchBar')
 
+let activeTarget = false
+
 searchBar.addEventListener('keyup', function (event) {
   const inputValue = searchBar.value
   // add cancel butten when there is something written
@@ -103,9 +105,11 @@ searchBar.addEventListener('keyup', function (event) {
     showList(inputValue)
     if (event.key === 'Enter') {
       window.sendSearchQuery(inputValue)
+      activeTarget = true
     }
   } else { // remove cancel button if it exists
     searchGroup.lastChild.id === 'clearSearchButton' && resetSearchbar()
+    activeTarget = false
   }
 })
 
@@ -125,6 +129,14 @@ window.sendSearchQuery = (inputValue) => {
     navigationButton.classList.remove('d-none')
     lastProduct = product
   }
+}
+
+window.startNavigation = () => {
+  if (!isCentered) {
+    centerPosition()
+  }
+  requestSensors()
+  activateCompass()
 }
 
 /**
@@ -323,6 +335,11 @@ function handleOrientation (event) {
   userPosition = L.latLng(newPosition.lat, newPosition.lng)
   circle.setLatLng(userPosition)
   centerPosition()
+
+  if (activeTarget) {
+    const inputValue = searchBar.value
+    findProduct(inputValue, userPosition)
+  }
 }
 
 function centerPosition () {
@@ -347,13 +364,7 @@ window.toggleCompass = () => {
     return
   }
 
-  // Request permission for iOS 13+ devices
-  if (
-    DeviceOrientationEvent &&
-  typeof DeviceOrientationEvent.requestPermission === 'function'
-  ) {
-    DeviceOrientationEvent.requestPermission()
-  }
+  requestSensors()
 
   if (compass) {
     window.removeEventListener('deviceorientation', handleOrientation)
@@ -362,12 +373,28 @@ window.toggleCompass = () => {
     compassSymbol.innerHTML = 'near_me'
     compass = false
   } else {
-    window.addEventListener('deviceorientation', handleOrientation)
-    window.addEventListener('devicemotion', handleMotion)
-    map.touchRotate.disable()
-    compassSymbol.innerHTML = 'explore'
-    compass = true
+    activateCompass()
   }
+}
+
+/**
+ * Request sensor permission for iOS 13+ devices
+ */
+function requestSensors () {
+  if (
+    DeviceOrientationEvent &&
+  typeof DeviceOrientationEvent.requestPermission === 'function'
+  ) {
+    DeviceOrientationEvent.requestPermission()
+  }
+}
+
+function activateCompass () {
+  window.addEventListener('deviceorientation', handleOrientation)
+  window.addEventListener('devicemotion', handleMotion)
+  map.touchRotate.disable()
+  compassSymbol.innerHTML = 'explore'
+  compass = true
 }
 
 map.setView(userPosition, 1)

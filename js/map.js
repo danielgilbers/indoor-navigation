@@ -131,12 +131,32 @@ window.sendSearchQuery = (inputValue) => {
   }
 }
 
-window.startNavigation = () => {
+function startNavigation () {
+  navigationButton.innerHTML = '<span class="material-symbols-outlined m-1 ms-filled">close</span>'
+  navigationButton.classList.remove('btn-primary')
+  navigationButton.classList.add('btn-danger')
+
+  navigationButton.removeEventListener('click', startNavigation)
+  navigationButton.addEventListener('click', stopNavigation)
+
   if (!isCentered) {
     centerPosition()
   }
   requestSensors()
   activateCompass()
+}
+
+function stopNavigation () {
+  navigationButton.innerHTML = '<span class="material-symbols-outlined m-1 ms-filled">navigation</span><span class="ms-2 me-2">Starten</span>'
+  navigationButton.classList.remove('btn-danger')
+  navigationButton.classList.add('btn-primary')
+  navigationButton.removeEventListener('click', stopNavigation)
+  navigationButton.addEventListener('click', startNavigation)
+
+  deactivateCompass()
+  map.setBearing(0)
+  const inputValue = searchBar.value
+  findProduct(inputValue, userPosition)
 }
 
 /**
@@ -253,7 +273,7 @@ L.Control.Navigation = L.Control.extend({
   onAdd: function () {
     this.container = L.DomUtil.create('div', 'graphUI')
     this.container.innerHTML =
-      '<button class="btn btn-lg btn-primary rounded-5 p-2 lh-1 d-flex align-items-center d-none" type="button"  id="navigation" onclick="startNavigation()">' +
+      '<button class="btn btn-lg btn-primary rounded-5 p-2 lh-1 d-flex align-items-center d-none" type="button"  id="navigation">' +
       '<span class="material-symbols-outlined m-1 ms-filled">navigation</span>' +
       '<span class="ms-2 me-2">Starten</span></button>'
 
@@ -264,6 +284,7 @@ L.Control.Navigation = L.Control.extend({
 new L.Control.Navigation({ position: 'bottomleft' }).addTo(map)
 
 const navigationButton = document.getElementById('navigation')
+navigationButton.addEventListener('click', startNavigation)
 
 function endOfMapMovement (e) {
   if (typeof compassSymbol !== 'undefined') {
@@ -367,11 +388,7 @@ window.toggleCompass = () => {
   requestSensors()
 
   if (compass) {
-    window.removeEventListener('deviceorientation', handleOrientation)
-    window.removeEventListener('devicemotion', handleMotion)
-    map.touchRotate.enable()
-    compassSymbol.innerHTML = 'near_me'
-    compass = false
+    deactivateCompass()
   } else {
     activateCompass()
   }
@@ -395,6 +412,14 @@ function activateCompass () {
   map.touchRotate.disable()
   compassSymbol.innerHTML = 'explore'
   compass = true
+}
+
+function deactivateCompass () {
+  window.removeEventListener('deviceorientation', handleOrientation)
+  window.removeEventListener('devicemotion', handleMotion)
+  map.touchRotate.enable()
+  compassSymbol.innerHTML = 'near_me'
+  compass = false
 }
 
 map.setView(userPosition, 1)

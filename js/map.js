@@ -269,7 +269,7 @@ function handleOrientation (event) {
   const orientation = 360 - event.webkitCompassHeading
   map.setBearing(orientation + bias)
   motionArray[motionArray.length - 1].push(event.webkitCompassHeading, event.beta, event.gamma)
-  const newPosition = calculatePosition(motionArray, userPosition)
+  const newPosition = calculatePosition(motionArray, userPosition, bias)
   userPosition = L.latLng(newPosition.lat, newPosition.lng)
   circle.setLatLng(userPosition)
   map.flyTo(userPosition, 1)

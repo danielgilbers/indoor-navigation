@@ -25,14 +25,10 @@ body {
     width: 180px;
 }
 
-.ms-big {
-  font-size: 30px;
-}
-
 .ms-filled {
     font-variation-settings:
-    'FILL' 1,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24;
-  }
+        'FILL' 1,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+}

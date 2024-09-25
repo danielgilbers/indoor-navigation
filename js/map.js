@@ -78,11 +78,15 @@ L.Control.Search = L.Control.extend({
     this.container.id = 'topControl'
     return this.container
   }
-
 })
 
 new L.Control.Search({ position: 'topleft' }).addTo(map)
+
 const searchGroup = document.getElementById('searchGroup')
+searchGroup.addEventListener('click', function (e) { e.stopPropagation() })
+searchGroup.addEventListener('dblclick', function (e) { e.stopPropagation() })
+searchGroup.addEventListener('mousedown', function (e) { e.stopPropagation() })
+searchGroup.addEventListener('touchstart', function (e) { e.stopPropagation() })
 const clearSearchButton = L.DomUtil.create('button', 'btn btn-light rounded-start-0 rounded-end-5 lh-1 border-0')
 clearSearchButton.innerHTML = '<span class="material-symbols-outlined">Cancel</span>'
 clearSearchButton.id = 'clearSearchButton'
@@ -93,17 +97,15 @@ const searchBar = document.getElementById('searchBar')
 
 searchBar.addEventListener('keyup', function (event) {
   const inputValue = searchBar.value
-
   // add cancel butten when there is something written
   if (inputValue) {
     addClearButton()
     showList(inputValue)
-  } else { // remove cancel button
-    resetSearchbar()
-  }
-  // send event
-  if (event.key === 'Enter') {
-    window.sendSearchQuery(inputValue)
+    if (event.key === 'Enter') {
+      window.sendSearchQuery(inputValue)
+    }
+  } else { // remove cancel button if it exists
+    searchGroup.lastChild.id === 'clearSearchButton' && resetSearchbar()
   }
 })
 
@@ -120,6 +122,7 @@ window.sendSearchQuery = (inputValue) => {
       lastProduct.product.hideMarker()
     }
     product.product.showMarker()
+    navigationButton.classList.remove('d-none')
     lastProduct = product
   }
 }
@@ -145,9 +148,11 @@ function resetSearchbar () {
   if (lastProduct) {
     lastProduct.product.hideMarker()
     lastProduct.astar.hideRoute()
+    !navigationButton.classList.contains('d-none') && navigationButton.classList.add('d-none')
   }
   searchBar.classList.remove('rounded-end-0')
   searchBar.classList.add('rounded-end-5')
+  removeList()
 }
 
 const searchList = L.DomUtil.create('div', 'list-group pe-3')
@@ -170,7 +175,7 @@ function showList (query) {
 }
 
 function removeList () {
-  topControl.removeChild(searchList)
+  topControl.childElementCount > 1 && topControl.removeChild(searchList)
 }
 
 /**
@@ -201,7 +206,7 @@ L.Control.QRButton = L.Control.extend({
     this.container = L.DomUtil.create('div', 'graphUI')
     this.container.innerHTML =
       '<button class="btn btn-primary rounded-circle p-2 lh-1" type="button" id="qrCode" data-bs-toggle="modal" data-bs-target="#qrScannerModal">' +
-      '<span class="material-symbols-outlined ms-big">qr_code_scanner</span>' +
+      '<span class="material-symbols-outlined m-1">qr_code_scanner</span>' +
       '</button>'
 
     return this.container
@@ -218,7 +223,7 @@ L.Control.Compass = L.Control.extend({
     this.container = L.DomUtil.create('div', 'graphUI')
     this.container.innerHTML =
       '<button class="btn btn-light text-primary rounded-circle p-2 lh-1" type="button" onclick="toggleCompass()">' +
-      '<span class="material-symbols-outlined ms-big ms-filled" id="compass">near_me</span>' +
+      '<span class="material-symbols-outlined m-1 ms-filled" id="compass">near_me</span>' +
       '</button>'
 
     return this.container
@@ -228,6 +233,25 @@ L.Control.Compass = L.Control.extend({
 new L.Control.Compass({ position: 'bottomright' }).addTo(map)
 
 const compassSymbol = document.getElementById('compass')
+
+/**
+ * Navigation Button
+ */
+L.Control.Navigation = L.Control.extend({
+  onAdd: function () {
+    this.container = L.DomUtil.create('div', 'graphUI')
+    this.container.innerHTML =
+      '<button class="btn btn-lg btn-primary rounded-5 p-2 lh-1 d-flex align-items-center d-none" type="button"  id="navigation" onclick="startNavigation()">' +
+      '<span class="material-symbols-outlined m-1 ms-filled">navigation</span>' +
+      '<span class="ms-2 me-2">Starten</span></button>'
+
+    return this.container
+  }
+})
+
+new L.Control.Navigation({ position: 'bottomleft' }).addTo(map)
+
+const navigationButton = document.getElementById('navigation')
 
 function endOfMapMovement (e) {
   if (typeof compassSymbol !== 'undefined') {

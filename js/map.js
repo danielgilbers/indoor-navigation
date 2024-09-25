@@ -19,6 +19,7 @@ const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]
 
 let userPosition = L.latLng(100, 645) // Start: 100, 645
+let isCentered = true
 
 // Create map
 export const map = L.map('map', {
@@ -33,20 +34,9 @@ export const map = L.map('map', {
 map.on('click', clickOnMap)
 map.on('moveend', endOfMapMovement)
 
-function endOfMapMovement (e) {
-  let result = 'kein plan'
-  if (_.isEqual(map.getCenter(), userPosition)) {
-    result = 'ja'
-  } else {
-    result = 'nein'
-  }
-  console.log(result)
-}
-
 // Add background image to map
 const imageOverlay = L.imageOverlay(image, bounds)
 imageOverlay.addTo(map)
-map.setView(userPosition, 1)
 
 /**
  * Close offcanvas menu
@@ -230,6 +220,21 @@ new L.Control.Compass({ position: 'bottomright' }).addTo(map)
 
 const compassSymbol = document.getElementById('compass')
 
+function endOfMapMovement (e) {
+  if (typeof compassSymbol !== 'undefined') {
+    const mapCenter = map.getCenter()
+    const mapPosRounded = { lat: Math.round(mapCenter.lat), lng: Math.round(mapCenter.lng) }
+    const userPosRounded = { lat: Math.round(userPosition.lat), lng: Math.round(userPosition.lng) }
+
+    isCentered = _.isEqual(mapPosRounded, userPosRounded)
+    if (!isCentered) {
+      compassSymbol.classList.contains('ms-filled') && compassSymbol.classList.toggle('ms-filled')
+    } else {
+      !compassSymbol.classList.contains('ms-filled') && compassSymbol.classList.toggle('ms-filled')
+    }
+  }
+}
+
 // Graph UI elements
 export const toggleGraphUI = document.getElementById('toggleGraphUI')
 const download = document.getElementById('download')
@@ -300,6 +305,11 @@ let compass = false
  * Toggle Compass on and off
  */
 window.toggleCompass = () => {
+  if (!isCentered) {
+    map.flyTo(userPosition, map.getZoom())
+    return
+  }
+
   // Request permission for iOS 13+ devices
   if (
     DeviceOrientationEvent &&
@@ -322,3 +332,5 @@ window.toggleCompass = () => {
     compass = true
   }
 }
+
+map.setView(userPosition, 1)

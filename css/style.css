@@ -25,6 +25,10 @@ body {
     width: 180px;
 }
 
+.mb-bg {
+    font-size: 36px;
+}
+
 .ms-filled {
     font-variation-settings:
         'FILL' 1,

@@ -67,7 +67,7 @@ const circle = L.marker(userPosition, {
  */
 L.Control.Search = L.Control.extend({
   onAdd: function () {
-    this.container = L.DomUtil.create('div')
+    this.container = L.DomUtil.create('div', 'vw-100 pe-3')
     this.container.innerHTML =
       '<div class="input-group vw-100 pe-3 graphUI" id="searchGroup">' +
       '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
@@ -140,6 +140,9 @@ function startNavigation () {
   navigationButton.removeEventListener('click', startNavigation)
   navigationButton.addEventListener('click', stopNavigation)
 
+  searchGroup.classList.add('d-none')
+  topControl.appendChild(directions)
+
   if (!isCentered) {
     centerPosition()
   }
@@ -153,6 +156,9 @@ function stopNavigation () {
   navigationButton.classList.add('btn-primary')
   navigationButton.removeEventListener('click', stopNavigation)
   navigationButton.addEventListener('click', startNavigation)
+
+  searchGroup.classList.remove('d-none')
+  topControl.removeChild(directions)
 
   deactivateCompass()
   map.setBearing(0)
@@ -212,6 +218,14 @@ function removeList () {
   topControl.childElementCount > 1 && topControl.removeChild(searchList)
 }
 
+const directions = L.DomUtil.create('div', 'card text-bg-success mb-3')
+directions.id = 'directions'
+directions.innerHTML =
+  '<div class="card-body d-flex align-items-center">' +
+  '<span class="material-symbols-outlined me-3 mb-bg">straight</span>' +
+  '<h5 class="card-title mb-0">Weiter dem Pfad folgen</h5>' +
+  '</div>'
+
 /**
  * Graph UI - Download-button
  */
@@ -223,7 +237,7 @@ L.Control.GraphButtons = L.Control.extend({
       '<span class="material-symbols-outlined">Menu</span>' +
       '</button>' +
       '<button class="btn btn-light text-dark rounded-start-0 rounded-end-5 lh-1 border-0" type="button" id="download" data-bs-toggle="modal" data-bs-target="#downloadModal" onclick="createJSON()">' +
-      '<span class="material-symbols-outlined">download</span>' +
+      '<span class="material-symbols-outlined">straight</span>' +
       '</button>'
 
     return this.container

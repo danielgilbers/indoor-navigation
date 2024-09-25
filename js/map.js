@@ -289,6 +289,10 @@ function handleOrientation (event) {
   const newPosition = calculatePosition(motionArray, userPosition, bias)
   userPosition = L.latLng(newPosition.lat, newPosition.lng)
   circle.setLatLng(userPosition)
+  centerPosition()
+}
+
+function centerPosition () {
   map.flyTo(userPosition, map.getZoom())
 }
 
@@ -306,7 +310,7 @@ let compass = false
  */
 window.toggleCompass = () => {
   if (!isCentered) {
-    map.flyTo(userPosition, map.getZoom())
+    centerPosition()
     return
   }
 

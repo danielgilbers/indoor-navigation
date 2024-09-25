@@ -140,8 +140,6 @@ function startNavigation () {
   navigationButton.removeEventListener('click', startNavigation)
   navigationButton.addEventListener('click', stopNavigation)
 
-  map.setZoom(3)
-
   if (!isCentered) {
     centerPosition()
   }

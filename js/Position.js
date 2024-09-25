@@ -88,15 +88,15 @@ export function kFilter (arr) {
       sensorCovariance: [1, 1, 1, 1, 1, 1]
     },
     dynamic: {
-      name: 'constant-speed',
-      covariance: [0.1, 0.5]
+      name: 'constant-speed'
+      // covariance: [0.1, 0.5]
     }
   })
   const res = kFilter.filterAll(arr)
   return res
 }
 
-function detectPeak (data) {
+export function detectPeak (data) {
   const len = data.length
   if (len < 3) return false
 

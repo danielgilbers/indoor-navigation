@@ -406,7 +406,7 @@ function getDirectionText (symbol) {
 
 function getDirection (points) {
   // Überprüfen, ob es weniger als drei Punkte gibt
-  if (points.length < 3) {
+  if (points[0].length < 3) {
     return 'sports_score'
   }
 

@@ -126,6 +126,7 @@ window.sendSearchQuery = (inputValue) => {
       lastProduct.product.hideMarker()
     }
     product.product.showMarker()
+    map.fitBounds(product.astar.polyline.getBounds())
     navigationButton.classList.remove('d-none')
     lastProduct = product
   }
@@ -138,6 +139,8 @@ function startNavigation () {
 
   navigationButton.removeEventListener('click', startNavigation)
   navigationButton.addEventListener('click', stopNavigation)
+
+  map.setZoom(3)
 
   if (!isCentered) {
     centerPosition()
@@ -156,7 +159,8 @@ function stopNavigation () {
   deactivateCompass()
   map.setBearing(0)
   const inputValue = searchBar.value
-  findProduct(inputValue, userPosition)
+  const product = findProduct(inputValue, userPosition)
+  map.fitBounds(product.astar.polyline.getBounds())
 }
 
 /**

@@ -202,7 +202,7 @@ L.Control.QRButton = L.Control.extend({
     this.container = L.DomUtil.create('div', 'graphUI')
     this.container.innerHTML =
       '<button class="btn btn-primary text-dark rounded-circle p-2 lh-1" type="button" id="qrCode" data-bs-toggle="modal" data-bs-target="#qrScannerModal">' +
-      '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;">qr_code_scanner</span>' +
+      '<span class="material-symbols-outlined ms-big">qr_code_scanner</span>' +
       '</button>'
 
     return this.container
@@ -219,7 +219,7 @@ L.Control.Compass = L.Control.extend({
     this.container = L.DomUtil.create('div', 'graphUI')
     this.container.innerHTML =
       '<button class="btn btn-light text-primary rounded-circle p-2 lh-1" type="button" onclick="toggleCompass()">' +
-      '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1; font-size: 30px;" id="compass">near_me</span>' +
+      '<span class="material-symbols-outlined ms-big ms-filled" id="compass">near_me</span>' +
       '</button>'
 
     return this.container

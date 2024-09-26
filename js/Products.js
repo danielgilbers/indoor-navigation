@@ -5,15 +5,13 @@ import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import Fuse from 'https://unpkg.com/fuse.js@7.0.0/dist/fuse.basic.min.mjs'
 import { map } from './map.js'
 import { loadJSON } from './Graph.js'
-import Astar from './Pathfinding.js'
 
 const loadedGraph = await loadJSON()
-const astar = new Astar(loadedGraph)
 
 /**
  * Class for products
  */
-class Product {
+export class Product {
   /**
    * Create a product
    * @param {Object} Object containing nan, name and nodeIndex
@@ -41,8 +39,12 @@ class Product {
   }
 }
 
+const products = await loadProducts()
+
 /**
  * Load JSON data of products
+ *
+ * @returns {Array} Products
  */
 async function loadProducts () {
   const payload = []
@@ -57,8 +59,6 @@ async function loadProducts () {
   }
 }
 
-const products = await loadProducts()
-
 /**
  * Search for product name
  * @param {String} query Search String
@@ -67,16 +67,13 @@ const products = await loadProducts()
 export function findProduct (query, userPosition) {
   const found = products.find((element) => element.name === query)
 
-  const nearestNode = astar.nearestNode(userPosition, loadedGraph)
-  astar.search(nearestNode, loadedGraph[found.nodeIndex])
-
-  return { product: found, astar }
+  return found
 }
 
 /**
  * Fuzzy search for products
  * @param {String} query Searchquery
- * @returns Array of more or less matching products
+ * @returns {Array} Array of more or less matching products
  */
 export function searchProducts (query) {
   const fuse = new Fuse(products, {

@@ -16,7 +16,7 @@ export default class Astar {
   constructor (graph) {
     this.graph = [...graph]
     for (const node of this.graph) {
-      this.cleanNode(node)
+      this.#cleanNode(node)
     }
     this.dirtyNodes = []
   }
@@ -26,15 +26,16 @@ export default class Astar {
      * @param {Node} start Start Node
      * @param {Node} end End Node
      */
-  search (start, end) {
-    this.cleanDirty()
+  search (start, endIndex) {
+    const end = this.graph[endIndex]
+    this.#cleanDirty()
 
     const openList = new BinaryHeap(function (node) {
       return node.previousCost + node.estimatedCost
     })
 
-    start.estimatedCost = this.heuristic(start, end)
-    this.markDirty(start)
+    start.estimatedCost = this.#heuristic(start, end)
+    this.#markDirty(start)
 
     openList.push(start)
 
@@ -42,11 +43,11 @@ export default class Astar {
       const currentNode = openList.pop()
 
       if (currentNode === end) {
-        return this.pathTo(currentNode)
+        return this.#pathTo(currentNode)
       }
 
       currentNode.closed = true
-      this.expandNode(currentNode, openList, end)
+      this.#expandNode(currentNode, openList, end)
     }
   }
 
@@ -56,14 +57,14 @@ export default class Astar {
    * @param {BinaryHeap} openList
    * @param {Node} end
    */
-  expandNode (currentNode, openList, end) {
+  #expandNode (currentNode, openList, end) {
     const neighbors = this.getNeighbors(currentNode)
 
     for (const neighbor of neighbors) {
       if (neighbor.closed) {
         continue
       }
-      const linkCost = currentNode.previousCost + this.heuristic(currentNode, neighbor)
+      const linkCost = currentNode.previousCost + this.#heuristic(currentNode, neighbor)
 
       if (neighbor.visited && linkCost >= neighbor.previousCost) {
         continue
@@ -71,14 +72,14 @@ export default class Astar {
 
       neighbor.parent = currentNode.index
       neighbor.previousCost = linkCost
-      neighbor.estimatedCost = this.heuristic(neighbor, end)
+      neighbor.estimatedCost = this.#heuristic(neighbor, end)
       if (!neighbor.visited) {
         neighbor.visited = true
         openList.push(neighbor)
       } else {
         openList.reScore(neighbor)
       }
-      this.markDirty(neighbor)
+      this.#markDirty(neighbor)
     }
   }
 
@@ -92,18 +93,18 @@ export default class Astar {
     return result
   }
 
-  markDirty (node) {
+  #markDirty (node) {
     this.dirtyNodes.push(node)
   }
 
-  cleanDirty () {
+  #cleanDirty () {
     for (const node of this.dirtyNodes) {
-      this.cleanNode(node)
+      this.#cleanNode(node)
     }
     this.dirtyNodes = []
   }
 
-  cleanNode (node) {
+  #cleanNode (node) {
     node.previousCost = 0 // g(x)
     node.estimatedCost = 0 // h(x)
     node.visited = false
@@ -111,7 +112,7 @@ export default class Astar {
     node.parent = null
   }
 
-  heuristic (start, end) {
+  #heuristic (start, end) {
     return L.point(start.latlng.lat, start.latlng.lng).distanceTo(L.point(end.latlng.lat, end.latlng.lng))
   }
 
@@ -120,7 +121,7 @@ export default class Astar {
    * @param {Node} node
    * @returns {Array} path
    */
-  pathTo (node) {
+  #pathTo (node) {
     let curr = node
     const path = []
     path.unshift(curr)
@@ -128,11 +129,11 @@ export default class Astar {
       curr = this.graph[curr.parent]
       path.unshift(curr)
     } while (curr.parent != null)
-    this.drawRoute(path)
+    this.#drawRoute(path)
     return path
   }
 
-  drawRoute (path) {
+  #drawRoute (path) {
     this.hideRoute()
     const pathLatLngs = []
     for (const node of path) {
@@ -148,13 +149,13 @@ export default class Astar {
     }
   }
 
-  nearestNode (position, graph) {
+  nearestNode (position) {
     const nearestHeap = new BinaryHeap(function (node) {
       return L.point(position.lat, position.lng).distanceTo(L.point(node.latlng.lat, node.latlng.lng))
     })
-    nearestHeap.content = [...graph]
+    nearestHeap.content = [...this.graph]
     nearestHeap.build()
 
-    return graph[nearestHeap.content[0].index]
+    return this.graph[nearestHeap.content[0].index]
   }
 }

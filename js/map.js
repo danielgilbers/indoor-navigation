@@ -5,9 +5,13 @@ import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import 'https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js'
 import 'https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.min.js'
 import 'https://unpkg.com/lodash@4.17.21/lodash.min.js'
-import { findProduct, searchProducts } from './Products.js'
-import { clickOnMap } from './Graph.js'
+import { Product, findProduct, searchProducts } from './Products.js'
+import { clickOnMap, loadJSON } from './Graph.js'
 import { calculatePosition } from './Position.js'
+import Astar from './Pathfinding.js'
+
+const loadedGraph = await loadJSON()
+const astar = new Astar(loadedGraph)
 
 const motionArray = []
 const motionArrayLength = 100
@@ -94,11 +98,12 @@ const clearSearchButton = L.DomUtil.create('button', 'btn btn-light rounded-star
 clearSearchButton.innerHTML = '<span class="material-symbols-outlined">Cancel</span>'
 clearSearchButton.id = 'clearSearchButton'
 
-let lastProduct
-
 const searchBar = document.getElementById('searchBar')
 
 let activeTarget = false
+let product = new Product({ nan: 0, name: '', nodeIndex: 0 })
+let lastProduct = product
+let nearestNode = null
 
 searchBar.addEventListener('keyup', function (event) {
   const inputValue = searchBar.value
@@ -122,14 +127,16 @@ searchBar.addEventListener('keyup', function (event) {
 window.sendSearchQuery = (inputValue) => {
   searchBar.value = inputValue
   removeList()
-  const product = findProduct(inputValue, userPosition)
-  if (product) {
+  product = findProduct(inputValue, userPosition)
+  if (product.nan !== 0) {
     activeTarget = true
-    if (lastProduct) {
-      lastProduct.product.hideMarker()
+    if (lastProduct.nan !== 0) {
+      lastProduct.hideMarker()
     }
-    product.product.showMarker()
-    map.fitBounds(product.astar.polyline.getBounds())
+    product.showMarker()
+    nearestNode = astar.nearestNode(userPosition)
+    astar.search(nearestNode, product.nodeIndex)
+    map.fitBounds(astar.polyline.getBounds())
     navigationButton.classList.remove('d-none')
     lastProduct = product
   }
@@ -165,9 +172,7 @@ function stopNavigation () {
 
   deactivateCompass()
   map.setBearing(0)
-  const inputValue = searchBar.value
-  const product = findProduct(inputValue, userPosition)
-  map.fitBounds(product.astar.polyline.getBounds())
+  map.fitBounds(astar.polyline.getBounds())
 }
 
 /**
@@ -188,9 +193,9 @@ function addClearButton () {
 function resetSearchbar () {
   searchBar.value = ''
   document.getElementById('clearSearchButton').remove()
-  if (lastProduct) {
-    lastProduct.product.hideMarker()
-    lastProduct.astar.hideRoute()
+  if (lastProduct.nan !== 0) {
+    lastProduct.hideMarker()
+    astar.hideRoute()
     !navigationButton.classList.contains('d-none') && navigationButton.classList.add('d-none')
   }
   searchBar.classList.remove('rounded-end-0')
@@ -377,16 +382,19 @@ function handleOrientation (event) {
   centerPosition()
 
   if (activeTarget) {
-    const inputValue = searchBar.value
-    const product = findProduct(inputValue, userPosition)
-    const points = product.astar.polyline.getLatLngs()
-    directionSymbol = getDirection(points)
-    directionText = getDirectionText(directionSymbol)
-    directions.innerHTML =
-  '<div class="card-body d-flex align-items-center">' +
-  '<span class="material-symbols-outlined me-3 mb-bg">' + directionSymbol + '</span>' +
-  '<h5 class="card-title mb-0">' + directionText + '</h5>' +
-  '</div>'
+    const temp = astar.nearestNode(userPosition)
+    if (temp !== nearestNode) {
+      nearestNode = temp
+      astar.search(nearestNode, product.nodeIndex)
+      const points = astar.polyline.getLatLngs()
+      directionSymbol = getDirection(points)
+      directionText = getDirectionText(directionSymbol)
+      directions.innerHTML =
+        '<div class="card-body d-flex align-items-center">' +
+        '<span class="material-symbols-outlined me-3 mb-bg">' + directionSymbol + '</span>' +
+        '<h5 class="card-title mb-0">' + directionText + '</h5>' +
+        '</div>'
+    }
   }
 }
 

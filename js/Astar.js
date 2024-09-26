@@ -24,7 +24,9 @@ export default class Astar {
   /**
      * Perform an A* Search on a graph given a start and end node.
      * @param {Node} start Start Node
-     * @param {Node} end End Node
+     * @param {Number} endIndex End Node Index
+     *
+     * @returns {Array} Nodes from start to end
      */
   search (start, endIndex) {
     const end = this.graph[endIndex]

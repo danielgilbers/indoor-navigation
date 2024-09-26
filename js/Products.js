@@ -40,6 +40,10 @@ export default class Product {
 }
 
 const products = await loadProducts()
+const fuse = new Fuse(products, {
+  keys: ['name'],
+  threshold: 0.3 // 0.0 = perfect match; 1.0 = no match at all
+})
 
 /**
  * Load JSON data of products
@@ -76,9 +80,5 @@ export function findProduct (query, userPosition) {
  * @returns {Array} Array of more or less matching products
  */
 export function searchProducts (query) {
-  const fuse = new Fuse(products, {
-    keys: ['name'],
-    threshold: 0.3 // 0.0 = perfect match; 1.0 = no match at all
-  })
   return fuse.search(query, { limit: 7 })
 }

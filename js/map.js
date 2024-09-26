@@ -230,7 +230,7 @@ html5QrcodeScanner.render(onScanSuccess, onScanFailure)
  * Close offcanvas menu
  */
 window.closeMenu = function () {
-  const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')
+  const bsOffcanvas = new bootstrap.Offcanvas('#offcanvasMenu')
   bsOffcanvas.hide()
 }
 

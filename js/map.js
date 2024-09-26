@@ -375,6 +375,17 @@ function requestSensors () {
 }
 
 /**
+ * Hande the device motion
+ * @param {DeviceMotionEvent} event
+ */
+function handleMotion (event) {
+  if (motionArray.length >= motionArrayLength) {
+    motionArray.shift()
+  }
+  motionArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
+}
+
+/**
  * Hande the device orientation
  * @param {DeviceOrientationEvent} event
  */
@@ -397,17 +408,6 @@ function handleOrientation (event) {
       refreshDirections()
     }
   }
-}
-
-/**
- * Hande the device motion
- * @param {DeviceMotionEvent} event
- */
-function handleMotion (event) {
-  if (motionArray.length >= motionArrayLength) {
-    motionArray.shift()
-  }
-  motionArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
 }
 
 function endOfMapMovement (e) {
@@ -448,16 +448,16 @@ window.toggleCompass = () => {
 }
 
 function activateCompass () {
-  window.addEventListener('deviceorientation', handleOrientation)
   window.addEventListener('devicemotion', handleMotion)
+  window.addEventListener('deviceorientation', handleOrientation)
   map.touchRotate.disable()
   compassSymbol.innerHTML = 'explore'
   compass = true
 }
 
 function deactivateCompass () {
-  window.removeEventListener('deviceorientation', handleOrientation)
   window.removeEventListener('devicemotion', handleMotion)
+  window.removeEventListener('deviceorientation', handleOrientation)
   map.touchRotate.enable()
   compassSymbol.innerHTML = 'near_me'
   compass = false

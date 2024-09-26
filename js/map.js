@@ -8,7 +8,7 @@ import 'https://unpkg.com/lodash@4.17.21/lodash.min.js'
 import { Product, findProduct, searchProducts } from './Products.js'
 import { clickOnMap, loadJSON } from './Graph.js'
 import { calculatePosition } from './Position.js'
-import Astar from './Pathfinding.js'
+import Astar from './Astar.js'
 
 const loadedGraph = await loadJSON()
 const astar = new Astar(loadedGraph)

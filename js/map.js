@@ -5,18 +5,26 @@ import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 import 'https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js'
 import 'https://unpkg.com/bootstrap@5.3.3/dist/js/bootstrap.min.js'
 import 'https://unpkg.com/lodash@4.17.21/lodash.min.js'
-import { Product, findProduct, searchProducts } from './Products.js'
+import Product, { findProduct, searchProducts } from './Products.js'
 import { clickOnMap, loadJSON } from './Graph.js'
 import { calculatePosition } from './Position.js'
 import Astar from './Astar.js'
 
+// Position
 const loadedGraph = await loadJSON()
 const astar = new Astar(loadedGraph)
-
+let direction = ['', '']
+let userPosition = L.latLng(100, 645) // Start: 100, 645
+let nearestNode = null
+let isCentered = true
 const motionArray = []
 const motionArrayLength = 100
+let compass = false
+let activeTarget = false
 
-let directionSymbol, directionText
+// Products
+let product = new Product({ nan: 0, name: '', nodeIndex: 0 })
+let lastProduct = product
 
 // Map image
 const image = './map/Zollstock-Modellv3.png'
@@ -24,8 +32,14 @@ const boundy = 280
 const boundx = 1366.6
 const bounds = [[0, 0], [boundy, boundx]]
 
-let userPosition = L.latLng(100, 645) // Start: 100, 645
-let isCentered = true
+// Position dot
+const iconSize = 24
+const iconAnchor = iconSize >> 1 // Bitshift / 2
+const positionDotIcon = L.icon({
+  iconUrl: './img/position-dot.png',
+  iconSize: [iconSize, iconSize],
+  iconAnchor: [iconAnchor, iconAnchor]
+})
 
 // Create map
 export const map = L.map('map', {
@@ -37,36 +51,23 @@ export const map = L.map('map', {
   bearing: 0,
   touchRotate: true
 })
+// Remove rotation control
+document.getElementsByClassName('leaflet-control-rotate')[0].remove()
+// Remove leaflet link
+document.getElementsByClassName('leaflet-control-attribution')[0].remove()
 
-map.on('click', clickOnMap)
-map.on('moveend', endOfMapMovement)
+// -----------
+// UI Elements
+// -----------
 
 // Add background image to map
-const imageOverlay = L.imageOverlay(image, bounds)
-imageOverlay.addTo(map)
-
-/**
- * Close offcanvas menu
- */
-window.closeMenu = function () {
-  const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')
-  bsOffcanvas.hide()
-}
-
-// Position dot icon
-const iconSize = 24
-const iconAnchor = iconSize / 2
-const positionDot = L.icon({
-  iconUrl: './img/position-dot.png',
-  iconSize: [iconSize, iconSize],
-  iconAnchor: [iconAnchor, iconAnchor]
-})
+L.imageOverlay(image, bounds).addTo(map)
 
 /**
  * Position dot
  */
 const circle = L.marker(userPosition, {
-  icon: positionDot
+  icon: positionDotIcon
 }).addTo(map)
 
 /**
@@ -87,41 +88,177 @@ L.Control.Search = L.Control.extend({
   }
 })
 
-new L.Control.Search({ position: 'topleft' }).addTo(map)
+/**
+ * X at the end of search bar
+ */
+const clearSearchButton = L.DomUtil.create('button', 'btn btn-light rounded-start-0 rounded-end-5 lh-1 border-0')
+clearSearchButton.id = 'clearSearchButton'
+clearSearchButton.innerHTML = '<span class="material-symbols-outlined">Cancel</span>'
 
+/**
+ * Search List
+ */
+const searchList = L.DomUtil.create('div', 'list-group pe-3')
+searchList.id = 'searchList'
+
+/**
+ * Compass Button
+ */
+L.Control.Compass = L.Control.extend({
+  onAdd: function () {
+    this.container = L.DomUtil.create('div', 'graphUI')
+    this.container.innerHTML =
+      '<button class="btn btn-light text-primary rounded-circle p-2 lh-1" type="button" onclick="toggleCompass()">' +
+      '<span class="material-symbols-outlined m-1 ms-filled" id="compass">near_me</span>' +
+      '</button>'
+
+    return this.container
+  }
+})
+
+/**
+ * QR Code button
+ */
+L.Control.QRButton = L.Control.extend({
+  onAdd: function () {
+    this.container = L.DomUtil.create('div', 'graphUI')
+    this.container.innerHTML =
+      '<button class="btn btn-primary rounded-circle p-2 lh-1" type="button" id="qrCode" data-bs-toggle="modal" data-bs-target="#qrScannerModal">' +
+      '<span class="material-symbols-outlined m-1">qr_code_scanner</span>' +
+      '</button>'
+
+    return this.container
+  }
+})
+
+/**
+ * Navigation Button
+ */
+L.Control.Navigation = L.Control.extend({
+  onAdd: function () {
+    this.container = L.DomUtil.create('div', 'graphUI')
+    this.container.innerHTML =
+      '<button class="btn btn-lg btn-primary rounded-5 p-2 lh-1 d-flex align-items-center d-none" type="button"  id="navigation">' +
+      '<span class="material-symbols-outlined m-1 ms-filled">navigation</span>' +
+      '<span class="ms-2 me-2">Starten</span></button>'
+
+    return this.container
+  }
+})
+
+/**
+ * Directions
+ */
+const directions = L.DomUtil.create('div', 'card text-bg-success mb-3')
+directions.id = 'directions'
+/**
+ * Update current directions
+ */
+function refreshDirections () {
+  directions.innerHTML =
+    '<div class="card-body d-flex align-items-center">' +
+    '<span class="material-symbols-outlined me-3 mb-bg">' + direction[0] + '</span>' +
+    '<h5 class="card-title mb-0">' + direction[1] + '</h5>' +
+    '</div>'
+}
+
+/**
+ * Graph UI - Download-button
+ */
+L.Control.GraphButtons = L.Control.extend({
+  onAdd: function () {
+    this.container = L.DomUtil.create('div', 'graphUI d-none')
+    this.container.innerHTML =
+      '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
+      '<span class="material-symbols-outlined">Menu</span>' +
+      '</button>' +
+      '<a download="graph.json" id="downloadlink" class="btn btn-light text-dark rounded-start-0 rounded-end-5 lh-1 border-0" type="button" id="download" onclick="createJSON()">' +
+      '<span class="material-symbols-outlined">download</span>' +
+      '</button>'
+
+    return this.container
+  }
+})
+
+// -------------------
+// Add elements to map
+// -------------------
+
+new L.Control.Search({ position: 'topleft' }).addTo(map)
+new L.Control.GraphButtons({ position: 'topleft' }).addTo(map)
+new L.Control.QRButton({ position: 'bottomright' }).addTo(map)
+new L.Control.Compass({ position: 'bottomright' }).addTo(map)
+new L.Control.Navigation({ position: 'bottomleft' }).addTo(map)
+
+// -----------------
+// Find Dom elements
+// -----------------
 const searchGroup = document.getElementById('searchGroup')
+const searchBar = document.getElementById('searchBar')
+const topControl = document.getElementById('topControl')
+const compassSymbol = document.getElementById('compass')
+const navigationButton = document.getElementById('navigation')
+export const toggleGraphUI = document.getElementById('toggleGraphUI')
+export const graphUI = document.getElementsByClassName('graphUI')
+const download = document.getElementById('downloadlink')
+// QR Code scanner
+const scannerModal = new bootstrap.Modal('#qrScannerModal')
+const html5QrcodeScanner = new Html5QrcodeScanner(
+  'reader',
+  { fps: 10, qrbox: { width: 250, height: 250 } },
+  /* verbose= */ false)
+
+// ------------------
+// Add eventListeners
+// ------------------
+map.on('click', clickOnMap)
+map.on('moveend', endOfMapMovement)
 searchGroup.addEventListener('click', function (e) { e.stopPropagation() })
 searchGroup.addEventListener('dblclick', function (e) { e.stopPropagation() })
 searchGroup.addEventListener('mousedown', function (e) { e.stopPropagation() })
 searchGroup.addEventListener('touchstart', function (e) { e.stopPropagation() })
-const clearSearchButton = L.DomUtil.create('button', 'btn btn-light rounded-start-0 rounded-end-5 lh-1 border-0')
-clearSearchButton.innerHTML = '<span class="material-symbols-outlined">Cancel</span>'
-clearSearchButton.id = 'clearSearchButton'
+download.addEventListener('click', function (e) { e.stopPropagation() })
+searchBar.addEventListener('keyup', useSearchbar)
+navigationButton.addEventListener('click', startNavigation)
+html5QrcodeScanner.render(onScanSuccess, onScanFailure)
 
-const searchBar = document.getElementById('searchBar')
+// ----------------
+// Browse functions
+// ----------------
 
-let activeTarget = false
-let product = new Product({ nan: 0, name: '', nodeIndex: 0 })
-let lastProduct = product
-let nearestNode = null
+/**
+ * Close offcanvas menu
+ */
+window.closeMenu = function () {
+  const bsOffcanvas = bootstrap.Offcanvas.getInstance('#offcanvasMenu')
+  bsOffcanvas.hide()
+}
 
-searchBar.addEventListener('keyup', function (event) {
+// ----------------
+// Search functions
+// ----------------
+
+/**
+ * Process searchbar input
+ * @param {*} e
+ */
+function useSearchbar (e) {
   const inputValue = searchBar.value
   // add cancel butten when there is something written
   if (inputValue) {
     addClearButton()
     showList(inputValue)
-    if (event.key === 'Enter') {
+    if (e.key === 'Enter') {
       window.sendSearchQuery(inputValue)
     }
   } else { // remove cancel button if it exists
     searchGroup.lastChild.id === 'clearSearchButton' && resetSearchbar()
     activeTarget = false
   }
-})
+}
 
 /**
- * Show product on map and hide last product
+ * Show product with route on map and hide last product
  * @param {String} inputValue Searchquery
  */
 window.sendSearchQuery = (inputValue) => {
@@ -142,41 +279,8 @@ window.sendSearchQuery = (inputValue) => {
   }
 }
 
-function startNavigation () {
-  navigationButton.innerHTML = '<span class="material-symbols-outlined m-1 ms-filled">close</span>'
-  navigationButton.classList.remove('btn-primary')
-  navigationButton.classList.add('btn-danger')
-
-  navigationButton.removeEventListener('click', startNavigation)
-  navigationButton.addEventListener('click', stopNavigation)
-
-  searchGroup.classList.add('d-none')
-  topControl.appendChild(directions)
-
-  if (!isCentered) {
-    centerPosition()
-  }
-  requestSensors()
-  activateCompass()
-}
-
-function stopNavigation () {
-  navigationButton.innerHTML = '<span class="material-symbols-outlined m-1 ms-filled">navigation</span><span class="ms-2 me-2">Starten</span>'
-  navigationButton.classList.remove('btn-danger')
-  navigationButton.classList.add('btn-primary')
-  navigationButton.removeEventListener('click', stopNavigation)
-  navigationButton.addEventListener('click', startNavigation)
-
-  searchGroup.classList.remove('d-none')
-  topControl.removeChild(directions)
-
-  deactivateCompass()
-  map.setBearing(0)
-  map.fitBounds(astar.polyline.getBounds())
-}
-
 /**
- * Add x-Button behind input field
+ * Add x-Button behind search bar
  */
 function addClearButton () {
   if (!document.getElementById('clearSearchButton')) {
@@ -187,9 +291,6 @@ function addClearButton () {
   searchBar.classList.add('rounded-end-0')
 }
 
-/**
- * Remove x-Button from search group
- */
 function resetSearchbar () {
   searchBar.value = ''
   document.getElementById('clearSearchButton').remove()
@@ -202,11 +303,6 @@ function resetSearchbar () {
   searchBar.classList.add('rounded-end-5')
   removeList()
 }
-
-const searchList = L.DomUtil.create('div', 'list-group pe-3')
-searchList.id = 'searchList'
-
-const topControl = document.getElementById('topControl')
 
 /**
  * Show clickable list of possible products
@@ -226,89 +322,93 @@ function removeList () {
   topControl.childElementCount > 1 && topControl.removeChild(searchList)
 }
 
-const directions = L.DomUtil.create('div', 'card text-bg-success mb-3')
-directions.id = 'directions'
-directions.innerHTML =
-  '<div class="card-body d-flex align-items-center">' +
-  '<span class="material-symbols-outlined me-3 mb-bg">north</span>' +
-  '<h5 class="card-title mb-0">Weiter geradeaus</h5>' +
-  '</div>'
+// --------------------
+// Navigation functions
+// --------------------
+
+function startNavigation () {
+  navigationButton.innerHTML = '<span class="material-symbols-outlined m-1 ms-filled">close</span>'
+  navigationButton.classList.remove('btn-primary')
+  navigationButton.classList.add('btn-danger')
+  searchGroup.classList.add('d-none')
+
+  navigationButton.removeEventListener('click', startNavigation)
+  navigationButton.addEventListener('click', stopNavigation)
+
+  direction = astar.getDirection()
+  refreshDirections()
+  topControl.appendChild(directions)
+
+  if (!isCentered) {
+    centerPosition()
+  }
+  requestSensors()
+  activateCompass()
+}
+
+function stopNavigation () {
+  navigationButton.innerHTML = '<span class="material-symbols-outlined m-1 ms-filled">navigation</span><span class="ms-2 me-2">Starten</span>'
+  navigationButton.classList.remove('btn-danger')
+  navigationButton.classList.add('btn-primary')
+  searchGroup.classList.remove('d-none')
+
+  navigationButton.removeEventListener('click', stopNavigation)
+  navigationButton.addEventListener('click', startNavigation)
+
+  topControl.removeChild(directions)
+
+  deactivateCompass()
+  map.setBearing(0)
+  map.fitBounds(astar.polyline.getBounds())
+}
 
 /**
- * Graph UI - Download-button
+ * Request sensor permission for iOS 13+ devices
  */
-L.Control.GraphButtons = L.Control.extend({
-  onAdd: function () {
-    this.container = L.DomUtil.create('div', 'graphUI d-none')
-    this.container.innerHTML =
-      '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
-      '<span class="material-symbols-outlined">Menu</span>' +
-      '</button>' +
-      '<a download="graph.json" id="downloadlink" class="btn btn-light text-dark rounded-start-0 rounded-end-5 lh-1 border-0" type="button" id="download" onclick="createJSON()">' +
-      '<span class="material-symbols-outlined">download</span>' +
-      '</button>'
-
-    return this.container
+function requestSensors () {
+  if (
+    DeviceOrientationEvent &&
+  typeof DeviceOrientationEvent.requestPermission === 'function'
+  ) {
+    DeviceOrientationEvent.requestPermission()
   }
-})
-
-new L.Control.GraphButtons({ position: 'topleft' }).addTo(map)
+}
 
 /**
- * QR Code button
+ * Hande the device orientation
+ * @param {DeviceOrientationEvent} event
  */
-L.Control.QRButton = L.Control.extend({
-  onAdd: function () {
-    this.container = L.DomUtil.create('div', 'graphUI')
-    this.container.innerHTML =
-      '<button class="btn btn-primary rounded-circle p-2 lh-1" type="button" id="qrCode" data-bs-toggle="modal" data-bs-target="#qrScannerModal">' +
-      '<span class="material-symbols-outlined m-1">qr_code_scanner</span>' +
-      '</button>'
+function handleOrientation (event) {
+  const bias = 120 // rotation of png
+  const orientation = 360 - event.webkitCompassHeading
+  map.setBearing(orientation + bias)
+  motionArray[motionArray.length - 1].push(event.webkitCompassHeading, event.beta, event.gamma)
+  const newPosition = calculatePosition(motionArray, userPosition, bias)
+  userPosition = L.latLng(newPosition.lat, newPosition.lng)
+  circle.setLatLng(userPosition)
+  centerPosition()
 
-    return this.container
+  if (activeTarget) {
+    const temp = astar.nearestNode(userPosition)
+    if (temp !== nearestNode) {
+      nearestNode = temp
+      astar.search(nearestNode, product.nodeIndex)
+      direction = astar.getDirection()
+      refreshDirections()
+    }
   }
-})
-
-new L.Control.QRButton({ position: 'bottomright' }).addTo(map)
+}
 
 /**
- * Compass Button
+ * Hande the device motion
+ * @param {DeviceMotionEvent} event
  */
-L.Control.Compass = L.Control.extend({
-  onAdd: function () {
-    this.container = L.DomUtil.create('div', 'graphUI')
-    this.container.innerHTML =
-      '<button class="btn btn-light text-primary rounded-circle p-2 lh-1" type="button" onclick="toggleCompass()">' +
-      '<span class="material-symbols-outlined m-1 ms-filled" id="compass">near_me</span>' +
-      '</button>'
-
-    return this.container
+function handleMotion (event) {
+  if (motionArray.length >= motionArrayLength) {
+    motionArray.shift()
   }
-})
-
-new L.Control.Compass({ position: 'bottomright' }).addTo(map)
-
-const compassSymbol = document.getElementById('compass')
-
-/**
- * Navigation Button
- */
-L.Control.Navigation = L.Control.extend({
-  onAdd: function () {
-    this.container = L.DomUtil.create('div', 'graphUI')
-    this.container.innerHTML =
-      '<button class="btn btn-lg btn-primary rounded-5 p-2 lh-1 d-flex align-items-center d-none" type="button"  id="navigation">' +
-      '<span class="material-symbols-outlined m-1 ms-filled">navigation</span>' +
-      '<span class="ms-2 me-2">Starten</span></button>'
-
-    return this.container
-  }
-})
-
-new L.Control.Navigation({ position: 'bottomleft' }).addTo(map)
-
-const navigationButton = document.getElementById('navigation')
-navigationButton.addEventListener('click', startNavigation)
+  motionArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
+}
 
 function endOfMapMovement (e) {
   if (typeof compassSymbol !== 'undefined') {
@@ -325,19 +425,47 @@ function endOfMapMovement (e) {
   }
 }
 
-// Graph UI elements
-export const toggleGraphUI = document.getElementById('toggleGraphUI')
-const download = document.getElementById('downloadlink')
-export const graphUI = document.getElementsByClassName('graphUI')
-// Deactivate click events on map
-download.addEventListener('click', function (e) { e.stopPropagation() })
+function centerPosition () {
+  map.flyTo(userPosition, map.getZoom())
+}
 
-// Remove leaflet link
-document.getElementsByClassName('leaflet-control-attribution')[0].remove()
-document.getElementsByClassName('leaflet-control-rotate')[0].remove()
+/**
+ * Toggle Compass on and off
+ */
+window.toggleCompass = () => {
+  if (!isCentered) {
+    centerPosition()
+    return
+  }
 
-// QR Code scanner
-const scannerModal = new bootstrap.Modal('#qrScannerModal')
+  requestSensors()
+
+  if (compass) {
+    deactivateCompass()
+  } else {
+    activateCompass()
+  }
+}
+
+function activateCompass () {
+  window.addEventListener('deviceorientation', handleOrientation)
+  window.addEventListener('devicemotion', handleMotion)
+  map.touchRotate.disable()
+  compassSymbol.innerHTML = 'explore'
+  compass = true
+}
+
+function deactivateCompass () {
+  window.removeEventListener('deviceorientation', handleOrientation)
+  window.removeEventListener('devicemotion', handleMotion)
+  map.touchRotate.enable()
+  compassSymbol.innerHTML = 'near_me'
+  compass = false
+}
+
+// -----------------
+// QR code functions
+// -----------------
 
 /**
  * Handle scanned code
@@ -359,155 +487,6 @@ function onScanSuccess (decodedText, decodedResult) {
  */
 function onScanFailure (error) {
   console.warn(`Code scan error = ${error}`)
-}
-
-const html5QrcodeScanner = new Html5QrcodeScanner(
-  'reader',
-  { fps: 10, qrbox: { width: 250, height: 250 } },
-  /* verbose= */ false)
-html5QrcodeScanner.render(onScanSuccess, onScanFailure)
-
-/**
- * Hande the device orientation
- * @param {DeviceOrientationEvent} event
- */
-function handleOrientation (event) {
-  const bias = 120 // rotation of png
-  const orientation = 360 - event.webkitCompassHeading
-  map.setBearing(orientation + bias)
-  motionArray[motionArray.length - 1].push(event.webkitCompassHeading, event.beta, event.gamma)
-  const newPosition = calculatePosition(motionArray, userPosition, bias)
-  userPosition = L.latLng(newPosition.lat, newPosition.lng)
-  circle.setLatLng(userPosition)
-  centerPosition()
-
-  if (activeTarget) {
-    const temp = astar.nearestNode(userPosition)
-    if (temp !== nearestNode) {
-      nearestNode = temp
-      astar.search(nearestNode, product.nodeIndex)
-      const points = astar.polyline.getLatLngs()
-      directionSymbol = getDirection(points)
-      directionText = getDirectionText(directionSymbol)
-      directions.innerHTML =
-        '<div class="card-body d-flex align-items-center">' +
-        '<span class="material-symbols-outlined me-3 mb-bg">' + directionSymbol + '</span>' +
-        '<h5 class="card-title mb-0">' + directionText + '</h5>' +
-        '</div>'
-    }
-  }
-}
-
-function getDirectionText (symbol) {
-  switch (symbol) {
-    case 'sports_score':
-      return 'Ziel erreicht'
-    case 'north':
-      return 'Weiter geradeaus'
-    case 'arrow_top_left':
-      return 'Links abbiegen'
-    case 'arrow_top_right':
-      return 'Rechts abbiegen'
-    default:
-      return 'Bitte an Mitarbeiter wenden'
-  }
-}
-
-function getDirection (points) {
-  // Überprüfen, ob es weniger als drei Punkte gibt
-  if (points[0].length < 3) {
-    return 'sports_score'
-  }
-
-  // Punkte extrahieren
-  const p1 = points[0][0]
-  const p2 = points[0][1]
-  const p3 = points[0][2]
-
-  // Vektoren berechnen
-  const v1 = { x: p2.lng - p1.lng, y: p2.lat - p1.lat }
-  const v2 = { x: p3.lng - p2.lng, y: p3.lat - p2.lat }
-
-  // Längen der Vektoren berechnen
-  const v1Length = Math.sqrt(v1.x * v1.x + v1.y * v1.y)
-  const v2Length = Math.sqrt(v2.x * v2.x + v2.y * v2.y)
-
-  // Skalarprodukt berechnen
-  const dotProduct = v1.x * v2.x + v1.y * v2.y
-
-  // Winkel berechnen (in Grad)
-  const angle = Math.acos(dotProduct / (v1Length * v2Length)) * (180 / Math.PI)
-
-  // Kreuzprodukt berechnen (um die Richtung zu bestimmen)
-  const crossProduct = v1.x * v2.y - v1.y * v2.x
-
-  // Entscheiden, ob gerade, links oder rechts
-  if (angle < 45) {
-    return 'north'
-  } else if (crossProduct > 0) {
-    return 'arrow_top_left'
-  } else {
-    return 'arrow_top_right'
-  }
-}
-
-function centerPosition () {
-  map.flyTo(userPosition, map.getZoom())
-}
-
-function handleMotion (event) {
-  if (motionArray.length >= motionArrayLength) {
-    motionArray.shift()
-  }
-  motionArray.push([event.acceleration.x, event.acceleration.y, event.acceleration.z])
-}
-
-let compass = false
-
-/**
- * Toggle Compass on and off
- */
-window.toggleCompass = () => {
-  if (!isCentered) {
-    centerPosition()
-    return
-  }
-
-  requestSensors()
-
-  if (compass) {
-    deactivateCompass()
-  } else {
-    activateCompass()
-  }
-}
-
-/**
- * Request sensor permission for iOS 13+ devices
- */
-function requestSensors () {
-  if (
-    DeviceOrientationEvent &&
-  typeof DeviceOrientationEvent.requestPermission === 'function'
-  ) {
-    DeviceOrientationEvent.requestPermission()
-  }
-}
-
-function activateCompass () {
-  window.addEventListener('deviceorientation', handleOrientation)
-  window.addEventListener('devicemotion', handleMotion)
-  map.touchRotate.disable()
-  compassSymbol.innerHTML = 'explore'
-  compass = true
-}
-
-function deactivateCompass () {
-  window.removeEventListener('deviceorientation', handleOrientation)
-  window.removeEventListener('devicemotion', handleMotion)
-  map.touchRotate.enable()
-  compassSymbol.innerHTML = 'near_me'
-  compass = false
 }
 
 map.setView(userPosition, 1)

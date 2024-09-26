@@ -158,4 +158,43 @@ export default class Astar {
 
     return this.graph[nearestHeap.content[0].index]
   }
+
+  getDirection () {
+    const points = this.polyline.getLatLngs()
+    // Überprüfen, ob es weniger als drei Punkte gibt
+    if (points[0].length < 3) {
+      return ['sports_score', 'Ziel erreicht']
+    }
+
+    // Punkte extrahieren
+    const p1 = points[0][0]
+    const p2 = points[0][1]
+    const p3 = points[0][2]
+
+    // Vektoren berechnen
+    const v1 = { x: p2.lng - p1.lng, y: p2.lat - p1.lat }
+    const v2 = { x: p3.lng - p2.lng, y: p3.lat - p2.lat }
+
+    // Längen der Vektoren berechnen
+    const v1Length = Math.sqrt(v1.x * v1.x + v1.y * v1.y)
+    const v2Length = Math.sqrt(v2.x * v2.x + v2.y * v2.y)
+
+    // Skalarprodukt berechnen
+    const dotProduct = v1.x * v2.x + v1.y * v2.y
+
+    // Winkel berechnen (in Grad)
+    const angle = Math.acos(dotProduct / (v1Length * v2Length)) * (180 / Math.PI)
+
+    // Kreuzprodukt berechnen (um die Richtung zu bestimmen)
+    const crossProduct = v1.x * v2.y - v1.y * v2.x
+
+    // Entscheiden, ob gerade, links oder rechts
+    if (angle < 45) {
+      return ['north', 'Weiter geradeaus']
+    } else if (crossProduct > 0) {
+      return ['arrow_top_left', 'Links abbiegen']
+    } else {
+      return ['arrow_top_right', 'Rechts abbiegen']
+    }
+  }
 }

@@ -11,7 +11,7 @@ const loadedGraph = await loadJSON()
 /**
  * Class for products
  */
-export class Product {
+export default class Product {
   /**
    * Create a product
    * @param {Object} Object containing nan, name and nodeIndex

@@ -28,6 +28,7 @@ export const map = L.map('map', {
   zoomControl: false,
   crs: L.CRS.Simple,
   minZoom: -2,
+  maxZoom: 3,
   rotate: true,
   bearing: 0,
   touchRotate: true
@@ -238,8 +239,8 @@ L.Control.GraphButtons = L.Control.extend({
       '<button class="btn btn-light rounded-start-5 rounded-end-0 lh-1 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">' +
       '<span class="material-symbols-outlined">Menu</span>' +
       '</button>' +
-      '<button class="btn btn-light text-dark rounded-start-0 rounded-end-5 lh-1 border-0" type="button" id="download" data-bs-toggle="modal" data-bs-target="#downloadModal" onclick="createJSON()">' +
-      '<span class="material-symbols-outlined">straight</span>' +
+      '<a download="graph.json" id="downloadlink" class="btn btn-light text-dark rounded-start-0 rounded-end-5 lh-1 border-0" type="button" id="download" onclick="createJSON()">' +
+      '<span class="material-symbols-outlined">download</span>' +
       '</button>'
 
     return this.container
@@ -321,7 +322,7 @@ function endOfMapMovement (e) {
 
 // Graph UI elements
 export const toggleGraphUI = document.getElementById('toggleGraphUI')
-const download = document.getElementById('download')
+const download = document.getElementById('downloadlink')
 export const graphUI = document.getElementsByClassName('graphUI')
 // Deactivate click events on map
 download.addEventListener('click', function (e) { e.stopPropagation() })

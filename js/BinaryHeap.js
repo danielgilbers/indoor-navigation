@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * Class for BinaryHeap with heapsort function
+ * Class for BinaryHeap
  */
 export default class BinaryHeap {
   /**

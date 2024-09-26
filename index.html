@@ -10,7 +10,6 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-
     <link rel="stylesheet" href="./css/style.css">
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
 </head>
@@ -25,19 +24,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
-                        <button class="nav-link active" id="nav-leaflet-tab" data-bs-toggle="tab"
-                            data-bs-target="#nav-leaflet" type="button" role="tab" aria-controls="nav-leaflet"
-                            aria-selected="true" onclick="closeMenu()">Karte</button>
-                    </li>
-                    <li>
-                        <button class="nav-link" id="nav-sensor-tab" data-bs-toggle="tab" data-bs-target="#nav-sensor"
-                            type="button" role="tab" aria-controls="nav-sensor" aria-selected="false"
-                            onclick="closeMenu()">Sensor-Test</button>
-                    </li>
-                </ul>
-                <hr>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="toggleGraphUI"
                         aria-checked="false" onclick="activateGraphUI(); closeMenu()"
@@ -47,121 +33,28 @@
             </div>
         </div>
 
-        <!-- Inhalt Tab Container -->
-        <div class="tab-content d-flex flex-grow-1" id="nav-tabContent">
-
-            <!-- Leaflet Tab-->
-            <div class="tab-pane fade d-flex flex-column flex-grow-1 show active" id="nav-leaflet" role="tabpanel"
-                aria-labelledby="nav-leaflet-tab" tabindex="0">
-
-                <!-- Download Graph Modal -->
-                <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="downloadModalLabel">Download JSON</h1>
-
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body h5">
-                                Download des erstellten Graphen als JSON.
-                            </div>
-                            <div class="modal-footer">
-                                <a download="graph.json" id="downloadlink" role="button"
-                                    class="btn btn-primary">Download</a>
-                            </div>
-                        </div>
+        <!-- QR Code Scanner Modal -->
+        <div class="modal fade" id="qrScannerModal" tabindex="-1" aria-labelledby="qrScannerModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="qrScannerModalLabel">QR Code Scanner</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                </div>
-
-                <!-- QR Code Scanner Modal -->
-                <div class="modal fade" id="qrScannerModal" tabindex="-1" aria-labelledby="qrScannerModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="qrScannerModalLabel">QR Code Scanner</h1>
-
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body h5">
-                                <div id="reader" width="600px"></div>
-                            </div>
-                            <div class="modal-footer">
-
-                            </div>
-                        </div>
+                    <div class="modal-body h5">
+                        <div id="reader" width="600px"></div>
                     </div>
-                </div>
-
-                <!-- Leaflet Map -->
-                <div class="flex-grow-1" id="map"></div>
-            </div>
-
-            <!-- Sensor Tab-->
-            <div class="tab-pane fade position-absolute container" id="nav-sensor" role="tabpanel"
-                aria-labelledby="nav-sensor-tab" tabindex="0">
-                <button class="btn btn-secondary rounded-5 lh-1 d-inline my-2" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
-                    <span class="material-symbols-outlined" id="addon-wrapping">Menu</span>
-                </button>
-                <h2 class="d-inline">Sensor-Test</h2>
-                <div class="p-3 bg-secondary" id="demo-div">
-                    <a id="start_demo" class="btn btn-lg btn-success py-1" href="#" role="button">Start the demo</a>
-                    <a download="Sensordata.csv" id="downloadSensordatalink" role="button" class="btn btn-sm btn-secondary" onclick="createSensordata()">Download Data</a>
-                    <p style="margin-top:1rem;">Num. of datapoints: <span class="badge text-bg-warning"
-                            id="num-observed-events">0</span></p>
-                            <p style="margin-top:1rem;">Step Count: <span class="badge text-bg-warning"
-                                id="num-steps">0</span></p>
-
-
-                    <h4 style="margin-top:0.75rem;">Orientation</h4>
-                    <ul>
-                        <li>X-axis (β): <span id="Orientation_b">0</span><span>°</span></li>
-                        <li>Y-axis (γ): <span id="Orientation_g">0</span><span>°</span></li>
-                        <li>Z-axis (α): <span id="Orientation_a">0</span><span>°</span></li>
-                        <li>Compass: <span id="Orientation_compass">0</span><span>°</span></li>
-                    </ul>
-
-                    <h4>ABSOLUTE Position</h4>
-                    <ul>
-                        <li>X-Position: <span id="X_position">0</span></li>
-                        <li>Y-Position: <span id="Y_position">0</span></li>
-                    </ul>
-
-                    <h4>Accelerometer</h4>
-                    <ul>
-                        <li>X-axis: <span id="Accelerometer_x">0</span><span> m/s<sup>2</sup></span></li>
-                        <li>Y-axis: <span id="Accelerometer_y">0</span><span> m/s<sup>2</sup></span></li>
-                        <li>Z-axis: <span id="Accelerometer_z">0</span><span> m/s<sup>2</sup></span></li>
-                        <li>Data Interval: <span id="Accelerometer_i">0</span><span> ms</span></li>
-                    </ul>
-
-                    <h4>Accelerometer including gravity</h4>
-
-                    <ul>
-                        <li>X-axis: <span id="Accelerometer_gx">0</span><span> m/s<sup>2</sup></span></li>
-                        <li>Y-axis: <span id="Accelerometer_gy">0</span><span> m/s<sup>2</sup></span></li>
-                        <li>Z-axis: <span id="Accelerometer_gz">0</span><span> m/s<sup>2</sup></span></li>
-                    </ul>
-
-                    <h4>Gyroscope</h4>
-                    <ul>
-                        <li>X-axis: <span id="Gyroscope_x">0</span><span>°/s</span></li>
-                        <li>Y-axis: <span id="Gyroscope_y">0</span><span>°/s</span></li>
-                        <li>Z-axis: <span id="Gyroscope_z">0</span><span>°/s</span></li>
-                    </ul>
                 </div>
             </div>
         </div>
+
+        <!-- Leaflet Map -->
+        <div class="flex-grow-1" id="map"></div>
     </div>
 
     <script src="./js/map.js" type="module"></script>
     <script src="./js/kalman-filter.min.js"></script>
-    <script src="./js/sensor.js" type="module"></script>
 </body>
 
 </html>

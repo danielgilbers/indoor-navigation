@@ -47,7 +47,6 @@ const fuse = new Fuse(products, {
 
 /**
  * Load JSON data of products
- *
  * @returns {Array} Products
  */
 async function loadProducts () {

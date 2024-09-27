@@ -25,7 +25,7 @@ class Node extends L.marker {
 
   /**
    * Select node as start- or endnode
-   * @param {*} e
+   * @param {Event} e
    */
   clickOnNode = (e) => {
     checkGraphToggle() && checkAB(this)
@@ -49,7 +49,7 @@ class Node extends L.marker {
 
   /**
    * Add node to edge
-   * @param {*} e
+   * @param {Event} e
    */
   clickOnEdge = (e) => {
     if (checkGraphToggle()) {
@@ -92,7 +92,7 @@ function checkAB (node) {
 
 /**
  * Create new node and check for start or end
- * @param {*} e
+ * @param {Event} e
  */
 export function clickOnMap (e) {
   checkGraphToggle() && checkAB(new Node(e.latlng))
@@ -138,7 +138,7 @@ let textFile = null
 
 /**
  * Create textfile for download
- * @param {*} text
+ * @param {String} text
  * @returns {String} URL you can use as a href
  */
 export function makeTextFile (text) {

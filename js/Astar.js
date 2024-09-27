@@ -10,9 +10,9 @@ import { map } from './map.js'
  */
 export default class Astar {
   /**
-     * Create a search object
-     * @param {Array} graph Array of Nodes
-     */
+   * Create a search object
+   * @param {Array} graph Array of Nodes
+   */
   constructor (graph) {
     this.graph = [...graph]
     for (const node of this.graph) {
@@ -22,12 +22,11 @@ export default class Astar {
   }
 
   /**
-     * Perform an A* Search on a graph given a start and end node.
-     * @param {Node} start Start Node
-     * @param {Number} endIndex End Node Index
-     *
-     * @returns {Array} Nodes from start to end
-     */
+   * Perform an A* Search on a graph given a start and end node.
+   * @param {Node} start Start Node
+   * @param {Number} endIndex End Node Index
+   * @returns {Array} Nodes from start to end
+   */
   search (start, endIndex) {
     const end = this.graph[endIndex]
     this.#cleanDirty()
@@ -151,6 +150,11 @@ export default class Astar {
     }
   }
 
+  /**
+   * Get nearest node to position
+   * @param {LatLng} position Current position
+   * @returns Nearest node
+   */
   nearestNode (position) {
     const nearestHeap = new BinaryHeap(function (node) {
       return L.point(position.lat, position.lng).distanceTo(L.point(node.latlng.lat, node.latlng.lng))
@@ -163,34 +167,34 @@ export default class Astar {
 
   getDirection () {
     const points = this.polyline.getLatLngs()
-    // Überprüfen, ob es weniger als drei Punkte gibt
+    // Check if there are less than three points
     if (points[0].length < 3) {
       return ['sports_score', 'Ziel erreicht']
     }
 
-    // Punkte extrahieren
+    // Extract points
     const p1 = points[0][0]
     const p2 = points[0][1]
     const p3 = points[0][2]
 
-    // Vektoren berechnen
+    // Calculate vectors
     const v1 = { x: p2.lng - p1.lng, y: p2.lat - p1.lat }
     const v2 = { x: p3.lng - p2.lng, y: p3.lat - p2.lat }
 
-    // Längen der Vektoren berechnen
+    // Calculate lengths of vectors
     const v1Length = Math.sqrt(v1.x * v1.x + v1.y * v1.y)
     const v2Length = Math.sqrt(v2.x * v2.x + v2.y * v2.y)
 
-    // Skalarprodukt berechnen
+    // Calculate scalar product
     const dotProduct = v1.x * v2.x + v1.y * v2.y
 
-    // Winkel berechnen (in Grad)
+    // Calculate angle (in degrees)
     const angle = Math.acos(dotProduct / (v1Length * v2Length)) * (180 / Math.PI)
 
-    // Kreuzprodukt berechnen (um die Richtung zu bestimmen)
+    // Calculate cross product (to determine the direction)
     const crossProduct = v1.x * v2.y - v1.y * v2.x
 
-    // Entscheiden, ob gerade, links oder rechts
+    // Decide whether straight, left or right
     if (angle < 45) {
       return ['north', 'Weiter geradeaus']
     } else if (crossProduct > 0) {

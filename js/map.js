@@ -57,7 +57,7 @@ document.getElementsByClassName('leaflet-control-rotate')[0].remove()
 document.getElementsByClassName('leaflet-control-attribution')[0].remove()
 
 // -----------
-// UI Elements
+// UI elements
 // -----------
 
 // Add background image to map
@@ -96,13 +96,13 @@ clearSearchButton.id = 'clearSearchButton'
 clearSearchButton.innerHTML = '<span class="material-symbols-outlined">Cancel</span>'
 
 /**
- * Search List
+ * Search list
  */
 const searchList = L.DomUtil.create('div', 'list-group pe-3')
 searchList.id = 'searchList'
 
 /**
- * Compass Button
+ * Compass button
  */
 L.Control.Compass = L.Control.extend({
   onAdd: function () {
@@ -132,7 +132,7 @@ L.Control.QRButton = L.Control.extend({
 })
 
 /**
- * Navigation Button
+ * Navigation button
  */
 L.Control.Navigation = L.Control.extend({
   onAdd: function () {
@@ -163,7 +163,7 @@ function refreshDirections () {
 }
 
 /**
- * Graph UI - Download-button
+ * Graph UI - Download button
  */
 L.Control.GraphButtons = L.Control.extend({
   onAdd: function () {
@@ -191,7 +191,7 @@ new L.Control.Compass({ position: 'bottomright' }).addTo(map)
 new L.Control.Navigation({ position: 'bottomleft' }).addTo(map)
 
 // -----------------
-// Find Dom elements
+// Find DOM elements
 // -----------------
 const searchGroup = document.getElementById('searchGroup')
 const searchBar = document.getElementById('searchBar')
@@ -240,7 +240,7 @@ window.closeMenu = function () {
 
 /**
  * Process searchbar input
- * @param {*} e
+ * @param {Event} e
  */
 function useSearchbar (e) {
   const inputValue = searchBar.value
@@ -410,6 +410,10 @@ function handleOrientation (event) {
   }
 }
 
+/**
+ * Change compass symbol based on view (centered / not centered)
+ * @param {Event} e
+ */
 function endOfMapMovement (e) {
   if (typeof compassSymbol !== 'undefined') {
     const mapCenter = map.getCenter()
@@ -425,6 +429,9 @@ function endOfMapMovement (e) {
   }
 }
 
+/**
+ * Center view on userposition
+ */
 function centerPosition () {
   map.flyTo(userPosition, map.getZoom())
 }
@@ -437,9 +444,7 @@ window.toggleCompass = () => {
     centerPosition()
     return
   }
-
   requestSensors()
-
   if (compass) {
     deactivateCompass()
   } else {
@@ -447,6 +452,9 @@ window.toggleCompass = () => {
   }
 }
 
+/**
+ * Add eventListener and disable touch rotation
+ */
 function activateCompass () {
   window.addEventListener('devicemotion', handleMotion)
   window.addEventListener('deviceorientation', handleOrientation)
@@ -455,6 +463,9 @@ function activateCompass () {
   compass = true
 }
 
+/**
+ * Remove eventListener and enable touch rotation
+ */
 function deactivateCompass () {
   window.removeEventListener('devicemotion', handleMotion)
   window.removeEventListener('deviceorientation', handleOrientation)
@@ -469,8 +480,8 @@ function deactivateCompass () {
 
 /**
  * Handle scanned code
- * @param {*} decodedText
- * @param {*} decodedResult
+ * @param {String} decodedText
+ * @param {String} decodedResult
  */
 function onScanSuccess (decodedText, decodedResult) {
   console.log(`Code matched = ${decodedText}`, decodedResult)

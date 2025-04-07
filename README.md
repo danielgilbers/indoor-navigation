@@ -6,3 +6,7 @@
 **Demo:**
 
 [![Demo Link](/img/demo-link.png)](https://danielgilbers.github.io/indoor-navigation/)
+
+**Paper:**
+
+[German version](SEuSI_Gruppe1_Fallstudie_Freier_Fröhlich_Gilbers_Lepp_WI22.pdf)

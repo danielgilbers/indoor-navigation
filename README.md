@@ -9,4 +9,4 @@
 
 **Paper:**
 
-[German version](SEuSI_Gruppe1_Fallstudie_Freier_Fröhlich_Gilbers_Lepp_WI22.pdf)
+[German version](SEuSI_Gruppe1_Fallstudie_Freier_Fröhlich_Gilbers_Lepp_WI22_public.pdf)

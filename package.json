@@ -5,10 +5,12 @@
     "@babel/preset-env": "^7.25.4",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "standard": "^17.1.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "audit": "npm audit --audit-level=low"
   },
   "jest": {
     "transform": {
@@ -18,8 +20,5 @@
   },
   "standard": {
     "parser": "@babel/eslint-parser"
-  },
-  "dependencies": {
-    "jest-environment-jsdom": "^29.7.0"
   }
 }
